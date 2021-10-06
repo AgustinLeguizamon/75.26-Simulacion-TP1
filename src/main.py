@@ -14,6 +14,7 @@ def generar_numeros(generador, n, semilla):
     numero_aleatorio = semilla
     for i in range(n):
         numero_aleatorio = generador(numero_aleatorio)
+
         numeros_aleatorios.append(numero_aleatorio)
     return numeros_aleatorios
 
@@ -26,7 +27,7 @@ def prueba():
     print(generar_numeros(gcl, n, semilla))
 
 
-def ejercicio_1():
+def gcl_ejercicio_1():
     modulo = 2 ** 32
     gcl = fabricar_gcl(modulo, 1013904223, 1664525)
     n = 100
@@ -34,12 +35,15 @@ def ejercicio_1():
     suma = 0
     for padron in padrones:
         suma += padron
-
     promedio = np.int32(suma / len(padrones))
     semilla = promedio
-
     numeros = generar_numeros(gcl, n, semilla)
-    print("GCL")
+
+    return numeros, modulo
+
+
+def ejercicio_1():
+    numeros, modulo = gcl_ejercicio_1()
     print(numeros)
 
     # Normalizado entre [0,1]
@@ -54,12 +58,12 @@ def ejercicio_1():
     plt.figure()
     plt.subplot(2, 1, 1)
     plt.hist(numeros)
-    plt.title("GCL")
+    plt.title("GCL \n")
     plt.ylabel("frecuencia")
 
     plt.subplot(2, 1, 2)
     plt.hist(numeros_normalizados)
-    plt.title("GCL normalizado [0,1]")
+    plt.title("\n GCL normalizado [0,1]")
     plt.ylabel("frecuencia")
     plt.xlabel("numeros")
     plt.show()
@@ -68,3 +72,5 @@ def ejercicio_1():
 if __name__ == '__main__':
     prueba()
     ejercicio_1()
+
+    
