@@ -86,8 +86,7 @@ def ejercicio_1():
     plt.show()
 
 
-def ejercicio_2():
-    # Ver como lograr el mismo histograma que en la fiugra del ejercicio 2
+def prueba_discretas():
     n = 10000
     x = rand(n)
     z = np.zeros(n)
@@ -104,7 +103,44 @@ def ejercicio_2():
     plt.show()
 
 
+def ejercicio_2():
+    # Ver como lograr el mismo histograma que en la fiugra del ejercicio 2
+    n = 10000
+    x = rand(n)
+    z = np.zeros((5, n))
+    probas = [0.273, 0.52, 0.137, 0.0480, 0.0220]
+    probas_acumuladas = []
+    for i in range(len(probas)):
+        if i == 0:
+            probas_acumuladas.append(probas[i])
+        else:
+            probas_acumuladas.append(probas_acumuladas[i - 1] + probas[i])
+
+    for i in range(n):
+        if x[i] < probas_acumuladas[0]:
+            z[0][i] = 1
+        elif probas_acumuladas[0] < x[i] < probas_acumuladas[1]:
+            z[1][i] = 1
+        elif probas_acumuladas[1] < x[i] < probas_acumuladas[2]:
+            z[2][i] = 1
+        elif probas_acumuladas[2] < x[i] < probas_acumuladas[3]:
+            z[3][i] = 1
+        elif probas_acumuladas[3] < x[i] < probas_acumuladas[4]:
+            z[4][i] = 1
+
+    print("Probas acumuladas")
+    print(probas_acumuladas)
+
+    plt.figure()
+    n_casos = []
+    for i in range(len(z)):
+        n_casos.append(np.sum(z[i]))
+    k = [i for i in range(len(z))]
+    plt.bar(k, n_casos)
+    plt.show()
+
+
 if __name__ == '__main__':
-    # ejercicio_1()
+    ejercicio_1()
     ejercicio_2()
     
