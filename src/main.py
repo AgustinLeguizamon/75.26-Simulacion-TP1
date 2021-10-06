@@ -19,6 +19,14 @@ def generar_numeros(generador, n, semilla):
     return numeros_aleatorios
 
 
+# Normalizar entre [0,1]
+def normalizar(numeros, modulo):
+    numeros_normalizados = []
+    for numero in numeros:
+        numeros_normalizados.append(numero / modulo)
+    return numeros_normalizados
+
+
 def prueba():
     gcl = fabricar_gcl(10, 7, 7)
     n = 100
@@ -27,14 +35,18 @@ def prueba():
     print(generar_numeros(gcl, n, semilla))
 
 
-def gcl_ejercicio_1():
+def gcl_ejercicio_1(n):
     modulo = 2 ** 32
-    gcl = fabricar_gcl(modulo, 1013904223, 1664525)
-    n = 100
+    multiplicador = 1013904223
+    incremento = 1664525
+    gcl = fabricar_gcl(modulo, multiplicador, incremento)
+
     padrones = [99535]
     suma = 0
+
     for padron in padrones:
         suma += padron
+
     promedio = np.int32(suma / len(padrones))
     semilla = promedio
     numeros = generar_numeros(gcl, n, semilla)
@@ -42,19 +54,24 @@ def gcl_ejercicio_1():
     return numeros, modulo
 
 
+# GCL del ejercicio 1.a
+def rand(n):
+    numeros, modulo = gcl_ejercicio_1(100)
+    numeros_normalizados = normalizar(numeros, modulo)
+    return numeros_normalizados
+
+
 def ejercicio_1():
-    numeros, modulo = gcl_ejercicio_1()
+    numeros, modulo = gcl_ejercicio_1(100)
+    print("GCL ejercicio 1")
     print(numeros)
 
-    # Normalizado entre [0,1]
-    numeros_normalizados = []
-    for numero in numeros:
-        numeros_normalizados.append(numero / modulo)
-
-    print("GCL normalizado")
+    # Parte a
+    numeros_normalizados = normalizar(numeros, modulo)
+    print("GCL normalizado - ejercicio 1.a")
     print(numeros_normalizados)
 
-    # plots
+    # Parte b - plots
     plt.figure()
     plt.subplot(2, 1, 1)
     plt.hist(numeros)
@@ -69,8 +86,15 @@ def ejercicio_1():
     plt.show()
 
 
+def ejercicio_2():
+    # Ver como lograr el mismo histograma que en la fiugra del ejercicio 2
+    x = rand(10000)
+    plt.hist(x)
+    plt.show()
+
+
 if __name__ == '__main__':
     prueba()
     ejercicio_1()
-
+    ejercicio_2()
     
