@@ -88,13 +88,23 @@ def ejercicio_1():
 
 def ejercicio_2():
     # Ver como lograr el mismo histograma que en la fiugra del ejercicio 2
-    x = rand(10000)
-    plt.hist(x)
+    n = 10000
+    x = rand(n)
+    z = np.zeros(n)
+    p = 0.1
+    for i in range(len(z)):
+        if x[i] < p:
+            z[i] = 1
+    plt.figure()
+    n_casos_1 = np.sum(z)
+    n_casos_0 = n - np.sum(z)
+    k = [0, 1]
+    p = [n_casos_0, n_casos_1]
+    plt.bar(k, p)
     plt.show()
 
 
 if __name__ == '__main__':
-    prueba()
-    ejercicio_1()
+    # ejercicio_1()
     ejercicio_2()
     
