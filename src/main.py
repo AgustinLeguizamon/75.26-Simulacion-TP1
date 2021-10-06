@@ -1,9 +1,11 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 def fabricar_gcl(modulo, multiplicador, incremento):
     def gcl(semilla):
         return (multiplicador * semilla + incremento) % modulo
+
     return gcl
 
 
@@ -20,11 +22,13 @@ def prueba():
     gcl = fabricar_gcl(10, 7, 7)
     n = 100
     semilla = 7
+    print("Prueba")
     print(generar_numeros(gcl, n, semilla))
 
 
 def ejercicio_1():
-    gcl = fabricar_gcl(2**32, 1013904223, 1664525)
+    modulo = 2 ** 32
+    gcl = fabricar_gcl(modulo, 1013904223, 1664525)
     n = 100
     padrones = [99535]
     suma = 0
@@ -35,11 +39,30 @@ def ejercicio_1():
     semilla = promedio
 
     numeros = generar_numeros(gcl, n, semilla)
+    print("GCL")
     print(numeros)
-    # Hacer grafico
-    plt.hist(numeros)
-    plt.show()
+
     # Normalizado entre [0,1]
+    numeros_normalizados = []
+    for numero in numeros:
+        numeros_normalizados.append(numero / modulo)
+
+    print("GCL normalizado")
+    print(numeros_normalizados)
+
+    # plots
+    plt.figure()
+    plt.subplot(2, 1, 1)
+    plt.hist(numeros)
+    plt.title("GCL")
+    plt.ylabel("frecuencia")
+
+    plt.subplot(2, 1, 2)
+    plt.hist(numeros_normalizados)
+    plt.title("GCL normalizado [0,1]")
+    plt.ylabel("frecuencia")
+    plt.xlabel("numeros")
+    plt.show()
 
 
 if __name__ == '__main__':
