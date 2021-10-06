@@ -62,14 +62,15 @@ def rand(n):
 
 
 def ejercicio_1():
-    numeros, modulo = gcl_ejercicio_1(100)
+    n = 10000
+    numeros, modulo = gcl_ejercicio_1(n)
     print("GCL ejercicio 1")
-    print(numeros)
+    # print(numeros)
 
     # Parte a
     numeros_normalizados = normalizar(numeros, modulo)
     print("GCL normalizado - ejercicio 1.a")
-    print(numeros_normalizados)
+    # print(numeros_normalizados)
 
     # Parte b - plots
     plt.figure()
@@ -135,7 +136,7 @@ def ejercicio_2():
     n_casos = []
     for i in range(len(z)):
         n_casos.append(np.sum(z[i]))
-    k = [i for i in range(len(z))]
+    k = [(i+2) for i in range(len(z))]
     plt.bar(k, n_casos)
     plt.show()
 
