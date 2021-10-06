@@ -56,7 +56,7 @@ def gcl_ejercicio_1(n):
 
 # GCL del ejercicio 1.a
 def rand(n):
-    numeros, modulo = gcl_ejercicio_1(100)
+    numeros, modulo = gcl_ejercicio_1(n)
     numeros_normalizados = normalizar(numeros, modulo)
     return numeros_normalizados
 
