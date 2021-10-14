@@ -1,5 +1,5 @@
 import math
-
+import random as rn
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import chi2
@@ -162,6 +162,7 @@ def generar_numeros_va_exp(muestras_uniformes, ratio):
 
 
 def es_aceptada(instancia_uniforme, instancia_exponencial):
+    # TODO: desharcodear esto creando metodo para calcular la funcion => f(x)/g(x)*c
     return instancia_uniforme <= math.exp(-(instancia_exponencial-1)**2 / 2)
 
 
@@ -173,15 +174,34 @@ def ejercicio_3():
     n = 100000
     media = 15
     desvio = 2
+    proba_sea_positivo = 0.5
 
-    nros = []
-    muestras_uniformes = rand(n)
-    muestras_exp = generar_numeros_va_exp(muestras_uniformes, 1)
+    muestras_normal_std = []
+
+    # Genero valores uniformes con nuestro GCL
+    muestras_uniforme = rand(n)
+
+    # Con los uniformes usando la trnasformada inversa creo valores con distribucion exponencial
+    muestras_exp = generar_numeros_va_exp(muestras_uniforme, 1)
+
+    # Metodo aceptacion rechazo
     for i in range(n):
-        if es_aceptada(muestras_uniformes[i], muestras_exp[i]):
-            nros.append(muestras_exp[i])
+        if es_aceptada(rn.random(), muestras_exp[i]):
+            muestra_exp = muestras_exp[i]
+            # como quiero una normal que tiene soporte [-inf, +inf] pero exp tiene 0 a inf
+            # hago que con proba 0.5 lo vuelvo negativo entonces tengo exp con [-0.5*inf, 0.5*inf]
+            if rn.random() > proba_sea_positivo:
+                muestra_exp = -muestra_exp
+            muestras_normal_std.append(muestra_exp)
 
-    plt.hist(nros, align="left", bins=30)
+    # a cada elemento lo multiplico por desvio y suma la media
+    # para obtener la normal buscada
+
+    muestras_normal = []
+    for i in range(len(muestras_normal_std)):
+        muestras_normal.append(muestras_normal_std[i]*desvio + media)
+
+    plt.hist(muestras_normal, align="left", bins=30)
     plt.show()
 
 
