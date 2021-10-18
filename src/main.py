@@ -2,6 +2,7 @@ import math
 import random as rn
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy import special
 from scipy.stats import chi2
 
 
@@ -44,7 +45,7 @@ def gcl_ejercicio_1(n):
     incremento = 1664525
     gcl = fabricar_gcl(modulo, multiplicador, incremento)
 
-    padrones = [99535]
+    padrones = [99535, 100855, 98038, 89059]
     suma = 0
 
     for padron in padrones:
@@ -150,10 +151,6 @@ def funcion_densidad_normal(x, media, desvio):
     return (1 / (np.sqrt(desvio * 2 * math.pi))) * math.exp(-1 / 2 * (x - media / desvio) ** 2)
 
 
-def funcion_densidad_normal_std(x):
-    return 2 / (np.sqrt(2 * math.pi)) * math.exp((x ** 2) / 2)
-
-
 def generar_numeros_va_exp(muestras_uniformes, ratio):
     numeros_distribucion_exp = []
     for muestra_uniforme in muestras_uniformes:
@@ -201,15 +198,78 @@ def ejercicio_3():
     for i in range(len(muestras_normal_std)):
         muestras_normal.append(muestras_normal_std[i]*desvio + media)
 
-    plt.hist(muestras_normal, align="left", bins=30)
+    plt.hist(muestras_normal, align="left", bins=100)
     plt.show()
+
+    return muestras_normal
+
+
+def esperanza(muestras):
+    sumatoria = 0
+    for muestra in muestras:
+        sumatoria += muestra
+    return sumatoria / len(muestras)
+
+
+def varianza(muestras, esperanza):
+    sumatoria = 0
+    for muestra in muestras:
+        sumatoria += (muestra - esperanza) ** 2
+    return sumatoria / len(muestras)
+
+
+def probabilidades(numeros):
+    frecuencias = {}
+    n = len(numeros)
+
+    for numero in numeros:
+        if numero in frecuencias:
+            frecuencias[numero] += 1
+        else:
+            frecuencias[numero] = 1
+    return {k: frecuencias[k] / n for k, v in frecuencias.items()}
+
+
+# CDF : Cumulative Distribution Function
+def cdf_normal(x, media, desvio):
+    return 0.5*(1 + special.erf((x - media)/(desvio * math.sqrt(2))))
+
+
+def ejercicio_3_c(muestras):
+    ocurrencias = {}
+
+    media = 15
+    desvio = 2
+    n = len(muestras)
+
+    for muestra in muestras:
+        piso = math.floor(muestra)
+        if piso in ocurrencias:
+            ocurrencias[piso] += 1
+        else:
+            ocurrencias[piso] = 1
+
+    diferencias = []
+    for clase, ocurrencias in ocurrencias.items():
+        pk = cdf_normal((clase+1 - media) / desvio, 0, 1) - cdf_normal((clase - media) / desvio, 0, 1)
+        dif = (((ocurrencias - n * pk) ** 2) / (n * pk))
+        diferencias.append(dif)
+    d2 = sum(diferencias)
+    limite_superior = chi2.ppf(0.95, df=5)
+
+    print("Estadistico: {:.6f} ".format(d2))
+    if d2 <= limite_superior:
+        print("El test acepta la hipotesis nula.")
+    else:
+        print("El test rechaza la hipótesis nula")
 
 
 def app():
     # ejercicio_1()
     # frecuencias_observadas = ejercicio_2()
     # ejercicio_2b(frecuencias_observadas)
-    ejercicio_3()
+    muestras_normal = ejercicio_3()
+    ejercicio_3_c(muestras_normal)
 
 
 if __name__ == '__main__':
