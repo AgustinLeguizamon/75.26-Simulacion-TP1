@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import special
 from scipy.stats import chi2
+from scipy.stats import poisson
 
 
 def fabricar_gcl(modulo, multiplicador, incremento):
@@ -151,6 +152,7 @@ def funcion_densidad_normal(x, media, desvio):
     return (1 / (np.sqrt(desvio * 2 * math.pi))) * math.exp(-1 / 2 * (x - media / desvio) ** 2)
 
 
+# Usando transformada inversa
 def generar_numeros_va_exp(muestras_uniformes, ratio):
     numeros_distribucion_exp = []
     for muestra_uniforme in muestras_uniformes:
@@ -166,7 +168,6 @@ def es_aceptada(instancia_uniforme, instancia_exponencial):
 # Metodo aceptacion y rechazo
 def ejercicio_3():
     # Queremos normal N (15, 2**2)
-    # la funcion de densidad de una normal es
 
     n = 100000
     media = 15
@@ -178,7 +179,7 @@ def ejercicio_3():
     # Genero valores uniformes con nuestro GCL
     muestras_uniforme = rand(n)
 
-    # Con los uniformes usando la trnasformada inversa creo valores con distribucion exponencial
+    # Con los uniformes usando la transformada inversa creo valores con distribucion exponencial
     muestras_exp = generar_numeros_va_exp(muestras_uniforme, 1)
 
     # Metodo aceptacion rechazo
@@ -238,10 +239,12 @@ def cdf_normal(x, media, desvio):
 def ejercicio_3_c(muestras):
     ocurrencias = {}
 
+    # TODO: me parece qeu se usa la calculada
     media = 15
     desvio = 2
     n = len(muestras)
 
+    # TODO: no se si floor sea la forma correcta de determinar una clase
     for muestra in muestras:
         piso = math.floor(muestra)
         if piso in ocurrencias:
@@ -264,12 +267,118 @@ def ejercicio_3_c(muestras):
         print("El test rechaza la hipótesis nula")
 
 
+def pmf_poisson(clase, lambdaa):
+    return poisson.pmf(clase, lambdaa)
+
+
+def determinar_clase_intervalo_arribos(arribos, indice_primer_arribo, cant_clases):
+    indice_primer_arribo_pasada_la_hora = indice_primer_arribo
+    tiempo = 0
+    i = indice_primer_arribo
+    seguir = True
+    while seguir:
+        if i >= len(arribos):
+            indice_primer_arribo_pasada_la_hora += 1
+            break
+        tiempo += arribos[i]
+        if tiempo > 1:
+            indice_primer_arribo_pasada_la_hora = i
+            seguir = False
+        i += 1
+    cantidad_de_arribos = len(arribos[indice_primer_arribo:indice_primer_arribo_pasada_la_hora])
+
+    # pongo un limite a la cantidad de clases
+    max_cantidad_arribos = cant_clases
+    if cantidad_de_arribos >= max_cantidad_arribos:
+        cantidad_de_arribos = max_cantidad_arribos
+
+    return cantidad_de_arribos, indice_primer_arribo_pasada_la_hora
+
+
+def ejercicio_4_a_test(arribos, lambdaa, cant_clases):
+    frecuencias_observadas = {}
+    n = len(arribos)
+
+    indice_primer_arribo_sig_intervalo = 0
+
+    while indice_primer_arribo_sig_intervalo < len(arribos):
+        cantidad_arribos_intervalo, indice_primer_arribo_sig_intervalo = \
+            determinar_clase_intervalo_arribos(arribos, indice_primer_arribo_sig_intervalo, cant_clases)
+
+        if cantidad_arribos_intervalo in frecuencias_observadas:
+            frecuencias_observadas[cantidad_arribos_intervalo] += 1
+        else:
+            frecuencias_observadas[cantidad_arribos_intervalo] = 1
+
+    diferencias = []
+    pks = []
+    for clase, frecuencia_observada in frecuencias_observadas.items():
+        pk = pmf_poisson(clase, lambdaa)
+        if clase == cant_clases:
+            pk = 1 - sum(pks)
+        pks.append(pk)
+        dif = (((frecuencia_observada - n * pk) ** 2) / (n * pk))
+        diferencias.append(dif)
+    d2 = sum(diferencias)
+    limite_superior = chi2.ppf(0.95, df=5)
+
+    print("Estadistico: {:.6f} ".format(d2))
+    if d2 <= limite_superior:
+        print("El test acepta la hipotesis nula.")
+    else:
+        print("El test rechaza la hipótesis nula")
+
+
+def leer_arribos(nombre_archivo):
+    arribos = []
+    arribos_archivo = open(nombre_archivo, "r")
+    for arribo_archivo in arribos_archivo:
+        arribos.append(float(arribo_archivo))
+    return arribos
+
+
+def ejercicio_4_a(arribos):
+    esperanza_muestras = esperanza(arribos)
+    print("Obtenemos como media: " + str(esperanza_muestras))
+    lambdaa = 1/esperanza_muestras
+    return lambdaa
+
+
+def ejercicio_4():
+    # El tiempo esta en horas
+    arribos = leer_arribos("tiempos_entre_arribos.txt")
+    lambdaa = ejercicio_4_a(arribos)
+
+    print("Los tiempos tienen distribucion exponencial con parametro lambda")
+    print("Sabemos que la media es 1/lambda")
+    print("Lambda (tasa de arribos): " + str(lambdaa))
+
+    ejercicio_4_a_test(arribos, lambdaa, 20)
+
+
+def borrar_prueba():
+    arribos = [0.45, 0.35, 0.42, 0.10, 0.3, 0.5]
+
+    indice_primer_arribo_sig_intervalo = 0
+    indice_anterior = 0
+
+    while indice_primer_arribo_sig_intervalo < len(arribos):
+        cantidad_arribos_intervalo, indice_primer_arribo_sig_intervalo = determinar_clase_intervalo_arribos(arribos,
+                                                                                                            indice_primer_arribo_sig_intervalo,
+                                                                                                            20)
+        print((arribos[indice_anterior:indice_primer_arribo_sig_intervalo]))
+        print("cant:" + str(cantidad_arribos_intervalo))
+        print("i: " + str(indice_primer_arribo_sig_intervalo))
+        indice_anterior = indice_primer_arribo_sig_intervalo
+
+
 def app():
     # ejercicio_1()
     # frecuencias_observadas = ejercicio_2()
     # ejercicio_2b(frecuencias_observadas)
-    muestras_normal = ejercicio_3()
-    ejercicio_3_c(muestras_normal)
+    # muestras_normal = ejercicio_3()
+    # ejercicio_3_c(muestras_normal)
+    ejercicio_4()
 
 
 if __name__ == '__main__':
