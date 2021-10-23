@@ -1,3 +1,9 @@
+import random
+from enum import Enum
+
+class Sentido(Enum):
+    NORTE = 0
+    SUR = 1
 
 class CeldaOcupadaExcepcion(Exception):
     pass
@@ -8,15 +14,33 @@ def metros_a_celdas(metros):
     return metros * celdas_por_metro
 
 
-class Peaton:
+def velocidad_inicial():
+    p = random.random()
+    velocidad = 2
+    if p > 0.978:
+        velocidad = 6
+        return velocidad
+    if p > 0.93:
+        velocidad = 5
+        return velocidad
+    if p > 0.793:
+        velocidad = 4
+        return velocidad
+    if p > 0.273:
+        velocidad = 3
+        return velocidad
+    return velocidad
 
-    def __init__(self, id_peaton, velocidad_inicial):
+
+class Peaton:
+    def __init__(self, id_peaton):
         self.id = id_peaton
         self.celda = None
-        self.velocidad = velocidad_inicial
+        self.velocidad = velocidad_inicial()
+        self.sentido = Sentido.NORTE
 
     def dar_paso(self):
-        self.celda.moveme_hacia_adelante(self.velocidad)
+        self.celda.mover_peaton(self.velocidad)
 
     def setear_celda(self, celda):
         self.celda = celda
@@ -42,7 +66,7 @@ class Celda:
             return 'P'
         return ' '
 
-    def moveme_hacia_adelante(self, velocidad):
+    def mover_peaton(self, velocidad):
         self.paso_peatonal.mover_peaton(self.x, self.y, velocidad)
 
     def quitar_peaton(self):
@@ -65,13 +89,17 @@ class PasoPeatonal:
         self.sig_id = 0
 
     def agregar_peaton(self, inicial_x, inicial_y):
-        # TODO. deshardcodear velocidad 1
-        peaton = Peaton(self.sig_id, 1)
+        # TODO: deshardcodear velocidad 1
+        peaton = Peaton(self.sig_id)
         self.sig_id = self.sig_id + 1
         self.peatones.append(peaton)
         self.poner_peaton(peaton, inicial_x, inicial_y)
 
     def poner_peaton(self, peaton, x, y):
+        # si se fue del tablero, no la coloco
+        if y < 0:
+            self.peatones.remove(peaton)
+            return
         self.paso_peatonal[y][x].poner_peaton(peaton)
 
     def quitar_peaton(self, x, y):
@@ -88,7 +116,7 @@ class PasoPeatonal:
 
 
 def dibujar_paso_peatonal(pasoPeatonal):
-    print("--------------Norte-----------------")
+    print("-------------Norte----------------")
     for i in range(pasoPeatonal.largo):
         print('|', end='')
         for j in range(pasoPeatonal.ancho):
@@ -106,7 +134,7 @@ def ejercicio5():
     area_espera += 1
 
     # lo pongo en el paso peatonal
-    pasoPeatonal.agregar_peaton(0, pasoPeatonal.largo-1)
+    pasoPeatonal.agregar_peaton(0, pasoPeatonal.largo - 1)
     pasoPeatonal.agregar_peaton(1, pasoPeatonal.largo - 1)
 
     # actualizo
@@ -114,8 +142,6 @@ def ejercicio5():
 
     x = input("cualquier tecla para dar un paso, q para salir")
     while x != 'q':
-
         pasoPeatonal.pasar_un_segundo()
-
         dibujar_paso_peatonal(pasoPeatonal)
         x = input("cualquier tecla para dar un paso, q para salir")
