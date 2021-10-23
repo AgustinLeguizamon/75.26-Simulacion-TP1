@@ -380,10 +380,10 @@ def ejercicios1a4():
     # ejercicio_2b(frecuencias_observadas)
     # muestras_normal = ejercicio_3()
     # ejercicio_3_c(muestras_normal)
-    ejercicio_4()
+    # ejercicio_4()
 
 
 if __name__ == '__main__':
     FRECUENCIAS_ESPERADAS = [0.273, 0.52, 0.137, 0.0480, 0.0220]
-    ejercicios1a4()
+    # ejercicios1a4()
     ejercicio5()
