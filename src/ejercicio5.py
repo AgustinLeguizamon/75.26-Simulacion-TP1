@@ -35,11 +35,11 @@ def velocidad_inicial():
 
 
 class Peaton:
-    def __init__(self, id_peaton):
+    def __init__(self, id_peaton, sentido):
         self.id = id_peaton
         self.celda = None
         self.velocidad = velocidad_inicial()
-        self.sentido = Sentido.NORTE
+        self.sentido = sentido
 
     def dar_paso(self):
         self.celda.mover_peaton(self.velocidad, self.sentido.value)
@@ -90,16 +90,16 @@ class PasoPeatonal:
         self.peatones = []
         self.sig_id = 0
 
-    def agregar_peaton(self, inicial_x, inicial_y):
+    def agregar_peaton(self, inicial_x, inicial_y, sentido):
         # TODO: deshardcodear velocidad 1
-        peaton = Peaton(self.sig_id)
+        peaton = Peaton(self.sig_id, sentido)
         self.sig_id = self.sig_id + 1
         self.peatones.append(peaton)
         self.poner_peaton(peaton, inicial_x, inicial_y)
 
     def poner_peaton(self, peaton, x, y):
         # si se fue del tablero, no la coloco
-        if y < 0:
+        if y < 0 or y > self.largo - 1:
             peaton.setear_celda(None)
             return
         self.paso_peatonal[y][x].poner_peaton(peaton)
@@ -138,8 +138,8 @@ def ejercicio5():
     area_espera += 1
 
     # lo pongo en el paso peatonal
-    pasoPeatonal.agregar_peaton(0, pasoPeatonal.largo - 1)
-    pasoPeatonal.agregar_peaton(1, pasoPeatonal.largo - 1)
+    pasoPeatonal.agregar_peaton(0, 0, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(1, pasoPeatonal.largo - 1, Sentido.NORTE)
 
     # actualizo
     dibujar_paso_peatonal(pasoPeatonal)
