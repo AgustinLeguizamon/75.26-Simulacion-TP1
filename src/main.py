@@ -6,6 +6,8 @@ from scipy import special
 from scipy.stats import chi2
 from scipy.stats import poisson
 
+from src.ejercicio5 import ejercicio5
+
 
 def fabricar_gcl(modulo, multiplicador, incremento):
     def gcl(semilla):
@@ -372,9 +374,9 @@ def borrar_prueba():
         indice_anterior = indice_primer_arribo_sig_intervalo
 
 
-def app():
+def ejercicios1a4():
     # ejercicio_1()
-    # frecuencias_observadas = ejercicio_2()
+    frecuencias_observadas = ejercicio_2()
     # ejercicio_2b(frecuencias_observadas)
     # muestras_normal = ejercicio_3()
     # ejercicio_3_c(muestras_normal)
@@ -383,4 +385,5 @@ def app():
 
 if __name__ == '__main__':
     FRECUENCIAS_ESPERADAS = [0.273, 0.52, 0.137, 0.0480, 0.0220]
-    app()
+    ejercicios1a4()
+    ejercicio5()
