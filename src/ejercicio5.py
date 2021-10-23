@@ -1,9 +1,11 @@
 import random
 from enum import Enum
 
+
 class Sentido(Enum):
-    NORTE = 0
+    NORTE = -1
     SUR = 1
+
 
 class CeldaOcupadaExcepcion(Exception):
     pass
@@ -40,7 +42,7 @@ class Peaton:
         self.sentido = Sentido.NORTE
 
     def dar_paso(self):
-        self.celda.mover_peaton(self.velocidad)
+        self.celda.mover_peaton(self.velocidad, self.sentido.value)
 
     def setear_celda(self, celda):
         self.celda = celda
@@ -66,8 +68,8 @@ class Celda:
             return 'P'
         return ' '
 
-    def mover_peaton(self, velocidad):
-        self.paso_peatonal.mover_peaton(self.x, self.y, velocidad)
+    def mover_peaton(self, velocidad, sentido):
+        self.paso_peatonal.mover_peaton(self.x, self.y, velocidad, sentido)
 
     def quitar_peaton(self):
         self.ocupada = False
@@ -98,7 +100,7 @@ class PasoPeatonal:
     def poner_peaton(self, peaton, x, y):
         # si se fue del tablero, no la coloco
         if y < 0:
-            self.peatones.remove(peaton)
+            peaton.setear_celda(None)
             return
         self.paso_peatonal[y][x].poner_peaton(peaton)
 
@@ -106,13 +108,15 @@ class PasoPeatonal:
         peaton = self.paso_peatonal[y][x].quitar_peaton()
         return peaton
 
-    def mover_peaton(self, x, y, velocidad):
+    def mover_peaton(self, x, y, velocidad, sentido):
         peaton = self.quitar_peaton(x, y)
-        self.poner_peaton(peaton, x, y-velocidad)
+        self.poner_peaton(peaton, x, y + velocidad * sentido)
 
     def pasar_un_segundo(self):
         for peaton in self.peatones:
             peaton.dar_paso()
+        # Todos aquellos peatones que esten fuera del tablero son eliminados
+        self.peatones = [peaton for peaton in self.peatones if peaton.celda is not None]
 
 
 def dibujar_paso_peatonal(pasoPeatonal):
