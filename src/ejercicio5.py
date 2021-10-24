@@ -1,6 +1,8 @@
 import random
 from enum import Enum
 
+INF = 99
+
 
 class Sentido(Enum):
     NORTE = -1
@@ -42,7 +44,7 @@ class Peaton:
         self.sentido = sentido
 
     def dar_paso(self):
-        self.celda.mover_peaton(self.velocidad, self.sentido.value)
+        self.celda.mover_peaton(self.velocidad, self.sentido)
 
     def setear_celda(self, celda):
         self.celda = celda
@@ -109,14 +111,31 @@ class PasoPeatonal:
         return peaton
 
     def mover_peaton(self, x, y, velocidad, sentido):
+        print("sentido: " + str(sentido) + " - distancia:" + str(self.distancia_al_prox_peaton(x, y, sentido)))
         peaton = self.quitar_peaton(x, y)
-        self.poner_peaton(peaton, x, y + velocidad * sentido)
+        self.poner_peaton(peaton, x, y + velocidad * sentido.value)
 
     def pasar_un_segundo(self):
         for peaton in self.peatones:
             peaton.dar_paso()
         # Todos aquellos peatones que esten fuera del tablero son eliminados
         self.peatones = [peaton for peaton in self.peatones if peaton.celda is not None]
+
+    def distancia_al_prox_peaton(self, x, y, sentido):
+        d = 0
+        limite = self.largo
+        hay_peaton_adelante = False
+        if sentido == Sentido.NORTE:
+            limite = -1
+        for j in range(y + sentido.value, limite, sentido.value):
+            if self.paso_peatonal[j][x].ocupada:
+                hay_peaton_adelante = True
+                break
+            d += 1
+        # si resulta que no hay nadie adelante, la distancia es inf
+        if not hay_peaton_adelante:
+            d = INF
+        return d
 
 
 def dibujar_paso_peatonal(pasoPeatonal):
