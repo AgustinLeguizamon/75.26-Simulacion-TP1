@@ -9,17 +9,36 @@ class Sentido(Enum):
     SUR = 1
 
 
+class Regla(Enum):
+    NINGUNA = 0
+    AMBOS = 1
+    DER = 2
+    IZQ = 3
+
+
 class CeldaOcupadaExcepcion(Exception):
     pass
+
+def dibujar_paso_peatonal(pasoPeatonal):
+    print("-------------Norte----------------")
+    for i in range(pasoPeatonal.largo):
+        print('|', end='')
+        for j in range(pasoPeatonal.ancho):
+            print(str(pasoPeatonal.paso_peatonal[i][j].dibujar()) + str('|'), end='')
+        print('')
+    print("--------------Sur-----------------")
+    print("#######################################################")
 
 
 def metros_a_celdas(metros):
     celdas_por_metro = 2
     return metros * celdas_por_metro
 
+
 def probabilidad(proba):
     p = random.random()
     return p < proba
+
 
 def velocidad_inicial():
     p = random.random()
@@ -130,13 +149,22 @@ class PasoPeatonal:
         d = self.distancia_al_prox_peaton(x, y, sentido)
         print("sentido: " + str(sentido) + " - distancia:" + str(d))
         peaton = self.quitar_peaton(x, y)
-        if self.regla_3_4(x, y, velocidad, sentido):
+        regla = self.cambio_de_linea(x, y, velocidad, sentido)
+        if regla == Regla.AMBOS:
             # muevo peaton
             x += 1 if probabilidad(0.5) else -1
+        elif regla == Regla.DER:
+            x += -sentido.value
+        elif regla == Regla.IZQ:
+            x += sentido.value
+        if regla != Regla.NINGUNA:
             # Recalculo distancia despues de resolver conflicto
             d = self.distancia_al_prox_peaton(x, y, sentido)
         velocidad = peaton.actualizar_velocidad(d)
+        if velocidad == 0:
+            dibujar_paso_peatonal(self)
         self.poner_peaton(peaton, x, y + velocidad * sentido.value)
+
 
     def pasar_un_segundo(self):
         for peaton in self.peatones:
@@ -160,17 +188,17 @@ class PasoPeatonal:
             d = INF
         return d
 
-    def regla_3_4(self, x, y, velocidad, sentido):
+    def cambio_de_linea(self, x, y, velocidad, sentido):
         # si su velocidad es 0, break
         if velocidad == 0:
-            return False
+            return Regla.NINGUNA
         # si tiene uno adelante:
         # condicion1 = Celda(x,y-1).ocupada
         condicion1 = self.distancia_al_prox_peaton(x, y, sentido) == 0
 
         # si no se cumple la condicion1, break
         if not condicion1:
-            return condicion1
+            return Regla.NINGUNA
 
         # defino que es derecha e izquierda segun el sentido
         derecha = 1
@@ -183,15 +211,14 @@ class PasoPeatonal:
         tiene_carril_izq = (x + izquierda) >= 0
         tiene_vecino_der = tiene_carril_der and self.paso_peatonal[y][x + derecha].ocupada
         tiene_vecino_izq = tiene_carril_izq and self.paso_peatonal[y][x + izquierda].ocupada
-        condicion2 = not tiene_vecino_izq and not tiene_vecino_der
 
-        if not condicion2:
-            return condicion2
+        if tiene_vecino_izq and tiene_vecino_der:
+            return Regla.NINGUNA
         # la distancia al vecino lateral mas cercano es mayor a su velocidad actual
         # condicion3 = distancia_al_prox_vecino_izq_adelante() > mi_velocidad
         # condicion4 = distancia_al_prox_vecino_der_adelante() > mi_velocidad
-        condicion3 = not tiene_carril_izq or self.distancia_al_prox_peaton(x + derecha, y, sentido) > velocidad
-        condicion4 = not tiene_carril_der or self.distancia_al_prox_peaton(x + izquierda, y, sentido) > velocidad
+        condicion3 = tiene_carril_izq and self.distancia_al_prox_peaton(x + izquierda, y, sentido) > velocidad
+        condicion4 = tiene_carril_der and self.distancia_al_prox_peaton(x + derecha, y, sentido) > velocidad
 
         # 'velocidad de los primeros vecinos laterales que estan n celdas mas atras' es
         # menor a mi velocidad actual
@@ -209,7 +236,13 @@ class PasoPeatonal:
         if tiene_carril_der:
             condicion6 = self.mi_velocidad_mayor_vecino_lateral_atras(derecha, sentido_contrario, x, y, velocidad)
 
-        return condicion1 and condicion2 and condicion3 and condicion4 and condicion5 and condicion6
+        if condicion1 and not tiene_vecino_der and not tiene_vecino_izq and condicion3 and condicion4 and condicion5 and condicion6:
+            return Regla.AMBOS
+        if condicion1 and not tiene_vecino_der and condicion4 and condicion5 and condicion6:
+            return Regla.DER
+        if condicion1 and not tiene_vecino_izq and condicion3 and condicion5 and condicion6:
+            return Regla.IZQ
+        return Regla.NINGUNA
 
     def mi_velocidad_mayor_vecino_lateral_atras(self, lateral, sentido_contrario, x, y, velocidad):
         distancia_lateral_atras = self.distancia_al_prox_peaton(x + lateral, y, sentido_contrario)
@@ -219,15 +252,6 @@ class PasoPeatonal:
                                                       sentido_contrario.value][x + lateral]
         return not vecino_lateral_atras or velocidad > vecino_lateral_atras.peaton.velocidad
 
-
-def dibujar_paso_peatonal(pasoPeatonal):
-    print("-------------Norte----------------")
-    for i in range(pasoPeatonal.largo):
-        print('|', end='')
-        for j in range(pasoPeatonal.ancho):
-            print(str(pasoPeatonal.paso_peatonal[i][j].dibujar()) + str('|'), end='')
-        print('')
-    print("--------------Sur-----------------")
 
 
 def ejercicio5():
@@ -239,11 +263,11 @@ def ejercicio5():
     area_espera += 1
 
     # lo pongo en el paso peatonal
-    pasoPeatonal.agregar_peaton(2, pasoPeatonal.largo-1, Sentido.NORTE)
     pasoPeatonal.agregar_peaton(4, pasoPeatonal.largo-1, Sentido.NORTE)
 
-    pasoPeatonal.agregar_peaton(2, 0, Sentido.SUR)
-    pasoPeatonal.agregar_peaton(4, 0, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(4, 3, Sentido.SUR, False)
+    pasoPeatonal.agregar_peaton(3, 3, Sentido.SUR, False)
+    # pasoPeatonal.agregar_peaton(6, 0, Sentido.SUR)
     #
 
     # peaton que no se mueve
