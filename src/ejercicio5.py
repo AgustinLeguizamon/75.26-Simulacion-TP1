@@ -7,8 +7,8 @@ INF = 99
 class Sentido(Enum):
     NORTE = -1
     SUR = 1
-    ESTE = 1
-    OESTE = -1
+    ESTE = 2
+    OESTE = 3
 
 
 class Regla(Enum):
@@ -33,8 +33,12 @@ class PeatonNoPuedeSalirPorLosLateralesExcepcion(Exception):
 
 def dibujar_paso_peatonal(pasoPeatonal):
     print("-------------Norte----------------")
+    print('\t ', end='')
+    for i in range(pasoPeatonal.ancho):
+        print('' + str(i) + ' ', end='')
+    print('')
     for i in range(pasoPeatonal.largo):
-        print('|', end='')
+        print(str(i) + '\t|', end='')
         for j in range(pasoPeatonal.ancho):
             print(str(pasoPeatonal.paso_peatonal[i][j].dibujar()) + str('|'), end='')
         print('')
@@ -74,6 +78,7 @@ class Movible:
     def __init__(self, sentido):
         self.celda = None
         self.sentido = sentido
+        # TODO: deberia ser un parametro, y si es 0 es un objeto No movible (reemplaza se_mueve=True)
         self.velocidad = 5
 
     def setear_celda(self, celda):
@@ -81,6 +86,22 @@ class Movible:
 
     def dar_paso(self):
         self.celda.mover_movible(self.velocidad, self.sentido)
+
+    def salir_de_celda(self):
+        if self.celda is not None:
+            self.celda.quitar_movible()
+
+    def dibujar(self):
+        if self.velocidad == 0:
+            return 'x'
+        if self.sentido == Sentido.NORTE:
+            return '^'
+        if self.sentido == Sentido.SUR:
+            return 'v'
+        if self.sentido == Sentido.ESTE:
+            return '>'
+        if self.sentido == Sentido.OESTE:
+            return '<'
 
 
 class Peaton(Movible):
@@ -98,13 +119,30 @@ class Peaton(Movible):
         self.velocidad = min(d, self.velocidad)
         return self.velocidad
 
-    def dibujar(self):
-        if self.velocidad == 0:
-            return 'x'
-        if self.sentido == Sentido.NORTE:
-            return '^'
-        if self.sentido == Sentido.SUR:
-            return 'v'
+
+class Vehiculo:
+    LARGO = 6
+    ANCHO = 5
+
+    def __init__(self, sentido):
+        self.sentido = sentido
+        self.velocidad = 1
+        self.movibles = [Movible(sentido) for i in range(self.LARGO*self.ANCHO)]
+
+    def asignar_celda(self, fila, columna, celda):
+        pos = fila * self.ANCHO + columna
+        celda.poner_movible(self.movibles[pos])
+
+    def dar_paso(self, paso_peatonal):
+        self.__salir_de_celdas()
+        # paso_peaton deberia llamar al metodo asignar celda en orden
+        # para evitar que se pisen las partes del auto
+        # paso_peatonal.mover_vehiculo(self)
+
+    def __salir_de_celdas(self):
+        # Primero levanta todos los elementos
+        for movible in self.movibles:
+            movible.salir_de_celda()
 
 
 class Celda:
@@ -174,6 +212,7 @@ class PasoPeatonal:
         self.sig_id = 0
         self.calle_norte = AreaEspera(Sentido.NORTE)
         self.calle_sur = AreaEspera(Sentido.SUR)
+        self.vehiculos = []
 
     def peaton_arriba(self, sentido):
         # TODO: evento de poisson
@@ -186,6 +225,16 @@ class PasoPeatonal:
         self.sig_id = self.sig_id + 1
         self.peatones.append(peaton)
         self.poner_peaton(peaton, inicial_x, inicial_y)
+
+    def poner_vehiculo(self, inicial_x, inicial_y, vehiculo):
+        for x in range(Vehiculo.LARGO):
+            for y in range(Vehiculo.ANCHO):
+                vehiculo.asignar_celda(x, y, self.paso_peatonal[inicial_y + y][inicial_x + x])
+
+    def agregar_vehiculo(self, inicial_x, inicial_y, sentido):
+        vehiculo = Vehiculo(sentido)
+        self.vehiculos.append(vehiculo)
+        self.poner_vehiculo(inicial_x, inicial_y, vehiculo)
 
     def poner_peaton(self, peaton, x, y):
         if x < 0 or x >= self.ancho:
@@ -202,7 +251,7 @@ class PasoPeatonal:
 
     def mover_peaton(self, x, y, velocidad, sentido):
         d = self.distancia_al_prox_peaton(x, y, sentido)
-        print("sentido: " + str(sentido) + " - distancia:" + str(d))
+        # print("sentido: " + str(sentido) + " - distancia:" + str(d))
         peaton = self.quitar_movible(x, y)
         regla = self.cambio_de_linea(x, y, velocidad, sentido)
         if regla == Regla.AMBOS:
@@ -220,20 +269,38 @@ class PasoPeatonal:
             velocidad = peaton.actualizar_velocidad(d)
         self.poner_peaton(peaton, x, y + velocidad * sentido.value)
 
-    def poner_movible(self):
-        pass
+    def mover_vehiculo(self, vehiculo):
+        if vehiculo.sentido == Sentido.ESTE:
+            self.poner_vehiculo(vehiculo.x + vehiculo.velocidad, vehiculo.y, vehiculo)
+        elif vehiculo.sentido == Sentido.OESTE:
+            self.poner_vehiculo(vehiculo.x - vehiculo.velocidad, vehiculo.y, vehiculo)
+
+    # lo deberia usar el vehiculo
+    #
+    '''
+    def poner_movible(self, movible, x, y):
+        if x < 0 or x >= self.ancho:
+            movible.setear_celda(None)
+            return
+        if y < 0 or y >= self.largo:
+            raise PeatonNoPuedeSalirPorLosLateralesExcepcion
+        self.paso_peatonal[y][x].poner_movible(movible)
 
     def mover_movible(self, x, y, velocidad, sentido):
         if sentido != sentido.ESTE and sentido != sentido.OESTE:
             raise MovimientoNoLateralExcepcion
         movible = self.quitar_movible(x, y)
-        # self.poner_movible(movible, x + velocidad * sentido.value, y)
+        self.poner_movible(movible, x + velocidad * sentido.value, y)
+    # puede que no me sirven estas dos
+    '''
 
     def pasar_un_segundo(self):
         # TODO: peaton_arriba()
         # TODO: peaton_entra_paso_peatonal()
         for peaton in self.peatones:
             peaton.dar_paso()
+        for vehiculo in self.vehiculos:
+            vehiculo.dar_paso(self)
         # Todos aquellos peatones que esten fuera del tablero son eliminados
         self.peatones = [peaton for peaton in self.peatones if peaton.celda is not None]
 
@@ -329,6 +396,7 @@ def ejercicio5():
 
     inicior_sur = pasoPeatonal.largo - 1
     # lo pongo en el paso peatonal
+    '''
     pasoPeatonal.agregar_peaton(3, 0, Sentido.SUR)
     pasoPeatonal.agregar_peaton(4, 0, Sentido.SUR)
     pasoPeatonal.agregar_peaton(5, 0, Sentido.SUR)
@@ -352,6 +420,10 @@ def ejercicio5():
     pasoPeatonal.agregar_peaton(4, inicior_sur - 1, Sentido.NORTE)
     pasoPeatonal.agregar_peaton(5, inicior_sur - 1, Sentido.NORTE)
     pasoPeatonal.agregar_peaton(6, inicior_sur - 1, Sentido.NORTE)
+    '''
+    #pongo un auto
+    pasoPeatonal.agregar_vehiculo(1, 3, Sentido.ESTE)
+
     # actualizo
     dibujar_paso_peatonal(pasoPeatonal)
 
