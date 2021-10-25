@@ -128,16 +128,27 @@ class Vehiculo:
         self.sentido = sentido
         self.velocidad = 1
         self.movibles = [Movible(sentido) for i in range(self.LARGO*self.ANCHO)]
+        self.x = -1
+        self.y = -1
+
+    def set_posicion(self, x, y):
+        self.x = x
+        self.y = y
 
     def asignar_celda(self, fila, columna, celda):
         pos = fila * self.ANCHO + columna
         celda.poner_movible(self.movibles[pos])
 
     def dar_paso(self, paso_peatonal):
+        velocidad_este = 0
+        velocidad_oeste = 0
         self.__salir_de_celdas()
-        # paso_peaton deberia llamar al metodo asignar celda en orden
-        # para evitar que se pisen las partes del auto
-        # paso_peatonal.mover_vehiculo(self)
+        if self.sentido == Sentido.ESTE:
+            velocidad_este = self.velocidad
+        elif self.sentido == Sentido.OESTE:
+            velocidad_oeste = -self.velocidad
+        if paso_peatonal.puede_moverse(self.x + velocidad_este + velocidad_oeste, self.y):
+            paso_peatonal.mover_vehiculo(self)
 
     def __salir_de_celdas(self):
         # Primero levanta todos los elementos
@@ -227,9 +238,14 @@ class PasoPeatonal:
         self.poner_peaton(peaton, inicial_x, inicial_y)
 
     def poner_vehiculo(self, inicial_x, inicial_y, vehiculo):
+        vehiculo.set_posicion(inicial_x, inicial_y)
+        # TODO: Si resulta que salio todo el cuerpo del auto del paso peatonal elimino el vehiculo de la lista
         for x in range(Vehiculo.LARGO):
             for y in range(Vehiculo.ANCHO):
-                vehiculo.asignar_celda(x, y, self.paso_peatonal[inicial_y + y][inicial_x + x])
+                # Si se va del paso peatonal simplemente no le asigna una celda
+                # es decir queda un cacho del vehiculo
+                if 0 <= inicial_y + y < self.largo and 0 <= inicial_x + x < self.ancho:
+                    vehiculo.asignar_celda(x, y, self.paso_peatonal[inicial_y + y][inicial_x + x])
 
     def agregar_vehiculo(self, inicial_x, inicial_y, sentido):
         vehiculo = Vehiculo(sentido)
@@ -268,6 +284,16 @@ class PasoPeatonal:
         if regla != Regla.NO_RESUELTO:
             velocidad = peaton.actualizar_velocidad(d)
         self.poner_peaton(peaton, x, y + velocidad * sentido.value)
+
+    def puede_moverse(self, inicial_x, inicial_y):
+        for offset_x in range(Vehiculo.LARGO):
+            for offset_y in range(Vehiculo.ANCHO):
+                x = inicial_x + offset_x
+                y = inicial_y + offset_y
+                # si esta dentro del paso_peatonal y esta ocupada entonces no se puede mover
+                if 0 <= x < self.ancho and 0 <= y < self.largo and self.paso_peatonal[y][x].ocupada:
+                    return False
+        return True
 
     def mover_vehiculo(self, vehiculo):
         if vehiculo.sentido == Sentido.ESTE:
@@ -414,15 +440,19 @@ def ejercicio5():
     pasoPeatonal.agregar_peaton(4, inicior_sur, Sentido.NORTE)
     pasoPeatonal.agregar_peaton(5, inicior_sur, Sentido.NORTE)
     pasoPeatonal.agregar_peaton(6, inicior_sur, Sentido.NORTE)
-
+    '''
     pasoPeatonal.agregar_peaton(2, inicior_sur - 1, Sentido.NORTE)
     pasoPeatonal.agregar_peaton(3, inicior_sur - 1, Sentido.NORTE)
     pasoPeatonal.agregar_peaton(4, inicior_sur - 1, Sentido.NORTE)
     pasoPeatonal.agregar_peaton(5, inicior_sur - 1, Sentido.NORTE)
     pasoPeatonal.agregar_peaton(6, inicior_sur - 1, Sentido.NORTE)
-    '''
+
     #pongo un auto
-    pasoPeatonal.agregar_vehiculo(1, 3, Sentido.ESTE)
+    # TODO: si se ubica muy detras en x, pisa a los peatones x.x
+    pasoPeatonal.agregar_vehiculo(1, 3, Sentido.OESTE)
+
+    #
+    # pasoPeatonal.agregar_peaton(0, 5, Sentido.NORTE, False)
 
     # actualizo
     dibujar_paso_peatonal(pasoPeatonal)
