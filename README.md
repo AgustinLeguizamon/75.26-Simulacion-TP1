@@ -130,3 +130,30 @@ MATLAB
 Span for each step is 1 second
 data recorded every 3600 time steps
 30 simulations - average as result analyses
+
+
+### Tests
+
+  pasoPeatonal.agregar_peaton(3, 0, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(4, 0, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(5, 0, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(6, 0, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(7, 0, Sentido.SUR)
+
+    pasoPeatonal.agregar_peaton(3, 1, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(4, 1, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(5, 1, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(6, 1, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(7, 1, Sentido.SUR)
+
+    pasoPeatonal.agregar_peaton(2, inicior_sur, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(3, inicior_sur, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(4, inicior_sur, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(5, inicior_sur, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(6, inicior_sur, Sentido.NORTE)
+
+    pasoPeatonal.agregar_peaton(2, inicior_sur - 1, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(3, inicior_sur - 1, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(4, inicior_sur - 1, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(5, inicior_sur - 1, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(6, inicior_sur - 1, Sentido.NORTE)

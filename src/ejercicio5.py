@@ -20,6 +20,7 @@ class Regla(Enum):
 class CeldaOcupadaExcepcion(Exception):
     pass
 
+
 def dibujar_paso_peatonal(pasoPeatonal):
     print("-------------Norte----------------")
     for i in range(pasoPeatonal.largo):
@@ -208,8 +209,8 @@ class PasoPeatonal:
         izquierda = -derecha
         # a la derecha y a la izquierda esta vacio:
         # condicion2 = not Celda(x-1,y).ocupada and not Celda(x+1,y).ocupada
-        tiene_carril_der = (x + derecha) < self.ancho
-        tiene_carril_izq = (x + izquierda) >= 0
+        tiene_carril_der = 0 <= (x + derecha) < self.ancho
+        tiene_carril_izq = 0 <= (x + izquierda) < self.ancho
         tiene_vecino_der = tiene_carril_der and self.paso_peatonal[y][x + derecha].ocupada
         tiene_vecino_izq = tiene_carril_izq and self.paso_peatonal[y][x + izquierda].ocupada
 
@@ -239,9 +240,9 @@ class PasoPeatonal:
 
         if condicion1 and not tiene_vecino_der and not tiene_vecino_izq and condicion3 and condicion4 and condicion5 and condicion6:
             return Regla.AMBOS
-        if condicion1 and not tiene_vecino_der and condicion4 and condicion5 and condicion6:
+        if condicion1 and not tiene_vecino_der and condicion4 and condicion6:
             return Regla.DER
-        if condicion1 and not tiene_vecino_izq and condicion3 and condicion5 and condicion6:
+        if condicion1 and not tiene_vecino_izq and condicion3 and condicion5:
             return Regla.IZQ
         return Regla.NO_RESUELTO
 
@@ -262,23 +263,31 @@ def ejercicio5():
     area_espera = 0
     area_espera += 1
 
+    inicior_sur = pasoPeatonal.largo - 1
     # lo pongo en el paso peatonal
     pasoPeatonal.agregar_peaton(3, 0, Sentido.SUR)
     pasoPeatonal.agregar_peaton(4, 0, Sentido.SUR)
     pasoPeatonal.agregar_peaton(5, 0, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(6, 0, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(7, 0, Sentido.SUR)
 
-    pasoPeatonal.agregar_peaton(3, pasoPeatonal.largo - 1, Sentido.NORTE)
-    pasoPeatonal.agregar_peaton(4, pasoPeatonal.largo - 1, Sentido.NORTE)
-    pasoPeatonal.agregar_peaton(5, pasoPeatonal.largo - 1, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(3, 1, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(4, 1, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(5, 1, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(6, 1, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(7, 1, Sentido.SUR)
 
-    pasoPeatonal.agregar_peaton(3, 3, Sentido.SUR, False)
-    pasoPeatonal.agregar_peaton(4, 3, Sentido.SUR, False)
-    pasoPeatonal.agregar_peaton(5, 3, Sentido.SUR, False)
-    #
+    pasoPeatonal.agregar_peaton(2, inicior_sur, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(3, inicior_sur, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(4, inicior_sur, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(5, inicior_sur, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(6, inicior_sur, Sentido.NORTE)
 
-    # peaton que no se mueve
-    # pasoPeatonal.agregar_peaton(1, 4, Sentido.NORTE, False)
-    # pasoPeatonal.agregar_peaton(3, 4, Sentido.NORTE, False)
+    pasoPeatonal.agregar_peaton(2, inicior_sur - 1, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(3, inicior_sur - 1, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(4, inicior_sur - 1, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(5, inicior_sur - 1, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(6, inicior_sur - 1, Sentido.NORTE)
     # actualizo
     dibujar_paso_peatonal(pasoPeatonal)
 
