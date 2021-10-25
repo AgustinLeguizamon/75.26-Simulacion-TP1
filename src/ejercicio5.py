@@ -122,6 +122,27 @@ class Celda:
             self.peaton.dar_paso()
 
 
+class AreaEspera:
+    # Cuenta cuantos peatones tiene
+    # Cuenta cuantos peatones cruzaron
+    MAX_CANTIDAD_PEATONES = 100
+
+    def __init__(self, posicion):
+        self.peatones_esperando = 0
+        self.peatones_cruzaron = 0
+        self.posicion = posicion
+
+    def peaton_arriba(self, sentido):
+        if (sentido != self.posicion) and (self.peatones_esperando < self.MAX_CANTIDAD_PEATONES):
+            self.peatones_esperando += 1
+
+    def peaton_entra_paso_peatonal(self):
+        self.peatones_esperando -= 1
+
+    def peaton_cruza_paso_peatonal(self):
+        self.peatones_cruzaron += 1
+
+
 class PasoPeatonal:
     def __init__(self, ancho):
         self.largo = metros_a_celdas(4)
@@ -129,7 +150,15 @@ class PasoPeatonal:
         self.paso_peatonal = [[Celda(x, y, self) for x in range(self.ancho)] for y in range(self.largo)]
         self.peatones = []
         self.sig_id = 0
+        self.calle_norte = AreaEspera(Sentido.NORTE)
+        self.calle_sur = AreaEspera(Sentido.SUR)
 
+    def peaton_arriba(self, sentido):
+        # TODO: evento de poisson
+        self.calle_sur.peaton_arriba(sentido)
+        self.calle_norte.peaton_arriba(sentido)
+
+    # TODO: una vez que termino de testear, los peatones van a empezar siempre en el extremo de cada paso peatonal
     def agregar_peaton(self, inicial_x, inicial_y, sentido, se_mueve=True):
         peaton = Peaton(self.sig_id, sentido, se_mueve)
         self.sig_id = self.sig_id + 1
@@ -168,6 +197,8 @@ class PasoPeatonal:
         self.poner_peaton(peaton, x, y + velocidad * sentido.value)
 
     def pasar_un_segundo(self):
+        # TODO: peaton_arriba()
+        # TODO: peaton_entra_paso_peatonal()
         for peaton in self.peatones:
             peaton.dar_paso()
         # Todos aquellos peatones que esten fuera del tablero son eliminados
