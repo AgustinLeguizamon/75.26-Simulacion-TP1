@@ -23,6 +23,14 @@ class CeldaOcupadaExcepcion(Exception):
     pass
 
 
+class MovimientoNoLateralExcepcion(Exception):
+    pass
+
+
+class PeatonNoPuedeSalirPorLosLateralesExcepcion(Exception):
+    pass
+
+
 def dibujar_paso_peatonal(pasoPeatonal):
     print("-------------Norte----------------")
     for i in range(pasoPeatonal.largo):
@@ -107,7 +115,7 @@ class Celda:
         self.movible = None
         self.paso_peatonal = paso_peatonal
 
-    def poner_peaton(self, movible):
+    def poner_movible(self, movible):
         if self.ocupada:
             raise CeldaOcupadaExcepcion
         self.ocupada = True
@@ -180,20 +188,22 @@ class PasoPeatonal:
         self.poner_peaton(peaton, inicial_x, inicial_y)
 
     def poner_peaton(self, peaton, x, y):
-        # si se fue del tablero, no la coloco
+        if x < 0 or x >= self.ancho:
+            raise PeatonNoPuedeSalirPorLosLateralesExcepcion
+        # si se fue del tablero no lo coloco
         if y < 0 or y > self.largo - 1:
             peaton.setear_celda(None)
             return
-        self.paso_peatonal[y][x].poner_peaton(peaton)
+        self.paso_peatonal[y][x].poner_movible(peaton)
 
-    def quitar_peaton(self, x, y):
+    def quitar_movible(self, x, y):
         peaton = self.paso_peatonal[y][x].quitar_movible()
         return peaton
 
     def mover_peaton(self, x, y, velocidad, sentido):
         d = self.distancia_al_prox_peaton(x, y, sentido)
         print("sentido: " + str(sentido) + " - distancia:" + str(d))
-        peaton = self.quitar_peaton(x, y)
+        peaton = self.quitar_movible(x, y)
         regla = self.cambio_de_linea(x, y, velocidad, sentido)
         if regla == Regla.AMBOS:
             # muevo movible
@@ -209,6 +219,15 @@ class PasoPeatonal:
         if regla != Regla.NO_RESUELTO:
             velocidad = peaton.actualizar_velocidad(d)
         self.poner_peaton(peaton, x, y + velocidad * sentido.value)
+
+    def poner_movible(self):
+        pass
+
+    def mover_movible(self, x, y, velocidad, sentido):
+        if sentido != sentido.ESTE and sentido != sentido.OESTE:
+            raise MovimientoNoLateralExcepcion
+        movible = self.quitar_movible(x, y)
+        # self.poner_movible(movible, x + velocidad * sentido.value, y)
 
     def pasar_un_segundo(self):
         # TODO: peaton_arriba()
@@ -298,7 +317,6 @@ class PasoPeatonal:
             vecino_lateral_atras = self.paso_peatonal[y + distancia_lateral_atras * sentido_contrario.value +
                                                       sentido_contrario.value][x + lateral]
         return not vecino_lateral_atras or velocidad > vecino_lateral_atras.movible.velocidad
-
 
 
 def ejercicio5():
