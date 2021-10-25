@@ -36,7 +36,7 @@ Updates velocity at each step
 
 ##### Vehicles
 Size = 6 x 5 cells
-veolcity = 5 m/s -> 10 cells/s
+velocity = 5 m/s -> 10 cells/s
     
 
 ##### Pedestrian waiting areas
@@ -131,6 +131,10 @@ Span for each step is 1 second
 data recorded every 3600 time steps
 30 simulations - average as result analyses
 
+
+### TODOS
+1. Falta que peatones puedan intercambiar casilleros
+2. Probabilidad 50/50 cuando dos compiten por el mismo casillero (como se resuelve si el programa es secuencial?)
 
 ### Tests
 

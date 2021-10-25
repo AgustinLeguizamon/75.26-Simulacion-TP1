@@ -7,6 +7,8 @@ INF = 99
 class Sentido(Enum):
     NORTE = -1
     SUR = 1
+    ESTE = 1
+    OESTE = -1
 
 
 class Regla(Enum):
@@ -60,20 +62,29 @@ def velocidad_inicial():
     return velocidad
 
 
-class Peaton:
-    def __init__(self, id_peaton, sentido, se_mueve):
-        self.id = id_peaton
+class Movible:
+    def __init__(self, sentido):
         self.celda = None
-        self.velocidad = velocidad_inicial()
-        if not se_mueve:
-            self.velocidad = 0
         self.sentido = sentido
-
-    def dar_paso(self):
-        self.celda.mover_peaton(self.velocidad, self.sentido)
+        self.velocidad = 5
 
     def setear_celda(self, celda):
         self.celda = celda
+
+    def dar_paso(self):
+        self.celda.mover_movible(self.velocidad, self.sentido)
+
+
+class Peaton(Movible):
+    def __init__(self, id_peaton, sentido, se_mueve):
+        super().__init__(sentido)
+        self.id = id_peaton
+        self.velocidad = velocidad_inicial()
+        if not se_mueve:
+            self.velocidad = 0
+
+    def dar_paso(self):
+        self.celda.mover_peaton(self.velocidad, self.sentido)
 
     def actualizar_velocidad(self, d):
         self.velocidad = min(d, self.velocidad)
@@ -93,33 +104,36 @@ class Celda:
         self.x = x
         self.y = y
         self.ocupada = False
-        self.peaton = None
+        self.movible = None
         self.paso_peatonal = paso_peatonal
 
-    def poner_peaton(self, peaton):
+    def poner_peaton(self, movible):
         if self.ocupada:
             raise CeldaOcupadaExcepcion
         self.ocupada = True
-        self.peaton = peaton
-        peaton.setear_celda(self)
+        self.movible = movible
+        movible.setear_celda(self)
 
     def dibujar(self):
         if self.ocupada:
-            return self.peaton.dibujar()
+            return self.movible.dibujar()
         return ' '
 
     def mover_peaton(self, velocidad, sentido):
         self.paso_peatonal.mover_peaton(self.x, self.y, velocidad, sentido)
 
-    def quitar_peaton(self):
+    def mover_movible(self, velocidad, sentido):
+        self.paso_peatonal.mover_movible(self.x, self.y, velocidad, sentido)
+
+    def quitar_movible(self):
         self.ocupada = False
-        peaton = self.peaton
-        self.peaton = None
-        return peaton
+        movible = self.movible
+        self.movible = None
+        return movible
 
     def dar_paso(self):
-        if self.peaton is not None:
-            self.peaton.dar_paso()
+        if self.movible is not None:
+            self.movible.dar_paso()
 
 
 class AreaEspera:
@@ -145,7 +159,7 @@ class AreaEspera:
 
 class PasoPeatonal:
     def __init__(self, ancho):
-        self.largo = metros_a_celdas(4)
+        self.largo = metros_a_celdas(6)
         self.ancho = metros_a_celdas(ancho)
         self.paso_peatonal = [[Celda(x, y, self) for x in range(self.ancho)] for y in range(self.largo)]
         self.peatones = []
@@ -173,7 +187,7 @@ class PasoPeatonal:
         self.paso_peatonal[y][x].poner_peaton(peaton)
 
     def quitar_peaton(self, x, y):
-        peaton = self.paso_peatonal[y][x].quitar_peaton()
+        peaton = self.paso_peatonal[y][x].quitar_movible()
         return peaton
 
     def mover_peaton(self, x, y, velocidad, sentido):
@@ -182,7 +196,7 @@ class PasoPeatonal:
         peaton = self.quitar_peaton(x, y)
         regla = self.cambio_de_linea(x, y, velocidad, sentido)
         if regla == Regla.AMBOS:
-            # muevo peaton
+            # muevo movible
             x += 1 if probabilidad(0.5) else -1
         elif regla == Regla.DER:
             x += -sentido.value
@@ -283,14 +297,15 @@ class PasoPeatonal:
         if distancia_lateral_atras != INF:
             vecino_lateral_atras = self.paso_peatonal[y + distancia_lateral_atras * sentido_contrario.value +
                                                       sentido_contrario.value][x + lateral]
-        return not vecino_lateral_atras or velocidad > vecino_lateral_atras.peaton.velocidad
+        return not vecino_lateral_atras or velocidad > vecino_lateral_atras.movible.velocidad
+
 
 
 def ejercicio5():
     pasoPeatonal = PasoPeatonal(4)
     dibujar_paso_peatonal(pasoPeatonal)
 
-    # Creo un peaton
+    # Creo un movible
     area_espera = 0
     area_espera += 1
 
