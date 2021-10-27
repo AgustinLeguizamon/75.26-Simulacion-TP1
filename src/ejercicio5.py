@@ -74,6 +74,12 @@ def velocidad_inicial():
     return velocidad
 
 
+class Paso:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+
 class Movible:
     def __init__(self, sentido):
         self.celda = None
@@ -105,12 +111,10 @@ class Movible:
 
 
 class Peaton(Movible):
-    def __init__(self, id_peaton, sentido, se_mueve):
+    def __init__(self, id_peaton, sentido, velocidad):
         super().__init__(sentido)
         self.id = id_peaton
-        self.velocidad = velocidad_inicial()
-        if not se_mueve:
-            self.velocidad = 0
+        self.velocidad = velocidad
 
     def dar_paso(self):
         self.celda.mover_peaton(self.velocidad, self.sentido)
@@ -130,6 +134,7 @@ class Vehiculo:
         self.movibles = [Movible(sentido) for i in range(self.LARGO*self.ANCHO)]
         self.x = -1
         self.y = -1
+        self.paso = Paso(1 if Sentido.ESTE == sentido else -1, 0)
 
     def set_posicion(self, x, y):
         self.x = x
@@ -140,15 +145,12 @@ class Vehiculo:
         celda.poner_movible(self.movibles[pos])
 
     def dar_paso(self, paso_peatonal):
-        velocidad_este = 0
-        velocidad_oeste = 0
         self.__salir_de_celdas()
-        if self.sentido == Sentido.ESTE:
-            velocidad_este = self.velocidad
-        elif self.sentido == Sentido.OESTE:
-            velocidad_oeste = -self.velocidad
-        if paso_peatonal.puede_moverse(self.x + velocidad_este + velocidad_oeste, self.y):
-            paso_peatonal.mover_vehiculo(self)
+        if paso_peatonal.puede_moverse(self.x + self.velocidad * self.paso.x, self.y):
+            paso_peatonal.mover_vehiculo(self, self.paso.x, self.paso.y)
+        else:
+            # lo vuelvo a colocar en sus celdas
+            paso_peatonal.mover_vehiculo(self, 0, 0)
 
     def __salir_de_celdas(self):
         # Primero levanta todos los elementos
@@ -231,8 +233,11 @@ class PasoPeatonal:
         self.calle_norte.peaton_arriba(sentido)
 
     # TODO: una vez que termino de testear, los peatones van a empezar siempre en el extremo de cada paso peatonal
-    def agregar_peaton(self, inicial_x, inicial_y, sentido, se_mueve=True):
-        peaton = Peaton(self.sig_id, sentido, se_mueve)
+    def agregar_peaton(self, inicial_x, inicial_y, sentido, velocidad):
+        _velocidad = velocidad
+        if velocidad == -1:
+            _velocidad = velocidad_inicial()
+        peaton = Peaton(self.sig_id, sentido, _velocidad)
         self.sig_id = self.sig_id + 1
         self.peatones.append(peaton)
         self.poner_peaton(peaton, inicial_x, inicial_y)
@@ -295,30 +300,8 @@ class PasoPeatonal:
                     return False
         return True
 
-    def mover_vehiculo(self, vehiculo):
-        if vehiculo.sentido == Sentido.ESTE:
-            self.poner_vehiculo(vehiculo.x + vehiculo.velocidad, vehiculo.y, vehiculo)
-        elif vehiculo.sentido == Sentido.OESTE:
-            self.poner_vehiculo(vehiculo.x - vehiculo.velocidad, vehiculo.y, vehiculo)
-
-    # lo deberia usar el vehiculo
-    #
-    '''
-    def poner_movible(self, movible, x, y):
-        if x < 0 or x >= self.ancho:
-            movible.setear_celda(None)
-            return
-        if y < 0 or y >= self.largo:
-            raise PeatonNoPuedeSalirPorLosLateralesExcepcion
-        self.paso_peatonal[y][x].poner_movible(movible)
-
-    def mover_movible(self, x, y, velocidad, sentido):
-        if sentido != sentido.ESTE and sentido != sentido.OESTE:
-            raise MovimientoNoLateralExcepcion
-        movible = self.quitar_movible(x, y)
-        self.poner_movible(movible, x + velocidad * sentido.value, y)
-    # puede que no me sirven estas dos
-    '''
+    def mover_vehiculo(self, vehiculo, paso_x, paso_y):
+        self.poner_vehiculo(vehiculo.x + vehiculo.velocidad * paso_x, vehiculo.y + paso_y, vehiculo)
 
     def pasar_un_segundo(self):
         # TODO: peaton_arriba()
@@ -441,17 +424,17 @@ def ejercicio5():
     pasoPeatonal.agregar_peaton(5, inicior_sur, Sentido.NORTE)
     pasoPeatonal.agregar_peaton(6, inicior_sur, Sentido.NORTE)
     '''
-    pasoPeatonal.agregar_peaton(2, inicior_sur - 1, Sentido.NORTE)
-    pasoPeatonal.agregar_peaton(3, inicior_sur - 1, Sentido.NORTE)
-    pasoPeatonal.agregar_peaton(4, inicior_sur - 1, Sentido.NORTE)
-    pasoPeatonal.agregar_peaton(5, inicior_sur - 1, Sentido.NORTE)
-    pasoPeatonal.agregar_peaton(6, inicior_sur - 1, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(2, inicior_sur - 1, Sentido.NORTE, 3)
+    # pasoPeatonal.agregar_peaton(3, inicior_sur - 1, Sentido.NORTE)
+    # pasoPeatonal.agregar_peaton(4, inicior_sur - 1, Sentido.NORTE)
+    # pasoPeatonal.agregar_peaton(5, inicior_sur - 1, Sentido.NORTE)
+    # pasoPeatonal.agregar_peaton(6, inicior_sur - 1, Sentido.NORTE, -1)
 
     #pongo un auto
     # TODO: si se ubica muy detras en x, pisa a los peatones x.x
-    pasoPeatonal.agregar_vehiculo(1, 3, Sentido.OESTE)
+    pasoPeatonal.agregar_vehiculo(3, 3, Sentido.OESTE)
 
-    #
+    # para ver si el auto para
     # pasoPeatonal.agregar_peaton(0, 5, Sentido.NORTE, False)
 
     # actualizo
