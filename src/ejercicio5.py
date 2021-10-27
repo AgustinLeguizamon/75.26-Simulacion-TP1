@@ -30,6 +30,8 @@ class MovimientoNoLateralExcepcion(Exception):
 class PeatonNoPuedeSalirPorLosLateralesExcepcion(Exception):
     pass
 
+class QuitandoMovibleDeCeldaVaciaExcepcion(Exception):
+    pass
 
 def dibujar_paso_peatonal(pasoPeatonal):
     print("-------------Norte----------------")
@@ -95,6 +97,7 @@ class Movible:
     def salir_de_celda(self):
         if self.celda is not None:
             self.celda.quitar_movible()
+            self.celda = None
 
     def dibujar(self):
         if self.velocidad == 0:
@@ -160,7 +163,6 @@ class Vehiculo:
             movible.salir_de_celda()
 
 
-
 class Celda:
     def __init__(self, x, y, paso_peatonal):
         self.x = x
@@ -188,6 +190,8 @@ class Celda:
         self.paso_peatonal.mover_movible(self.x, self.y, velocidad, sentido)
 
     def quitar_movible(self):
+        if self.movible is None:
+            raise QuitandoMovibleDeCeldaVaciaExcepcion
         self.ocupada = False
         movible = self.movible
         self.movible = None
@@ -221,7 +225,7 @@ class AreaEspera:
 
 class PasoPeatonal:
     def __init__(self, ancho):
-        self.largo = metros_a_celdas(6)
+        self.largo = metros_a_celdas(21)
         self.ancho = metros_a_celdas(ancho)
         self.paso_peatonal = [[Celda(x, y, self) for x in range(self.ancho)] for y in range(self.largo)]
         self.peatones = []
@@ -236,7 +240,7 @@ class PasoPeatonal:
         self.calle_norte.peaton_arriba(sentido)
 
     # TODO: una vez que termino de testear, los peatones van a empezar siempre en el extremo de cada paso peatonal
-    def agregar_peaton(self, inicial_x, inicial_y, sentido, velocidad):
+    def agregar_peaton(self, inicial_x, inicial_y, sentido, velocidad=-1):
         _velocidad = velocidad
         if velocidad == -1:
             _velocidad = velocidad_inicial()
@@ -291,8 +295,10 @@ class PasoPeatonal:
         if regla != Regla.NINGUNA:
             # Recalculo distancia despues de resolver conflicto
             d = self.distancia_al_prox_peaton(x, y, sentido)
+        # el peaton en este turno no se mueve si no puedo resolver el conflicto, pero mantiene la velocidad
         velocidad = 0
         if regla != Regla.NO_RESUELTO:
+            # si resulta que no hubo conflicto actualizo la velocidad
             velocidad = peaton.actualizar_velocidad(d)
         self.poner_peaton(peaton, x, y + velocidad * sentido.value)
 
@@ -405,20 +411,20 @@ class PasoPeatonal:
 def ejercicio5():
     pasoPeatonal = PasoPeatonal(4)
     dibujar_paso_peatonal(pasoPeatonal)
-
-    # Creo un movible
-    area_espera = 0
-    area_espera += 1
-
     inicior_sur = pasoPeatonal.largo - 1
+    inicio_este = pasoPeatonal.ancho - 1
+
     # lo pongo en el paso peatonal
-    '''
+    pasoPeatonal.agregar_peaton(0, 0, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(1, 0, Sentido.SUR)
+    pasoPeatonal.agregar_peaton(2, 0, Sentido.SUR)
     pasoPeatonal.agregar_peaton(3, 0, Sentido.SUR)
     pasoPeatonal.agregar_peaton(4, 0, Sentido.SUR)
     pasoPeatonal.agregar_peaton(5, 0, Sentido.SUR)
     pasoPeatonal.agregar_peaton(6, 0, Sentido.SUR)
     pasoPeatonal.agregar_peaton(7, 0, Sentido.SUR)
 
+    '''
     pasoPeatonal.agregar_peaton(3, 1, Sentido.SUR)
     pasoPeatonal.agregar_peaton(4, 1, Sentido.SUR)
     pasoPeatonal.agregar_peaton(5, 1, Sentido.SUR)
@@ -431,17 +437,25 @@ def ejercicio5():
     pasoPeatonal.agregar_peaton(5, inicior_sur, Sentido.NORTE)
     pasoPeatonal.agregar_peaton(6, inicior_sur, Sentido.NORTE)
     '''
-    pasoPeatonal.agregar_peaton(2, inicior_sur - 1, Sentido.NORTE, 3)
-    # pasoPeatonal.agregar_peaton(3, inicior_sur - 1, Sentido.NORTE)
-    # pasoPeatonal.agregar_peaton(4, inicior_sur - 1, Sentido.NORTE)
-    # pasoPeatonal.agregar_peaton(5, inicior_sur - 1, Sentido.NORTE)
-    # pasoPeatonal.agregar_peaton(6, inicior_sur - 1, Sentido.NORTE, -1)
+    pasoPeatonal.agregar_peaton(0, inicior_sur, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(1, inicior_sur, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(2, inicior_sur, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(3, inicior_sur, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(4, inicior_sur, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(5, inicior_sur, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(6, inicior_sur, Sentido.NORTE)
+    pasoPeatonal.agregar_peaton(7, inicior_sur, Sentido.NORTE)
 
-    #pongo un auto
-    pasoPeatonal.agregar_vehiculo(3, 3, Sentido.OESTE)
+    # 6 lineas de 7 cuadrados cada una
+    # los autos miden 5 por lo tanto queda 1 cuadrado entre cada linea
 
-    # para ver si el auto para
-    # pasoPeatonal.agregar_peaton(0, 5, Sentido.NORTE, False)
+    # 3 lineas de autos sentido OESTE
+
+    for i in range(3):
+        pasoPeatonal.agregar_vehiculo(inicio_este, 1 + 2*i + Vehiculo.ANCHO * i, Sentido.OESTE)
+    # pongo autos sentido ESTE
+    for i in range(3):
+        pasoPeatonal.agregar_vehiculo(1 - Vehiculo.LARGO, 1 + 2*i + Vehiculo.ANCHO * i + 21, Sentido.ESTE)
 
     # actualizo
     dibujar_paso_peatonal(pasoPeatonal)
