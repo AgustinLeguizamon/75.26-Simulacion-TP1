@@ -81,11 +81,10 @@ class Paso:
 
 
 class Movible:
-    def __init__(self, sentido):
+    def __init__(self, sentido, velocidad):
         self.celda = None
         self.sentido = sentido
-        # TODO: deberia ser un parametro, y si es 0 es un objeto No movible (reemplaza se_mueve=True)
-        self.velocidad = 5
+        self.velocidad = velocidad
 
     def setear_celda(self, celda):
         self.celda = celda
@@ -112,9 +111,8 @@ class Movible:
 
 class Peaton(Movible):
     def __init__(self, id_peaton, sentido, velocidad):
-        super().__init__(sentido)
+        super().__init__(sentido, velocidad)
         self.id = id_peaton
-        self.velocidad = velocidad
 
     def dar_paso(self):
         self.celda.mover_peaton(self.velocidad, self.sentido)
@@ -131,10 +129,11 @@ class Vehiculo:
     def __init__(self, sentido):
         self.sentido = sentido
         self.velocidad = 1
-        self.movibles = [Movible(sentido) for i in range(self.LARGO*self.ANCHO)]
+        self.movibles = [Movible(sentido, 1) for i in range(self.LARGO * self.ANCHO)]
         self.x = -1
         self.y = -1
         self.paso = Paso(1 if Sentido.ESTE == sentido else -1, 0)
+        self.esta_afuera = False
 
     def set_posicion(self, x, y):
         self.x = x
@@ -152,10 +151,14 @@ class Vehiculo:
             # lo vuelvo a colocar en sus celdas
             paso_peatonal.mover_vehiculo(self, 0, 0)
 
+    def estas_afuera(self):
+        self.esta_afuera = True
+
     def __salir_de_celdas(self):
         # Primero levanta todos los elementos
         for movible in self.movibles:
             movible.salir_de_celda()
+
 
 
 class Celda:
@@ -244,13 +247,16 @@ class PasoPeatonal:
 
     def poner_vehiculo(self, inicial_x, inicial_y, vehiculo):
         vehiculo.set_posicion(inicial_x, inicial_y)
-        # TODO: Si resulta que salio todo el cuerpo del auto del paso peatonal elimino el vehiculo de la lista
-        for x in range(Vehiculo.LARGO):
-            for y in range(Vehiculo.ANCHO):
-                # Si se va del paso peatonal simplemente no le asigna una celda
-                # es decir queda un cacho del vehiculo
-                if 0 <= inicial_y + y < self.largo and 0 <= inicial_x + x < self.ancho:
-                    vehiculo.asignar_celda(x, y, self.paso_peatonal[inicial_y + y][inicial_x + x])
+        # veo si la posicion del auto termina fuera del paso peatonal y lo elimino
+        if inicial_x + vehiculo.LARGO < 0 or inicial_x > self.ancho:
+            vehiculo.estas_afuera()
+        else:
+            for x in range(Vehiculo.LARGO):
+                for y in range(Vehiculo.ANCHO):
+                    # Si se va del paso peatonal simplemente no le asigna una celda
+                    # es decir queda un cacho del vehiculo
+                    if 0 <= inicial_y + y < self.largo and 0 <= inicial_x + x < self.ancho:
+                        vehiculo.asignar_celda(x, y, self.paso_peatonal[inicial_y + y][inicial_x + x])
 
     def agregar_vehiculo(self, inicial_x, inicial_y, sentido):
         vehiculo = Vehiculo(sentido)
@@ -312,6 +318,7 @@ class PasoPeatonal:
             vehiculo.dar_paso(self)
         # Todos aquellos peatones que esten fuera del tablero son eliminados
         self.peatones = [peaton for peaton in self.peatones if peaton.celda is not None]
+        self.vehiculos = [vehiculo for vehiculo in self.vehiculos if not vehiculo.esta_afuera]
 
     def distancia_al_prox_peaton(self, x, y, sentido):
         d = 0
@@ -431,7 +438,6 @@ def ejercicio5():
     # pasoPeatonal.agregar_peaton(6, inicior_sur - 1, Sentido.NORTE, -1)
 
     #pongo un auto
-    # TODO: si se ubica muy detras en x, pisa a los peatones x.x
     pasoPeatonal.agregar_vehiculo(3, 3, Sentido.OESTE)
 
     # para ver si el auto para
