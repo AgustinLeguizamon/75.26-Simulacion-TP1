@@ -58,7 +58,7 @@ class Tablero:
 
         # Definimos el ancho del tablero (en cantidad de celdas) Ancho == Height == lo vertical
         parte_superior_ancho = 4 / self.ancho_celda
-        parte_peatonal_ancho = self.paso_peatonal_ancho / self.ancho_celda
+        parte_peatonal_ancho = self.paso_peatonal_ancho / self.ancho_celda + 2 # 2 más porque incluye separadores
         parte_inferior_ancho = 4 / self.ancho_celda
         tablero_ancho = int(parte_superior_ancho + parte_peatonal_ancho + parte_inferior_ancho)
 
@@ -145,7 +145,9 @@ class Tablero:
                 columna += 1
             
             if (i != self.cantidad_de_carriles - 1):
-                celdas_fila.append(Celda(x=fila, y=columna, tipo=TipoDeCelda.CARRIL_SEPARADOR))
+                carril_del_medio = int((self.cantidad_de_carriles - 1) / 2)
+                tipo_de_carril = TipoDeCelda.CARRIL_SEPARADOR_DEL_MEDIO if carril_del_medio == i else TipoDeCelda.CARRIL_SEPARADOR 
+                celdas_fila.append(Celda(x=fila, y=columna, tipo=tipo_de_carril))
                 columna += 1
 
         # Agregamos una celda separadora al final de los carriles

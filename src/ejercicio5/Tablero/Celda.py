@@ -26,6 +26,9 @@ class Celda:
         
         if (self.tipo == TipoDeCelda.CARRIL_SEPARADOR):
             return "|"
+
+        if (self.tipo == TipoDeCelda.CARRIL_SEPARADOR_DEL_MEDIO):
+            return "║"
         
         if (self.tipo == TipoDeCelda.SEPARADOR_PEATONAL):
             return "="
