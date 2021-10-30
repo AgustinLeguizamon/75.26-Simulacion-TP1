@@ -1,7 +1,7 @@
 class Semaforo():
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    def __init__(self, fila, columna):
+        self.fila = fila
+        self.columna = columna
         self.estado = "verde"
 
     def get_dibujo(self):

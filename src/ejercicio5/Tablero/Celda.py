@@ -1,9 +1,9 @@
 from enums import TipoDeCelda
 
 class Celda:
-    def __init__(self, x, y, tipo, entidad = None):
-        self.x = x
-        self.y = y
+    def __init__(self, fila, columna, tipo, entidad = None):
+        self.fila = fila
+        self.columna = columna
         self.tipo = tipo
         self.entidad = entidad
 

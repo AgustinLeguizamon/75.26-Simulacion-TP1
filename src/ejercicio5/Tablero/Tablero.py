@@ -70,7 +70,7 @@ class Tablero:
         self._ORIGEN_PASO_PEATONAL_X = vereda_izquierda_largo + 1
         self._ORIGEN_PASO_PEATONAL_Y = parte_superior_ancho + 1
 
-        # Creamos las celdas y objetos del tablero
+        # Creamos las celdas columna objetos del tablero
         for fila in range(tablero_ancho):
             celdas_fila = []
             columna = 0
@@ -103,7 +103,7 @@ class Tablero:
         fila, columna, celdas_fila = self.generar_celdas_normales(fila, columna, celdas_fila, vereda_izquierda_largo)
 
         # Agregamos una celda separadora al final de la vereda
-        celdas_fila.append(Celda(x=fila, y=columna, tipo=TipoDeCelda.VEREDA_CORDON))
+        celdas_fila.append(Celda(fila=fila, columna=columna, tipo=TipoDeCelda.VEREDA_CORDON))
         columna += 1
 
         fila, columna, celdas_fila = self.generar_carriles(fila, columna, celdas_fila)
@@ -118,7 +118,7 @@ class Tablero:
         fila, columna, celdas_fila = self.generar_celdas_normales(fila, columna, celdas_fila, vereda_izquierda_largo)
 
         # Agregamos una celda separadora al final de la vereda
-        celdas_fila.append(Celda(x=fila, y=columna, tipo=TipoDeCelda.VEREDA_CORDON))
+        celdas_fila.append(Celda(fila=fila, columna=columna, tipo=TipoDeCelda.VEREDA_CORDON))
         columna += 1
 
         # Parte central
@@ -143,7 +143,7 @@ class Tablero:
         fila, columna, celdas_fila = self.generar_celdas_normales(fila, columna, celdas_fila, vereda_izquierda_largo)
 
         # Agregamos una celda separadora al final de la vereda
-        celdas_fila.append(Celda(x=fila, y=columna, tipo=TipoDeCelda.VEREDA_CORDON))
+        celdas_fila.append(Celda(fila=fila, columna=columna, tipo=TipoDeCelda.VEREDA_CORDON))
         columna += 1
 
         fila, columna, celdas_fila = self.generar_carriles(fila, columna, celdas_fila)
@@ -154,21 +154,21 @@ class Tablero:
         return fila, columna, celdas_fila
 
     def generar_carriles(self, fila, columna, celdas_fila):
-        # Carriles: conformados por celdas normales (espacios vacíos) y un separador al final
+        # Carriles: conformados por celdas normales (espacios vacíos) columna un separador al final
         celdas_carril = int(self.ancho_carril / self.ancho_celda)
         for i in range(self.cantidad_de_carriles):
             for j in range(celdas_carril - 1):
-                celdas_fila.append(Celda(x=fila, y=columna, tipo=TipoDeCelda.NORMAL))
+                celdas_fila.append(Celda(fila=fila, columna=columna, tipo=TipoDeCelda.NORMAL))
                 columna += 1
             
             if (i != self.cantidad_de_carriles - 1):
                 carril_del_medio = int((self.cantidad_de_carriles - 1) / 2)
                 tipo_de_carril = TipoDeCelda.CARRIL_SEPARADOR_DEL_MEDIO if carril_del_medio == i else TipoDeCelda.CARRIL_SEPARADOR 
-                celdas_fila.append(Celda(x=fila, y=columna, tipo=tipo_de_carril))
+                celdas_fila.append(Celda(fila=fila, columna=columna, tipo=tipo_de_carril))
                 columna += 1
 
         # Agregamos una celda separadora al final de los carriles
-        celdas_fila.append(Celda(x=fila, y=columna, tipo=TipoDeCelda.VEREDA_CORDON))
+        celdas_fila.append(Celda(fila=fila, columna=columna, tipo=TipoDeCelda.VEREDA_CORDON))
         columna += 1
 
         return fila, columna, celdas_fila
@@ -176,9 +176,9 @@ class Tablero:
     def generar_separador_peatonal(self, fila, columna, celdas_fila, calle_largo, separador_con_semaforos):
 
         if (separador_con_semaforos):
-            # Agregamos semáforo, celda y los asociamos
-            semaforo = Semaforo(x=fila, y=columna)
-            celda = Celda(x=fila, y=columna, tipo=TipoDeCelda.NORMAL, entidad=semaforo)
+            # Agregamos semáforo, celda columna los asociamos
+            semaforo = Semaforo(fila=fila, columna=columna)
+            celda = Celda(fila=fila, columna=columna, tipo=TipoDeCelda.NORMAL, entidad=semaforo)
             
             self.semaforos.append(semaforo)
             celdas_fila.append(celda)
@@ -187,13 +187,13 @@ class Tablero:
         # Agregamos un separador por el largo de la calle
         cantidad_de_separadores = calle_largo - (3 if separador_con_semaforos else 0)
         for i in range(cantidad_de_separadores):
-            celdas_fila.append(Celda(x=fila, y=columna, tipo=TipoDeCelda.SEPARADOR_PEATONAL))
+            celdas_fila.append(Celda(fila=fila, columna=columna, tipo=TipoDeCelda.SEPARADOR_PEATONAL))
             columna += 1
 
         if (separador_con_semaforos):
             # Agregamos semáforo al final
-            semaforo = Semaforo(x=fila, y=columna)
-            celda = Celda(x=fila, y=columna, tipo=TipoDeCelda.NORMAL, entidad=semaforo)
+            semaforo = Semaforo(fila=fila, columna=columna)
+            celda = Celda(fila=fila, columna=columna, tipo=TipoDeCelda.NORMAL, entidad=semaforo)
             
             self.semaforos.append(semaforo)
             celdas_fila.append(celda)
@@ -203,7 +203,7 @@ class Tablero:
 
     def generar_celdas_normales(self, fila, columna, celdas_fila, cantidad):
         for i in range(cantidad):
-            celdas_fila.append(Celda(x=fila, y=columna, tipo=TipoDeCelda.NORMAL))
+            celdas_fila.append(Celda(fila=fila, columna=columna, tipo=TipoDeCelda.NORMAL))
             columna += 1
 
         return fila, columna, celdas_fila
