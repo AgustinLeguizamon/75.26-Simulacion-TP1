@@ -53,9 +53,3 @@ class Celda:
             return "="
 
         return "X"
-
-    def ocupar(self, tipo):
-        self.tipo = tipo
-
-    def esta_ocupada(self):
-        return self.tipo != " "

@@ -41,11 +41,16 @@ class AreaEsperaPeaton:
         tiempo_arribo = poisson.generar()
         return tiempo_arribo < tiempo
 
-    def colocar_peaton_en_paso_peatonal(self):
-        for celda in self.celdas_generadoras:
-            if (celda.esta_ocupada()):
-                celda.ocupar("sss")
-                self.peatones_esperando -= 1
+    def colocar_peaton_en_paso_peatonal(self, id, direccion, velocidad):
+        peaton = Peaton(id, direccion, velocidad)
+        fue_colocado = False
+        i = 0
+        while not fue_colocado and i < len(self.celdas_generadoras):
+            fue_colocado = self.celdas_generadoras[i].set_entidad(peaton)
+            i += 1
+        if fue_colocado:
+            self.peatones.append(peaton)
+        return fue_colocado
         
 
     def peaton_cruza_paso_peatonal(self):
@@ -55,19 +60,17 @@ class AreaEsperaPeaton:
     # en la senda peatonal
     def accionar(self, semaforos, tiempo):
         self.arribo_de_peaton(tiempo)
-        primerSemaforo = semaforos[0]
-        segundoSemaforo = semaforos[1]
-        if (primerSemaforo and segundoSemaforo):
-            self.colocar_peaton_en_paso_peatonal()
+        primer_semaforo = semaforos[0]
+        segundo_semaforo = semaforos[1]
+        if (primer_semaforo and segundo_semaforo):
+            # coloco peaton en la senda peatonal
+            # TODO: manejar ids
+            id = 1
+            direccion = Direccion.ESTE if self.posicion == Direccion.OESTE else Direccion.OESTE
+            velocidad = 1
+            self.colocar_peaton_en_paso_peatonal(id, direccion, velocidad)
+
     def _debug_colocar_peaton(self, id, direccion, velocidad) -> bool:
-        peaton = Peaton(id, direccion, velocidad)
-        fue_colocado = False
-        i = 0
-        while not fue_colocado and i < len(self.celdas_generadoras):
-            i += 1
-            fue_colocado = self.celdas_generadoras[i].set_entidad(peaton)
-            i += 1
-        if fue_colocado:
-            self.peatones.append(peaton)
-        return fue_colocado
-        
+       return self.colocar_peaton_en_paso_peatonal(id, direccion, velocidad)
+
+

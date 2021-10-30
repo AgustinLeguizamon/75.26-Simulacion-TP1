@@ -216,11 +216,6 @@ class Tablero:
             # El área de espera chequea si tiene que colocar un peaton
             # en la senda peatonal
             area_espera.accionar(self.semaforos, tiempo)
-            
-        # TODO: testing colocar peaton
-        id_trucho = 1
-        self.areas_de_espera[0]._debug_colocar_peaton(id_trucho, Direccion.ESTE, 2)
-        #
 
         # TODO: Dibujar
         #dibujador.dibuja(dsadsadasda)

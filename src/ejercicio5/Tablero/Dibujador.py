@@ -5,7 +5,7 @@ from .AreaEsperaPeaton import AreaEsperaPeaton
 from enums import TipoDeCelda, Direccion
 
 class Dibujador:
-    def __init__():  
+    def __init__(self):  
         pass
 
     def dibujar_tablero(self, celdas_matriz):
