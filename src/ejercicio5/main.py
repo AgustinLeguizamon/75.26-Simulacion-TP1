@@ -21,7 +21,7 @@ def main():
         limpiarPantalla()
 
         # Dibujar
-        tablero.dibujar()
+        tablero.accionar()
 
         # Dormir por X segundos
         segs = 1

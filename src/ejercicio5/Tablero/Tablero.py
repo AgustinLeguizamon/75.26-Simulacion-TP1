@@ -1,4 +1,5 @@
 from .Celda import Celda
+from Entidades.Semaforo import Semaforo
 from enums import TipoDeCelda
 
 class Tablero:
@@ -41,10 +42,10 @@ class Tablero:
         self.ancho_celda = ancho_celda
 
         self.celdas_matriz = []
+        self.semaforos = []
         self.vehiculos = []
         self.peatones = []
-        self.semaforos = []
-
+        
         self.armar_tablero()
         
         pass
@@ -57,9 +58,9 @@ class Tablero:
         tablero_largo = int(vereda_izquierda_largo + calle_largo + vereda_derecha_largo)
 
         # Definimos el ancho del tablero (en cantidad de celdas) Ancho == Height == lo vertical
-        parte_superior_ancho = 4 / self.ancho_celda
-        parte_peatonal_ancho = self.paso_peatonal_ancho / self.ancho_celda + 2 # 2 más porque incluye separadores
-        parte_inferior_ancho = 4 / self.ancho_celda
+        parte_superior_ancho = int(4 / self.ancho_celda)
+        parte_peatonal_ancho = int(self.paso_peatonal_ancho / self.ancho_celda) + 2 # 2 más porque incluye separadores
+        parte_inferior_ancho = int(4 / self.ancho_celda)
         tablero_ancho = int(parte_superior_ancho + parte_peatonal_ancho + parte_inferior_ancho)
 
         # Creamos las celdas y objetos del tablero
@@ -159,8 +160,12 @@ class Tablero:
     def generar_separador_peatonal(self, fila, columna, celdas_fila, calle_largo, separador_con_semaforos):
 
         if (separador_con_semaforos):
-            # Agregamos semáforo al principio
-            celdas_fila.append(Celda(x=fila, y=columna, tipo=TipoDeCelda.SEMAFORO))
+            # Agregamos semáforo, celda y los asociamos
+            semaforo = Semaforo(x=fila, y=columna)
+            celda = Celda(x=fila, y=columna, tipo=TipoDeCelda.NORMAL, entidad=semaforo)
+            
+            self.semaforos.append(semaforo)
+            celdas_fila.append(celda)
             columna += 1
 
         # Agregamos un separador por el largo de la calle
@@ -171,7 +176,11 @@ class Tablero:
 
         if (separador_con_semaforos):
             # Agregamos semáforo al final
-            celdas_fila.append(Celda(x=fila, y=columna, tipo=TipoDeCelda.SEMAFORO))
+            semaforo = Semaforo(x=fila, y=columna)
+            celda = Celda(x=fila, y=columna, tipo=TipoDeCelda.NORMAL, entidad=semaforo)
+            
+            self.semaforos.append(semaforo)
+            celdas_fila.append(celda)
             columna += 1
 
         return fila, columna, celdas_fila
@@ -183,7 +192,16 @@ class Tablero:
 
         return fila, columna, celdas_fila
 
-    def dibujar(self):
+    def accionar(self):
+
+        # Dibujar
+        #dibujador.dibuja(dsadsadasda)
+
+        # Mover
+        #movedor.move()
+
+        # Resolver colisiones
+
         # Dibujamos las celdas
         i = 0
         for celdas_fila in self.celdas_matriz:
