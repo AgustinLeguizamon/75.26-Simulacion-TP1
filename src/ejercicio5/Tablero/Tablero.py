@@ -1,6 +1,8 @@
 from .Celda import Celda
 from Entidades.Semaforo import Semaforo
-from enums import TipoDeCelda
+from .AreaEspera import AreaEspera
+
+from enums import TipoDeCelda, Movimiento
 
 class Tablero:
     #                     |      ╎ calle_largo ║██████╎      ╎      |                        
@@ -9,20 +11,15 @@ class Tablero:
     #  vereda_izq_largo   |      ╎      ╎      ║◥▆▆▆▆◤╎      ╎      | vereda_der_largo
     #                     |      ╎      ╎      ║      ╎      ╎      |                     
     #                     |🟢======================================🔴|                   
-    #                    ◐|◐  ◑ ◑╎ ◑    ╎  ◐   ◐ ◐ ◐◑ ╎◢☗☗☗☗◣╎  ◐   |◑                    
-    #                    ◐|  ◐   ╎◢☗☗☗☗◣╎ ◑   ◐║◐ ◑   ◐██████╎ ◐  ◑ |◑                    
-    #                    ◐| ◑ ◑◐ ╎██████╎  ◐ ◐ ║  ◑ ◐ |██████╎◐   ◑ |◑                     <-- parte_peatonal_ancho
+    #                    ◐|◐  ◑ ◑╎ ◑    ╎  ◐   ◐ ◐ ◐◑ ╎◢☗☗☗☗◣╎  ◐   |◑x9                    
+    #                    ◐|  ◐   ╎◢☗☗☗☗◣╎ ◑   ◐║◐ ◑   ◐██████╎ ◐  ◑ |                    
+    #                    ◐| ◑ ◑◐ ╎██████╎  ◐ ◐ ║  ◑ ◐ |██████╎◐   ◑ |                     <-- parte_peatonal_ancho
     #                    ◐| ◐    ◐██████╎   ◐  ║ ◑    ◐██████◐  ◑   |◑                    
     #                    ◐|  ◐  ◐╎██████◐  ◐  ◑║  ◐ ◑ ╎◥▆▆▆▆◤╎ ◑◐   |◑                    
     #                    ◐| ◐  ◑ ╎◥▆▆▆▆◤╎ ◐◑  ◑║◑   ◐◑╎ ◑  ◑ ╎    ◐ |◑                    
     #                     |=====================◢☗☗☗☗◣===============                      
     #                     |◢☗☗☗☗◣╎      ╎      ║██████╎      ╎      |                     
-    #                     |██████╎      ╎      ║██████╎      ╎◢☗☗☗☗◣|                     
-    #                     |██████╎      ╎      ║██████╎      ╎██████|                     
-    #                     |██████╎      ╎      ║◥▆▆▆▆◤╎      ╎██████|                      <-- parte_inferior_ancho
-    #                     |◥▆▆▆▆◤╎      ╎      ║      ╎      ╎██████|                     
-    #                     |      ╎      ╎      ║      ╎      ╎◥▆▆▆▆◤|                     
-    #                     |      ╎      ╎      ║      ╎      ╎      |                     
+    #                     |██████╎      ╎      ║██████╎      |                     
     # ____________________|      ╎      ╎      ║      ╎      ╎      |______________________
     # Road segment: two-way six-vehicle lanes (3x2)
     # Each lane’s width is 3.5 meters (3.5m per lane)
@@ -34,17 +31,23 @@ class Tablero:
     #  - Each vehicle is assumed to occupy 6×5 cells
     #  - Horizontal: 6*0,5m = 3m
     #  - Vertical:   5*0,5m = 2,5m
-    def __init__(self, calle_largo = 21, paso_peatonal_ancho = 2.5, cantidad_de_carriles = 6, ancho_carril = 3.5, ancho_celda = 0.5):  
+    _ANCHO_VEREDA = 10
+    def __init__(self, calle_largo = 21, paso_peatonal_ancho = 3, cantidad_de_carriles = 6, ancho_carril = 3.5, ancho_celda = 0.5):  
         self.calle_largo = calle_largo
         self.paso_peatonal_ancho = paso_peatonal_ancho
         self.cantidad_de_carriles = cantidad_de_carriles
         self.ancho_carril = ancho_carril
         self.ancho_celda = ancho_celda
+        
+        self._ORIGEN_PASO_PEATONAL_X = 0
+        self._ORIGEN_PASO_PEATONAL_Y = 0
 
         self.celdas_matriz = []
         self.semaforos = []
         self.vehiculos = []
         self.peatones = []
+
+        self.areas_de_espera = []
         
         self.armar_tablero()
         
@@ -52,9 +55,9 @@ class Tablero:
 
     def armar_tablero(self):
         # Definimos el largo del tablero (en cantidad de celdas) Largo == Width == lo horizontal
-        vereda_izquierda_largo = int(10 / self.ancho_celda)
+        vereda_izquierda_largo = int(self._ANCHO_VEREDA / self.ancho_celda)
         calle_largo = int(self.calle_largo / self.ancho_celda)
-        vereda_derecha_largo = int(10 / self.ancho_celda)
+        vereda_derecha_largo = int(self._ANCHO_VEREDA / self.ancho_celda)
         tablero_largo = int(vereda_izquierda_largo + calle_largo + vereda_derecha_largo)
 
         # Definimos el ancho del tablero (en cantidad de celdas) Ancho == Height == lo vertical
@@ -62,6 +65,9 @@ class Tablero:
         parte_peatonal_ancho = int(self.paso_peatonal_ancho / self.ancho_celda) + 2 # 2 más porque incluye separadores
         parte_inferior_ancho = int(4 / self.ancho_celda)
         tablero_ancho = int(parte_superior_ancho + parte_peatonal_ancho + parte_inferior_ancho)
+
+        self._ORIGEN_PASO_PEATONAL_X = vereda_izquierda_largo + 1
+        self._ORIGEN_PASO_PEATONAL_Y = parte_superior_ancho + 1
 
         # Creamos las celdas y objetos del tablero
         for fila in range(tablero_ancho):
@@ -80,6 +86,13 @@ class Tablero:
 
             fila, columna, celdas_fila = self.generar_parte_inferior(fila, columna, celdas_fila, vereda_izquierda_largo, vereda_derecha_largo)
             self.celdas_matriz.append(celdas_fila)
+        
+        # TODO: eliminar
+        self.celdas_matriz[self._ORIGEN_PASO_PEATONAL_Y][self._ORIGEN_PASO_PEATONAL_X].tipo = 99
+
+        # Creamos las areas de espera
+        self.areas_de_espera.append(AreaEspera(self.celdas_matriz, Movimiento.OESTE))
+        self.areas_de_espera.append(AreaEspera(self.celdas_matriz, Movimiento.ESTE))
 
 
     def generar_parte_superior(self, fila, columna, celdas_fila, vereda_izquierda_largo, vereda_derecha_largo, parte_superior_ancho):

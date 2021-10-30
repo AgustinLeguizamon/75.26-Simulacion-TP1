@@ -1,12 +1,19 @@
+from enums import Movimiento
+
 class AreaEspera:
     # Cuenta cuantos peatones tiene
     # Cuenta cuantos peatones cruzaron
     MAX_CANTIDAD_PEATONES = 100
 
-    def __init__(self, posicion):
+    def __init__(self, celdas_matriz, posicion):
         self.peatones_esperando = 0
         self.peatones_cruzaron = 0
         self.posicion = posicion
+
+        self.preparar(celdas_matriz)
+    
+    def preparar(self, celdas_matriz):
+        pass
 
     def peaton_arriba(self, sentido):
         if (sentido != self.posicion) and (self.peatones_esperando < self.MAX_CANTIDAD_PEATONES):
