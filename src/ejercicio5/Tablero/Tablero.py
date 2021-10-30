@@ -2,6 +2,7 @@ from .Celda import Celda
 from Entidades.Semaforo import Semaforo
 from .AreaEsperaPeaton import AreaEsperaPeaton
 from .Dibujador import Dibujador
+from .Movedor import Movedor
 
 from enums import TipoDeCelda, Direccion
 
@@ -52,6 +53,7 @@ class Tablero:
         
         self.armar_tablero()
         self.dibujador = Dibujador()
+        self.movedor = Movedor()
         
         pass
 
@@ -231,4 +233,5 @@ class Tablero:
         self.dibujador.dibujar_tablero(self.celdas_matriz)
 
     def move_movible_en(self, fila, columna, movible):
-        print("dgb: moviendo peaton")
+        self.movedor.move_movible_en(fila, columna, movible, self)
+        

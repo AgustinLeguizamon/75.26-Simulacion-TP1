@@ -1,6 +1,7 @@
 from Entidades.Peaton import Peaton
 from enums import Direccion
 from Entidades.Poisson import Poisson
+from utils import velocidad_inicial
 
 class AreaEsperaPeaton:
     # Cuenta cuantos peatones tiene
@@ -62,12 +63,12 @@ class AreaEsperaPeaton:
         self.arribo_de_peaton(tiempo)
         primer_semaforo = semaforos[0]
         segundo_semaforo = semaforos[1]
-        if (primer_semaforo and segundo_semaforo):
+        if (primer_semaforo.permitir_paso() and segundo_semaforo.permitir_paso()):
             # coloco peaton en la senda peatonal
             # TODO: manejar ids
             id = 1
             direccion = Direccion.ESTE if self.posicion == Direccion.OESTE else Direccion.OESTE
-            velocidad = 1
+            velocidad = velocidad_inicial()
             self.colocar_peaton_en_paso_peatonal(id, direccion, velocidad)
 
     def _debug_colocar_peaton(self, id, direccion, velocidad) -> bool:

@@ -1,5 +1,6 @@
 class Semaforo():
-    def __init__(self, fila, columna):
+    _TIEMPO_MAXIMO = 90
+    def __init__(self, fila, columna, tiempo_paso_peaton = 25):
         self.fila = fila
         self.columna = columna
         self.estado = "verde"
