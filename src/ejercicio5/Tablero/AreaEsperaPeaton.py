@@ -7,10 +7,11 @@ class AreaEsperaPeaton:
     # Cuenta cuantos peatones cruzaron
     MAX_CANTIDAD_PEATONES = 100
 
-    def __init__(self, celdas_matriz, posicion, origen_paso_peatonal_x, origen_paso_peatonal_y, paso_peatonal_ancho, calle_largo):
+    def __init__(self, celdas_matriz, posicion, origen_paso_peatonal_x, origen_paso_peatonal_y, paso_peatonal_ancho, calle_largo, peatones):
         self.peatones_esperando = 0
         self.peatones_cruzaron = 0
         self.posicion = posicion
+        self.peatones = peatones
 
         self.celdas_generadoras = []
         
@@ -63,4 +64,7 @@ class AreaEsperaPeaton:
         while not fue_colocado and i < len(self.celdas_generadoras):
             fue_colocado = self.celdas_generadoras[i].set_entidad(peaton)
             i += 1
+        if fue_colocado:
+            self.peatones.append(peaton)
         return fue_colocado
+        
