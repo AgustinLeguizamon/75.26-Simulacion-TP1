@@ -140,11 +140,13 @@ class Vehiculo:
     ANCHO = 5
 
     def __init__(self, sentido):
+        # direccion
         self.sentido = sentido
         self.velocidad = 1
         self.movibles = [Movible(sentido, 1) for i in range(self.LARGO * self.ANCHO)]
         self.x = -1
         self.y = -1
+        #direccion
         self.paso = Paso(1 if Movimiento.ESTE == sentido else -1, 0)
         self.esta_afuera = False
 
@@ -152,12 +154,15 @@ class Vehiculo:
         self.x = x
         self.y = y
 
-    def asignar_celda(self, fila, columna, celda):
-        pos = fila * self.ANCHO + columna
+    def asignar_celda(self, fila_auto, columna_auto, celda):
+        pos = fila_auto * self.ANCHO + columna_auto
         celda.poner_movible(self.movibles[pos])
 
     def dar_paso(self, paso_peatonal):
+        # lo saco del paso_peatonl asi lo puedo mover
         self.__salir_de_celdas()
+
+        # paso_peatonal = Tablero
         if paso_peatonal.puede_moverse(self.x + self.velocidad * self.paso.x, self.y):
             paso_peatonal.mover_vehiculo(self, self.paso.x, self.paso.y)
         else:
