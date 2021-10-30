@@ -62,7 +62,8 @@ class Tablero:
 
         # Definimos el ancho del tablero (en cantidad de celdas) Ancho == Height == lo vertical
         parte_superior_ancho = int(4 / self.ancho_celda)
-        parte_peatonal_ancho = int(self.paso_peatonal_ancho / self.ancho_celda) + 2 # 2 más porque incluye separadores
+        cantidad_separadores = 2
+        parte_peatonal_ancho = int(self.paso_peatonal_ancho / self.ancho_celda) + cantidad_separadores # 2 más porque incluye separadores
         parte_inferior_ancho = int(4 / self.ancho_celda)
         tablero_ancho = int(parte_superior_ancho + parte_peatonal_ancho + parte_inferior_ancho)
 
@@ -91,8 +92,10 @@ class Tablero:
         self.celdas_matriz[self._ORIGEN_PASO_PEATONAL_Y][self._ORIGEN_PASO_PEATONAL_X].tipo = 99
 
         # Creamos las areas de espera
-        self.areas_de_espera.append(AreaEspera(self.celdas_matriz, Movimiento.OESTE))
-        self.areas_de_espera.append(AreaEspera(self.celdas_matriz, Movimiento.ESTE))
+        self.areas_de_espera.append(AreaEspera(self.celdas_matriz, Movimiento.OESTE, self._ORIGEN_PASO_PEATONAL_X, 
+                                                self._ORIGEN_PASO_PEATONAL_Y, parte_peatonal_ancho - cantidad_separadores))
+        self.areas_de_espera.append(AreaEspera(self.celdas_matriz, Movimiento.ESTE, self._ORIGEN_PASO_PEATONAL_X, 
+                                                self._ORIGEN_PASO_PEATONAL_Y, parte_peatonal_ancho - cantidad_separadores))
 
 
     def generar_parte_superior(self, fila, columna, celdas_fila, vereda_izquierda_largo, vereda_derecha_largo, parte_superior_ancho):
