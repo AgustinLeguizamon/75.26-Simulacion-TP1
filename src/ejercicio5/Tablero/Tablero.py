@@ -1,6 +1,7 @@
 from .Celda import Celda
 from Entidades.Semaforo import Semaforo
 from .AreaEsperaPeaton import AreaEsperaPeaton
+from .Dibujador import Dibujador
 
 from enums import TipoDeCelda, Direccion
 
@@ -50,6 +51,7 @@ class Tablero:
         self.areas_de_espera = []
         
         self.armar_tablero()
+        self.dibujador = Dibujador()
         
         pass
 
@@ -231,11 +233,7 @@ class Tablero:
         # TODO: Resolver colisiones
 
         # Dibujamos las celdas
-        i = 0
-        for celdas_fila in self.celdas_matriz:
-            print() # Newline
-            for celda_fila in celdas_fila:
-                print(celda_fila.get_dibujo(),end =" ")
+        self.dibujador.dibujar_tablero(self.celdas_matriz)
 
     def move_movible_en(self, fila, columna, movible):
         print("dgb: moviendo peaton")
