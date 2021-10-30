@@ -2,15 +2,15 @@ from enums import Direccion
 
 class Movible:
     def __init__(self, direccion, velocidad):
-        self.celda = None
         self.direccion = direccion
         self.velocidad = velocidad
+        self.celda = None
 
-    # def setear_celda(self, celda):
-    #    self.celda = celda
+    def set_celda(self, celda):
+        self.celda = celda
 
-    # def dar_paso(self):
-    #    self.celda.mover_movible(self.velocidad, self.direccion)
+    def mover(self):
+        self.celda.mover_movible(self)
 
     # def salir_de_celda(self):
     #    if self.celda is not None:
