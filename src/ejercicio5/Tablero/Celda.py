@@ -12,7 +12,8 @@ class Celda:
     # para cuando se mueven las entidades en el paso peatonal
     def colocar_entidad(self, entidad):
         if self.entidad != None:
-            raise CeldaOcupadaExcepcion
+            pass
+            # raise CeldaOcupadaExcepcion
         entidad.set_celda(self)
         self.entidad = entidad
 
@@ -24,12 +25,11 @@ class Celda:
         self.colocar_entidad(entidad)
         return True
     
-    def mover_movible(self, movible):
-        self.tablero.move_movible_en(self.fila, self.columna, movible)
-        # PIN
-        #  salio_de_celda = 
-        # if salio_de_celda:
-        #    self.entidad = None
+    def get_fila(self):
+        return self.fila
+    
+    def get_columna(self):
+        return self.columna
             
     def get_dibujo(self):
         esta_ocupada = self.entidad != None
@@ -53,3 +53,8 @@ class Celda:
             return "="
 
         return "X"
+    
+    def limpiar_entidad(self):
+        self.entidad.limpiar_celda()
+        self.entidad = None
+

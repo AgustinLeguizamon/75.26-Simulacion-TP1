@@ -214,6 +214,9 @@ class Tablero:
 
     def accionar(self, tiempo):
         # Eventos
+        for semaforo in self.semaforos:
+            semaforo.cambiar_estado(tiempo)
+
         for area_espera in self.areas_de_espera:
             # El área de espera chequea si tiene que colocar un peaton
             # en la senda peatonal
@@ -224,7 +227,7 @@ class Tablero:
 
         # TODO: Mover
         for peaton in self.peatones:
-            peaton.mover()
+            self.movedor.mover(peaton, self)
         # movedor.move()
 
         # TODO: Resolver colisiones
@@ -232,6 +235,6 @@ class Tablero:
         # Dibujamos las celdas
         self.dibujador.dibujar_tablero(self.celdas_matriz)
 
-    def move_movible_en(self, fila, columna, movible):
-        self.movedor.move_movible_en(fila, columna, movible, self)
+    def get_celda(self, fila, columna):
+        return self.celdas_matriz[fila][columna]
         

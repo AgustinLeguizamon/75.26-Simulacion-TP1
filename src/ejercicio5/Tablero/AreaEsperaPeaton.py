@@ -25,7 +25,7 @@ class AreaEsperaPeaton:
 
         if self.posicion == Direccion.ESTE:
             for i in range(paso_peatonal_ancho):
-                self.celdas_generadoras.append(celdas_matriz[origen_paso_peatonal_y + i][origen_paso_peatonal_x + calle_largo - 1])
+                self.celdas_generadoras.append(celdas_matriz[origen_paso_peatonal_y + i][origen_paso_peatonal_x + calle_largo - 2])
             
     # Generamos un nuevo arribo de peaton según las condiciones establecidas
     # Si se genera un nuevo arribo, sumamos un contador para luego crear un peaton

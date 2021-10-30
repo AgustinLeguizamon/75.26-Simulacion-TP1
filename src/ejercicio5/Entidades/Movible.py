@@ -9,9 +9,6 @@ class Movible:
     def set_celda(self, celda):
         self.celda = celda
 
-    def mover(self):
-        self.celda.mover_movible(self)
-
     # def salir_de_celda(self):
     #    if self.celda is not None:
     #        self.celda.quitar_movible()
@@ -25,6 +22,21 @@ class Movible:
         if self.direccion == Direccion.SUR:
             return 'v'
         if self.direccion == Direccion.ESTE:
-            return '>'
+            return '◐'
         if self.direccion == Direccion.OESTE:
-            return '<'
+            return '◑'
+
+    def get_fila(self):
+        return self.celda.get_fila()
+
+    def get_columna(self):
+        return self.celda.get_columna()
+    
+    def get_direccion(self):
+        return self.direccion
+    
+    def get_velocidad(self):
+        return self.velocidad
+    
+    def limpiar_celda(self):
+        self.celda = None

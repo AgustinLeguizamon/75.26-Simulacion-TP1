@@ -4,6 +4,7 @@ class Semaforo():
         self.fila = fila
         self.columna = columna
         self.estado = "verde"
+        self.tiempo_paso_peaton = tiempo_paso_peaton
 
     def get_dibujo(self):
         if (self.estado == "rojo"):
@@ -14,3 +15,11 @@ class Semaforo():
 
     def permitir_paso(self):
         return self.estado == "verde"
+
+    def cambiar_estado(self, tiempo):
+        tiempo_final = tiempo%self._TIEMPO_MAXIMO
+        if (tiempo_final <= self.tiempo_paso_peaton):
+            self.estado = "verde"
+        else:
+            self.estado = "rojo"
+

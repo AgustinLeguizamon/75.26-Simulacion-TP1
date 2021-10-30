@@ -7,6 +7,8 @@ class Sentido(Enum):
     OESTE = 3
 
 class Direccion:
+    FILA = 0
+    COLUMNA = 1
     NORTE = [-1, 0]
     ESTE = [0, 1]
     SUR = [1, 0]
