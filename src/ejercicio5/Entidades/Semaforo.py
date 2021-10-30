@@ -11,4 +11,5 @@ class Semaforo():
         if (self.estado == "verde"):
             return "🟢"
 
-
+    def permitir_paso(self):
+        return self.estado == "verde"

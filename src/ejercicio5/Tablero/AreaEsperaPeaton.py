@@ -40,17 +40,20 @@ class AreaEsperaPeaton:
         return tiempo_arribo < tiempo
 
     def colocar_peaton_en_paso_peatonal(self):
-        # peaton = Peaton()
-        # celda.agregar_movible(peaton)
-        self.peatones_esperando -= 1
+        for celda in self.celdas_generadoras:
+            if (celda.esta_ocupada()):
+                celda.ocupar("sss")
+                self.peatones_esperando -= 1
+        
 
     def peaton_cruza_paso_peatonal(self):
         self.peatones_cruzaron += 1
     
     # El área de espera chequea si tiene que colocar un peaton
     # en la senda peatonal
-    def accionar(self, semaforos):
-        self.arribo_de_peaton
-        # cuando semaforo esta en verde
-        # self.colocar_peaton_en_paso_peatonal()
-        print()
+    def accionar(self, semaforos, tiempo):
+        self.arribo_de_peaton(tiempo)
+        primerSemaforo = semaforos[0]
+        segundoSemaforo = semaforos[1]
+        if (primerSemaforo and segundoSemaforo):
+            self.colocar_peaton_en_paso_peatonal()

@@ -208,12 +208,12 @@ class Tablero:
 
         return fila, columna, celdas_fila
 
-    def accionar(self):
+    def accionar(self, tiempo):
         # Eventos
         for area_espera in self.areas_de_espera:
             # El área de espera chequea si tiene que colocar un peaton
             # en la senda peatonal
-            area_espera.accionar(self.semaforos)
+            area_espera.accionar(self.semaforos, tiempo)
 
         # TODO: Dibujar
         #dibujador.dibuja(dsadsadasda)
