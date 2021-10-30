@@ -51,6 +51,7 @@ class AreaEsperaPeaton:
             i += 1
         if fue_colocado:
             self.peatones.append(peaton)
+            self.peatones_esperando -= 1
         return fue_colocado
         
 

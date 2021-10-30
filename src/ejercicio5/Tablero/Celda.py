@@ -12,8 +12,7 @@ class Celda:
     # para cuando se mueven las entidades en el paso peatonal
     def colocar_entidad(self, entidad):
         if self.entidad != None:
-            pass
-            # raise CeldaOcupadaExcepcion
+            raise CeldaOcupadaExcepcion
         entidad.set_celda(self)
         self.entidad = entidad
 

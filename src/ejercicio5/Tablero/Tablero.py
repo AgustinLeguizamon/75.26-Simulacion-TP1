@@ -235,6 +235,14 @@ class Tablero:
         # Dibujamos las celdas
         self.dibujador.dibujar_tablero(self.celdas_matriz)
 
+        # borramos peatones que salieron del tablero
+        peatones_a_remover = [peaton for peaton in self.peatones if peaton.celda is None]
+        for peaton in peatones_a_remover:
+            self.peatones.remove(peaton)
+
+
+
     def get_celda(self, fila, columna):
-        return self.celdas_matriz[fila][columna]
-        
+        if 0 <= fila < len(self.celdas_matriz) and 0 <= columna < len(self.celdas_matriz[0]):
+            return self.celdas_matriz[fila][columna]
+        return None
