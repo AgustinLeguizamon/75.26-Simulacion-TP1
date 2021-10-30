@@ -1,4 +1,5 @@
-from enums import Movimiento
+from Entidades.Peaton import Peaton
+from enums import Direccion
 from Entidades.Poisson import Poisson
 
 class AreaEsperaPeaton:
@@ -16,11 +17,11 @@ class AreaEsperaPeaton:
         self.preparar(celdas_matriz, origen_paso_peatonal_x, origen_paso_peatonal_y, paso_peatonal_ancho, calle_largo) 
     
     def preparar(self, celdas_matriz, origen_paso_peatonal_x, origen_paso_peatonal_y, paso_peatonal_ancho, calle_largo):
-        if self.posicion == Movimiento.OESTE:
+        if self.posicion == Direccion.OESTE:
             for i in range(paso_peatonal_ancho):
                 self.celdas_generadoras.append(celdas_matriz[origen_paso_peatonal_y + i][origen_paso_peatonal_x])
 
-        if self.posicion == Movimiento.ESTE:
+        if self.posicion == Direccion.ESTE:
             for i in range(paso_peatonal_ancho):
                 self.celdas_generadoras.append(celdas_matriz[origen_paso_peatonal_y + i][origen_paso_peatonal_x + calle_largo - 1])
             
@@ -57,3 +58,11 @@ class AreaEsperaPeaton:
         segundoSemaforo = semaforos[1]
         if (primerSemaforo and segundoSemaforo):
             self.colocar_peaton_en_paso_peatonal()
+    def _debug_colocar_peaton(self, id, direccion, velocidad) -> bool:
+        peaton = Peaton(id, direccion, velocidad)
+        fue_colocado = False
+        i = 0
+        while not fue_colocado and i < len(self.celdas_generadoras):
+            i += 1
+            fue_colocado = self.celdas_generadoras[i].set_entidad(peaton)
+        return fue_colocado

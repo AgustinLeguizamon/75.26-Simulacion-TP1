@@ -6,11 +6,11 @@ class Sentido(Enum):
     ESTE = 2
     OESTE = 3
 
-class Movimiento:
-    NORTE = [0, -1]
-    ESTE = [1, 0]
-    SUR = [0, 1]
-    OESTE = [-1, 0]
+class Direccion:
+    NORTE = [-1, 0]
+    ESTE = [0, 1]
+    SUR = [1, 0]
+    OESTE = [0, -1]
 
 class Regla(Enum):
     NINGUNA = 0

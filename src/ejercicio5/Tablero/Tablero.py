@@ -2,7 +2,7 @@ from .Celda import Celda
 from Entidades.Semaforo import Semaforo
 from .AreaEsperaPeaton import AreaEsperaPeaton
 
-from enums import TipoDeCelda, Movimiento
+from enums import TipoDeCelda, Direccion
 
 class Tablero:
     #                     |      ╎ calle_largo ║██████╎      ╎      |                        
@@ -39,8 +39,8 @@ class Tablero:
         self.ancho_carril = ancho_carril
         self.ancho_celda = ancho_celda
         
-        self._ORIGEN_PASO_PEATONAL_X = 0
-        self._ORIGEN_PASO_PEATONAL_Y = 0
+        self._COLUMNA_ORIGEN_PASO_PEATONAL = 0
+        self._FILA_ORIGEN_PASO_PEATONAL = 0
 
         self.celdas_matriz = []
         self.semaforos = []
@@ -67,8 +67,8 @@ class Tablero:
         parte_inferior_ancho = int(4 / self.ancho_celda)
         tablero_ancho = int(parte_superior_ancho + parte_peatonal_ancho + parte_inferior_ancho)
 
-        self._ORIGEN_PASO_PEATONAL_X = vereda_izquierda_largo + 1
-        self._ORIGEN_PASO_PEATONAL_Y = parte_superior_ancho + 1
+        self._COLUMNA_ORIGEN_PASO_PEATONAL = vereda_izquierda_largo + 1
+        self._FILA_ORIGEN_PASO_PEATONAL = parte_superior_ancho + 1
 
         # Creamos las celdas columna objetos del tablero
         for fila in range(tablero_ancho):
@@ -89,13 +89,13 @@ class Tablero:
             self.celdas_matriz.append(celdas_fila)
         
         # TODO: eliminar
-        self.celdas_matriz[self._ORIGEN_PASO_PEATONAL_Y][self._ORIGEN_PASO_PEATONAL_X].tipo = 99
+        # self.celdas_matriz[self._FILA_ORIGEN_PASO_PEATONAL][self._COLUMNA_ORIGEN_PASO_PEATONAL].tipo = 99
 
         # Creamos las areas de espera
-        self.areas_de_espera.append(AreaEsperaPeaton(self.celdas_matriz, Movimiento.OESTE, self._ORIGEN_PASO_PEATONAL_X, 
-                                                self._ORIGEN_PASO_PEATONAL_Y, parte_peatonal_ancho - cantidad_separadores, calle_largo))
-        self.areas_de_espera.append(AreaEsperaPeaton(self.celdas_matriz, Movimiento.ESTE, self._ORIGEN_PASO_PEATONAL_X, 
-                                                self._ORIGEN_PASO_PEATONAL_Y, parte_peatonal_ancho - cantidad_separadores, calle_largo))
+        self.areas_de_espera.append(AreaEsperaPeaton(self.celdas_matriz, Direccion.OESTE, self._COLUMNA_ORIGEN_PASO_PEATONAL, 
+                                                self._FILA_ORIGEN_PASO_PEATONAL, parte_peatonal_ancho - cantidad_separadores, calle_largo))
+        self.areas_de_espera.append(AreaEsperaPeaton(self.celdas_matriz, Direccion.ESTE, self._COLUMNA_ORIGEN_PASO_PEATONAL, 
+                                                self._FILA_ORIGEN_PASO_PEATONAL, parte_peatonal_ancho - cantidad_separadores, calle_largo))
 
 
     def generar_parte_superior(self, fila, columna, celdas_fila, vereda_izquierda_largo, vereda_derecha_largo, parte_superior_ancho):
@@ -214,6 +214,11 @@ class Tablero:
             # El área de espera chequea si tiene que colocar un peaton
             # en la senda peatonal
             area_espera.accionar(self.semaforos, tiempo)
+            
+        # TODO: testing
+        id_trucho = 1
+        self.areas_de_espera[0]._debug_colocar_peaton(id_trucho, Direccion.ESTE, 2)
+        #
 
         # TODO: Dibujar
         #dibujador.dibuja(dsadsadasda)
