@@ -212,7 +212,7 @@ class Celda:
             self.movible.dar_paso()
 
 
-class AreaEspera:
+class AreaEsperaPeaton:
     # Cuenta cuantos peatones tiene
     # Cuenta cuantos peatones cruzaron
     MAX_CANTIDAD_PEATONES = 100
@@ -240,8 +240,8 @@ class PasoPeatonal:
         self.paso_peatonal = [[Celda(x, y, self) for x in range(self.ancho)] for y in range(self.largo)]
         self.peatones = []
         self.sig_id = 0
-        self.calle_norte = AreaEspera(Movimiento.NORTE)
-        self.calle_sur = AreaEspera(Movimiento.SUR)
+        self.calle_norte = AreaEsperaPeaton(Movimiento.NORTE)
+        self.calle_sur = AreaEsperaPeaton(Movimiento.SUR)
         self.vehiculos = []
 
     def peaton_arriba(self, sentido):

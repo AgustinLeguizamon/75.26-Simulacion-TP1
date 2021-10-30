@@ -1,6 +1,6 @@
 from .Celda import Celda
 from Entidades.Semaforo import Semaforo
-from .AreaEspera import AreaEspera
+from .AreaEsperaPeaton import AreaEsperaPeaton
 
 from enums import TipoDeCelda, Movimiento
 
@@ -92,10 +92,10 @@ class Tablero:
         self.celdas_matriz[self._ORIGEN_PASO_PEATONAL_Y][self._ORIGEN_PASO_PEATONAL_X].tipo = 99
 
         # Creamos las areas de espera
-        self.areas_de_espera.append(AreaEspera(self.celdas_matriz, Movimiento.OESTE, self._ORIGEN_PASO_PEATONAL_X, 
-                                                self._ORIGEN_PASO_PEATONAL_Y, parte_peatonal_ancho - cantidad_separadores))
-        self.areas_de_espera.append(AreaEspera(self.celdas_matriz, Movimiento.ESTE, self._ORIGEN_PASO_PEATONAL_X, 
-                                                self._ORIGEN_PASO_PEATONAL_Y, parte_peatonal_ancho - cantidad_separadores))
+        self.areas_de_espera.append(AreaEsperaPeaton(self.celdas_matriz, Movimiento.OESTE, self._ORIGEN_PASO_PEATONAL_X, 
+                                                self._ORIGEN_PASO_PEATONAL_Y, parte_peatonal_ancho - cantidad_separadores, calle_largo))
+        self.areas_de_espera.append(AreaEsperaPeaton(self.celdas_matriz, Movimiento.ESTE, self._ORIGEN_PASO_PEATONAL_X, 
+                                                self._ORIGEN_PASO_PEATONAL_Y, parte_peatonal_ancho - cantidad_separadores, calle_largo))
 
 
     def generar_parte_superior(self, fila, columna, celdas_fila, vereda_izquierda_largo, vereda_derecha_largo, parte_superior_ancho):
@@ -209,14 +209,19 @@ class Tablero:
         return fila, columna, celdas_fila
 
     def accionar(self):
+        # Eventos
+        for area_espera in self.areas_de_espera:
+            # El área de espera chequea si tiene que colocar un peaton
+            # en la senda peatonal
+            area_espera.accionar(self.semaforos)
 
-        # Dibujar
+        # TODO: Dibujar
         #dibujador.dibuja(dsadsadasda)
 
-        # Mover
+        # TODO: Mover
         #movedor.move()
 
-        # Resolver colisiones
+        # TODO: Resolver colisiones
 
         # Dibujamos las celdas
         i = 0

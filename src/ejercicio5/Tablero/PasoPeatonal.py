@@ -33,8 +33,8 @@ class PasoPeatonal:
         self.paso_peatonal = [[Celda(x, y, self) for x in range(self.ancho)] for y in range(self.largo)]
         self.peatones = []
         self.sig_id = 0
-        self.calle_norte = AreaEspera(Sentido.NORTE)
-        self.calle_sur = AreaEspera(Sentido.SUR)
+        self.calle_norte = AreaEsperaPeaton(Sentido.NORTE)
+        self.calle_sur = AreaEsperaPeaton(Sentido.SUR)
         self.vehiculos = []
 
     def peaton_arriba(self, sentido):

@@ -1,24 +1,28 @@
 from enums import Movimiento
 from Entidades.Poisson import Poisson
 
-class AreaEspera:
+class AreaEsperaPeaton:
     # Cuenta cuantos peatones tiene
     # Cuenta cuantos peatones cruzaron
     MAX_CANTIDAD_PEATONES = 100
 
-    def __init__(self, celdas_matriz, posicion, origen_paso_peatonal_x, origen_paso_peatonal_y, paso_peatonal_ancho):
+    def __init__(self, celdas_matriz, posicion, origen_paso_peatonal_x, origen_paso_peatonal_y, paso_peatonal_ancho, calle_largo):
         self.peatones_esperando = 0
         self.peatones_cruzaron = 0
         self.posicion = posicion
 
         self.celdas_generadoras = []
         
-        self.preparar(celdas_matriz, origen_paso_peatonal_x, origen_paso_peatonal_y, paso_peatonal_ancho) 
+        self.preparar(celdas_matriz, origen_paso_peatonal_x, origen_paso_peatonal_y, paso_peatonal_ancho, calle_largo) 
     
-    def preparar(self, celdas_matriz, origen_paso_peatonal_x, origen_paso_peatonal_y, paso_peatonal_ancho):
+    def preparar(self, celdas_matriz, origen_paso_peatonal_x, origen_paso_peatonal_y, paso_peatonal_ancho, calle_largo):
         if self.posicion == Movimiento.OESTE:
             for i in range(paso_peatonal_ancho):
                 self.celdas_generadoras.append(celdas_matriz[origen_paso_peatonal_y + i][origen_paso_peatonal_x])
+
+        if self.posicion == Movimiento.ESTE:
+            for i in range(paso_peatonal_ancho):
+                self.celdas_generadoras.append(celdas_matriz[origen_paso_peatonal_y + i][origen_paso_peatonal_x + calle_largo - 1])
             
     # Generamos un nuevo arribo de peaton según las condiciones establecidas
     # Si se genera un nuevo arribo, sumamos un contador para luego crear un peaton
@@ -35,10 +39,18 @@ class AreaEspera:
         tiempo_arribo = poisson.generar()
         return tiempo_arribo < tiempo
 
-    def peaton_entra_paso_peatonal(self):
+    def colocar_peaton_en_paso_peatonal(self):
         # peaton = Peaton()
         # celda.agregar_movible(peaton)
         self.peatones_esperando -= 1
 
     def peaton_cruza_paso_peatonal(self):
         self.peatones_cruzaron += 1
+    
+    # El área de espera chequea si tiene que colocar un peaton
+    # en la senda peatonal
+    def accionar(self, semaforos):
+        self.arribo_de_peaton
+        # cuando semaforo esta en verde
+        # self.colocar_peaton_en_paso_peatonal()
+        print()
