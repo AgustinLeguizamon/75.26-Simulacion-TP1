@@ -1,0 +1,2 @@
+class CeldaOcupadaExcepcion(Exception):
+    pass
