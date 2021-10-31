@@ -1,3 +1,4 @@
+from numpy import array
 from Entidades.Peaton import Peaton
 from enums import Sentido
 from .Celda import Celda
@@ -6,14 +7,15 @@ from utils import velocidad_inicial_vehiculo
 
 class AreaEsperaVehiculo:
 
-    def __init__(self, celda_inicial: Celda, sentido: Sentido):
+    def __init__(self, celda_inicial: Celda, sentido: Sentido, vehiculos: array):
         self.celda_inicial = celda_inicial
         self.sentido = sentido
+        self.vehiculos = vehiculos
         self.poisson = Poisson()
 
     # Generamos un nuevo arribo de peaton según las condiciones establecidas
     # Retorna: verdadero si hay un arribo de vehiculo
-    def hay_arribo_de_vehiculo(self, tiempo):
+    def hay_arribo_de_vehiculo(self, tiempo: float):
         tiempo_arribo = self.poisson.generar()
         ocurre_evento = tiempo_arribo < tiempo
         
@@ -21,10 +23,10 @@ class AreaEsperaVehiculo:
     
     # Chequeamos si hay que colocar un nuevo vehículo en el paso peatonal
     # Sino esperamos
-    def accionar(self, semaforos, tiempo):
+    def accionar(self, semaforos: array, tiempo: float):
         # TODO: remove
         self.celda_inicial.tipo = 99
-        
+
         # Chequeo primero si la celda inicial está ocupada
         # Si lo está, no hago nada
 
