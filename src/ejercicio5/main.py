@@ -16,18 +16,15 @@ def main():
     # Init game variables
     isRunning = True
     tablero = Tablero()
-    tiempo_transcurrido = 1
+
+    segundos_por_paso = 0.5
+    tiempo_transcurrido = 0
 
     while isRunning:
         limpiarPantalla()
-
-        # Dibujar
         tablero.ejecutar_paso(tiempo_transcurrido)
-        tiempo_transcurrido = tiempo_transcurrido + 1
-
-        # Dormir por X segundos
-        segs = 1
-        time.sleep(segs)
+        tiempo_transcurrido += segundos_por_paso
+        time.sleep(segundos_por_paso)
 
 if __name__ == "__main__":
     main()
