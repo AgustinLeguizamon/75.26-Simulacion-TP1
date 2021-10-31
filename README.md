@@ -161,3 +161,16 @@ data recorded every 3600 time steps
     pasoPeatonal.agregar_peaton(4, inicior_sur - 1, Sentido.NORTE)
     pasoPeatonal.agregar_peaton(5, inicior_sur - 1, Sentido.NORTE)
     pasoPeatonal.agregar_peaton(6, inicior_sur - 1, Sentido.NORTE)
+
+
+## Pasos
+
+Tablero
+Semaforos
+Area de espera
+Colocar Peaton
+Mover Peaton
+Colocar Vehiculo
+Move Vehiculo
+Logica semaforos (stops)
+Colisiones
