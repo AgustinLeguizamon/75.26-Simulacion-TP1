@@ -13,14 +13,6 @@ class AreaEsperaVehiculo:
         self.vehiculos = vehiculos
         self.poisson = Poisson()
 
-    # Generamos un nuevo arribo de peaton según las condiciones establecidas
-    # Retorna: verdadero si hay un arribo de vehiculo
-    def hay_arribo_de_vehiculo(self, tiempo: float):
-        tiempo_arribo = self.poisson.generar()
-        ocurre_evento = tiempo_arribo < tiempo
-        
-        return ocurre_evento
-    
     # Chequeamos si hay que colocar un nuevo vehículo en el paso peatonal
     # Sino esperamos
     def accionar(self, semaforos: array, tiempo: float):
@@ -31,9 +23,13 @@ class AreaEsperaVehiculo:
 
         # Luego chequeo si hay arribo de vehículo según poisson 
         # Si no hay, no hago nada
+        ocurre_evento = self.poisson.ocurrio_nuevo_evento(tiempo)
+        if (not ocurre_evento):
+            return
 
         # Agrego un vehículo en la celda inicial
         vehiculo = Vehiculo(self.sentido_vehiculos, velocidad_inicial_vehiculo())
         self.celda_inicial.agregar_entidad(vehiculo)
+        self.vehiculos.append(vehiculo)
 
 

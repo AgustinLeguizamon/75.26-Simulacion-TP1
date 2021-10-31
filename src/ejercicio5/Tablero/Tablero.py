@@ -67,5 +67,6 @@ class Tablero:
         return self.armador_tablero.get_celda(fila, columna)
 
     def dibujar_estadisticas(self):
+        print()
         print("Peatones en área de espera izquierda: ", self.areas_de_espera[0].peatones_esperando)
         print("Peatones en área de espera derecha: ", self.areas_de_espera[1].peatones_esperando)

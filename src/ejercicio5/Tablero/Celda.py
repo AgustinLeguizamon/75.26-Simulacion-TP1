@@ -32,9 +32,7 @@ class Celda:
         return self.columna
             
     def get_dibujo(self):
-        esta_ocupada = self.entidad != None
-        
-        if esta_ocupada:
+        if self.esta_ocupada():
             return self.entidad.get_dibujo()
 
         if (self.tipo == TipoDeCelda.NORMAL):
@@ -53,3 +51,9 @@ class Celda:
             return "="
 
         return "X"
+
+    def get_dibujo_color(self):
+        if self.esta_ocupada():
+            return self.entidad.get_dibujo_color()
+
+        return "white"

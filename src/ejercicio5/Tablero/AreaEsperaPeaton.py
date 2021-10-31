@@ -27,13 +27,16 @@ class AreaEsperaPeaton:
             return
 
         # Si los semaforos no permiten el paso, no hacemos nada
-        primer_semaforo = semaforos[0]
-        segundo_semaforo = semaforos[1]
-        if (not primer_semaforo.permitir_paso() or not segundo_semaforo.permitir_paso()):
+        se_permite_el_paso = True
+        for semaforo in semaforos:
+            se_permite_el_paso = se_permite_el_paso and semaforo.permitir_paso()
+       
+        if (not se_permite_el_paso):
             # No hacemos nada
             return
-
-        # Si no hay una ocurrencia de evento de Poisson, no hacemos nada
+        
+        # Luego chequeo si hay arribo de peaton según poisson 
+        # Si no hay, no hago nada
         ocurre_evento = self.poisson.ocurrio_nuevo_evento(tiempo)
         if (not ocurre_evento):
             return

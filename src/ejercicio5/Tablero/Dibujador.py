@@ -1,6 +1,7 @@
 from .Celda import Celda
 from Entidades.Semaforo import Semaforo
 from .AreaEsperaPeaton import AreaEsperaPeaton
+from termcolor import colored
 
 class Dibujador:
     def __init__(self):  
@@ -14,7 +15,7 @@ class Dibujador:
             print() 
             for celda_fila in celdas_fila:
                 # Imprimimos el dibujo de la celda
-                print(celda_fila.get_dibujo(), end =" ")
+                print(colored(celda_fila.get_dibujo(), celda_fila.get_dibujo_color()), end =" ")
 
         print() 
 

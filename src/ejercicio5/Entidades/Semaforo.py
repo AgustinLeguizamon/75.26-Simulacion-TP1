@@ -1,18 +1,24 @@
-class Semaforo():
+from .Entidad import Entidad
+
+class Semaforo(Entidad):
     TIEMPO_MAXIMO = 90
 
-    def __init__(self, fila, columna, tiempo_paso_peaton = 25):
-        self.fila = fila
-        self.columna = columna
+    def __init__(self, tiempo_paso_peaton = 25):
+        super().__init__()
         self.estado = "verde"
         self.tiempo_paso_peaton = tiempo_paso_peaton
 
     def get_dibujo(self):
+        return "⬤"
+
+    def get_dibujo_color(self):
         if (self.estado == "rojo"):
-            return "🔴"
+            return "red"
 
         if (self.estado == "verde"):
-            return "🟢"
+            return "green"
+
+        return "purple"
 
     def permitir_paso(self):
         return self.estado == "verde"

@@ -10,7 +10,7 @@ class ArmadorTablero:
     #                     |      ╎      ╎      ║██████╎      ╎      |                       <-- parte_superior_ancho
     #  vereda_izq_largo   |      ╎      ╎      ║◥▆▆▆▆◤╎      ╎      | vereda_der_largo
     #                     |      ╎      ╎      ║      ╎      ╎      |                     
-    #                     |🟢======================================🔴|                   
+    #                   🟢|=========================================|🔴                   
     #                    ◐|◐  ◑ ◑╎ ◑    ╎  ◐   ◐ ◐ ◐◑ ╎◢☗☗☗☗◣╎  ◐   |◑x9                    
     #                    ◐|  ◐   ╎◢☗☗☗☗◣╎ ◑   ◐║◐ ◑   ◐██████╎ ◐  ◑ |                    
     #                    ◐| ◑ ◑◐ ╎██████╎  ◐ ◐ ║  ◑ ◐ |██████╎◐   ◑ |                     <-- parte_peatonal_ancho
@@ -122,6 +122,19 @@ class ArmadorTablero:
             area_de_espera = AreaEsperaVehiculo(celda_inicial, Sentido.NORTE, self.vehiculos)
             self.areas_de_espera.append(area_de_espera)
 
+        # Agregamos los semáforos en las celdas de la verda donde arranca la senda peatonal
+        semaforo_izquierdo_fila = parte_superior_ancho
+        semaforo_izquierdo_columna = vereda_izquierda_largo - 1
+        semaforo_izquierdo = Semaforo()
+        self.celdas_matriz[semaforo_izquierdo_fila][semaforo_izquierdo_columna].agregar_entidad(semaforo_izquierdo)
+        self.semaforos.append(semaforo_izquierdo)
+
+        semaforo_derecho_fila = parte_superior_ancho
+        semaforo_derecho_columna = vereda_izquierda_largo + calle_largo + 1
+        semaforo_derecho = Semaforo()
+        self.celdas_matriz[semaforo_derecho_fila][semaforo_derecho_columna].agregar_entidad(semaforo_derecho)
+        self.semaforos.append(semaforo_derecho)
+
     def generar_parte_superior(self, fila, columna, celdas_fila, vereda_izquierda_largo, vereda_derecha_largo, parte_superior_ancho):
         # Vereda izquierda: todas celdas normales (espacios vacíos)
         fila, columna, celdas_fila = self.generar_celdas_normales(fila, columna, celdas_fila, vereda_izquierda_largo)
@@ -146,14 +159,13 @@ class ArmadorTablero:
         columna += 1
 
         # Parte central
-        # 1. Si es la primera fila peatonal, va separador con semáforos
-        # 2. Si es la última fila peatonal, va separador sin semáforos
-        # 3. Sino, va carril
-        separador_con_semaforos = fila == int(parte_superior_ancho)
-        separador_sin_semaforos = fila == int(parte_superior_ancho + parte_peatonal_ancho - 1)
+        # - Si es la primera o la última fila, va separador peatonal
+        # - Sino va carril
+        es_primera_fila = fila == int(parte_superior_ancho)
+        es_ultima_fila = fila == int(parte_superior_ancho + parte_peatonal_ancho - 1)
         
-        if (separador_con_semaforos or separador_sin_semaforos):
-            fila, columna, celdas_fila = self.generar_separador_peatonal(fila, columna, celdas_fila, calle_largo, separador_con_semaforos)
+        if (es_primera_fila or es_ultima_fila):
+            fila, columna, celdas_fila = self.generar_separador_peatonal(fila, columna, celdas_fila, calle_largo)
         else:
             fila, columna, celdas_fila = self.generar_carriles(fila, columna, celdas_fila)
 
@@ -198,31 +210,16 @@ class ArmadorTablero:
 
         return fila, columna, celdas_fila
 
-    def generar_separador_peatonal(self, fila, columna, celdas_fila, calle_largo, separador_con_semaforos):
-
-        if (separador_con_semaforos):
-            # Agregamos semáforo, celda columna los asociamos
-            semaforo = Semaforo(fila=fila, columna=columna)
-            celda = Celda(fila=fila, columna=columna, tipo=TipoDeCelda.NORMAL, entidad=semaforo, tablero=self)
-            
-            self.semaforos.append(semaforo)
-            celdas_fila.append(celda)
-            columna += 1
-
+    def generar_separador_peatonal(self, fila, columna, celdas_fila, calle_largo):
         # Agregamos un separador por el largo de la calle
-        cantidad_de_separadores = calle_largo - (3 if separador_con_semaforos else 0)
+        cantidad_de_separadores = calle_largo - 1
         for i in range(cantidad_de_separadores):
             celdas_fila.append(Celda(fila=fila, columna=columna, tipo=TipoDeCelda.SEPARADOR_PEATONAL, tablero=self))
             columna += 1
 
-        if (separador_con_semaforos):
-            # Agregamos semáforo al final
-            semaforo = Semaforo(fila=fila, columna=columna)
-            celda = Celda(fila=fila, columna=columna, tipo=TipoDeCelda.NORMAL, entidad=semaforo, tablero=self)
-            
-            self.semaforos.append(semaforo)
-            celdas_fila.append(celda)
-            columna += 1
+        # Agregamos una celda al final para la vereda
+        celdas_fila.append(Celda(fila=fila, columna=columna, tipo=TipoDeCelda.VEREDA_CORDON, tablero=self))
+        columna += 1
 
         return fila, columna, celdas_fila
 
