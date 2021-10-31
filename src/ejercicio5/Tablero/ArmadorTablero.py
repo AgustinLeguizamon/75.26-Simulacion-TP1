@@ -1,3 +1,4 @@
+from .AreaEsperaVehiculo import AreaEsperaVehiculo
 from .Celda import Celda
 from Entidades.Semaforo import Semaforo
 from .AreaEsperaPeaton import AreaEsperaPeaton
@@ -86,11 +87,15 @@ class ArmadorTablero:
         # TODO: eliminar
         # self.celdas_matriz[self._FILA_ORIGEN_PASO_PEATONAL][self._COLUMNA_ORIGEN_PASO_PEATONAL].tipo = 99
 
-        # Creamos las areas de espera
-        self.areas_de_espera.append(AreaEsperaPeaton(self.celdas_matriz, Direccion.OESTE, self._COLUMNA_ORIGEN_PASO_PEATONAL, 
-                                                self._FILA_ORIGEN_PASO_PEATONAL, parte_peatonal_ancho - cantidad_separadores, calle_largo, self.peatones))
-        self.areas_de_espera.append(AreaEsperaPeaton(self.celdas_matriz, Direccion.ESTE, self._COLUMNA_ORIGEN_PASO_PEATONAL, 
-                                                self._FILA_ORIGEN_PASO_PEATONAL, parte_peatonal_ancho - cantidad_separadores, calle_largo, self.peatones))
+        # Creamos las areas de espera de peatones
+        area_espera_izquierda = AreaEsperaPeaton(self.celdas_matriz, Direccion.OESTE, self._COLUMNA_ORIGEN_PASO_PEATONAL, self._FILA_ORIGEN_PASO_PEATONAL, parte_peatonal_ancho - cantidad_separadores, calle_largo, self.peatones)
+        self.areas_de_espera.append(area_espera_izquierda)
+
+        area_espera_derecha = AreaEsperaPeaton(self.celdas_matriz, Direccion.ESTE, self._COLUMNA_ORIGEN_PASO_PEATONAL, self._FILA_ORIGEN_PASO_PEATONAL, parte_peatonal_ancho - cantidad_separadores, calle_largo, self.peatones)
+        self.areas_de_espera.append(area_espera_derecha)
+
+        # Creamos las áreas de espera de autos
+        # area_espera_norte_izquierda = AreaEsperaVehiculo(self.celdas_matriz, Direccion.OESTE, self._COLUMNA_ORIGEN_PASO_PEATONAL, self._FILA_ORIGEN_PASO_PEATONAL, parte_peatonal_ancho - cantidad_separadores, calle_largo, self.peatones)
 
 
     def generar_parte_superior(self, fila, columna, celdas_fila, vereda_izquierda_largo, vereda_derecha_largo, parte_superior_ancho):

@@ -1,6 +1,6 @@
 import random as rn
 
-def velocidad_inicial():
+def velocidad_inicial_peaton():
     p = rn.random()
     velocidad = 2
     if p > 0.978:
@@ -16,3 +16,6 @@ def velocidad_inicial():
         velocidad = 3
         return velocidad
     return velocidad
+
+def velocidad_inicial_vehiculo():
+    return 1

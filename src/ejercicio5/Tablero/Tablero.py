@@ -1,6 +1,7 @@
 from .Dibujador import Dibujador
 from .Movedor import Movedor
 from .ArmadorTablero import ArmadorTablero
+from .Celda import Celda
 
 class Tablero:
 
@@ -60,7 +61,7 @@ class Tablero:
         for vehiculo in vehiculos_a_remover:
             self.vehiculos.remove(vehiculo)
 
-    def get_celda(self, fila, columna):
+    def get_celda(self, fila, columna) -> Celda:
         if 0 <= fila < len(self.celdas_matriz) and 0 <= columna < len(self.celdas_matriz[0]):
             return self.celdas_matriz[fila][columna]
         return None
