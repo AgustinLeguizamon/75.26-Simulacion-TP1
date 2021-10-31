@@ -17,14 +17,14 @@ class Tablero:
         
         self.dibujador = Dibujador()
         self.movedor = Movedor()
+        self.armador_tablero = ArmadorTablero(self)
+        self.armador_tablero.armar_tablero()
 
-        armador_tablero = ArmadorTablero(self)
-        armador_tablero.armar_tablero()
-        self.celdas_matriz = armador_tablero.celdas_matriz
-        self.semaforos = armador_tablero.semaforos
-        self.vehiculos = armador_tablero.vehiculos
-        self.peatones = armador_tablero.peatones
-        self.areas_de_espera = armador_tablero.areas_de_espera
+        self.celdas_matriz = self.armador_tablero.celdas_matriz
+        self.semaforos = self.armador_tablero.semaforos
+        self.vehiculos = self.armador_tablero.vehiculos
+        self.peatones = self.armador_tablero.peatones
+        self.areas_de_espera = self.armador_tablero.areas_de_espera
         
         pass
 
@@ -61,7 +61,5 @@ class Tablero:
         for vehiculo in vehiculos_a_remover:
             self.vehiculos.remove(vehiculo)
 
-    def get_celda(self, fila, columna) -> Celda:
-        if 0 <= fila < len(self.celdas_matriz) and 0 <= columna < len(self.celdas_matriz[0]):
-            return self.celdas_matriz[fila][columna]
-        return None
+    def get_celda(self, fila, columna) -> Celda or None:
+        return self.armador_tablero.get_celda(fila, columna)
