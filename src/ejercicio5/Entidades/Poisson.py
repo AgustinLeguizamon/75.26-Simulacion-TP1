@@ -16,13 +16,13 @@ class Poisson:
             muestra_exponencial = (-np.log(1-muestra_uniforme)) / self.lambda_arribo
             self.tiempos_entre_arribos.append(muestra_exponencial)
 
-    def ocurrio_nuevo_evento(self, tiempo_actual):
+    def eventos_en_rango_de_tiempo(self, tiempo_anterior, tiempo_actual) -> int:
         ocurrencias = 0
         tiempo_i = 0
         i = 0
 
         # TODO: remove
-        return True
+        return 1
 
         # Chequeamos cuantos eventos/ocurrencias hubo en el tiempo que nos envian
         while(tiempo_i < tiempo_actual):

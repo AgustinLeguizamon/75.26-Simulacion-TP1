@@ -26,9 +26,11 @@ class AreaEsperaVehiculo:
 
         # Luego chequeo si hay arribo de vehículo según poisson 
         # Si no hay, no hago nada
-        ocurre_evento = self.poisson.ocurrio_nuevo_evento(tiempo)
-        if (not ocurre_evento):
+        eventos_ocurridos = self.poisson.eventos_en_rango_de_tiempo(0, tiempo)
+        if (eventos_ocurridos == 0):
             return
+
+        # TODO: agregar autos por cantidad de eventos ocurridos
 
         celda_inicial_fila = self.celda_inicial.get_fila()
         celda_inicial_columna = self.celda_inicial.get_columna()

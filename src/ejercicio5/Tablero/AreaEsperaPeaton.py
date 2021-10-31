@@ -37,10 +37,12 @@ class AreaEsperaPeaton:
         
         # Luego chequeo si hay arribo de peaton según poisson 
         # Si no hay, no hago nada
-        ocurre_evento = self.poisson.ocurrio_nuevo_evento(tiempo)
-        if (not ocurre_evento):
+        eventos_ocurridos = self.poisson.eventos_en_rango_de_tiempo(0, tiempo)
+        if (eventos_ocurridos == 0):
             return
         
+        # TODO: crear 1 peaton por cada evento ocurrido
+
         # Sumamos un peaton a la senda peatonal, esperando para avanzar
         # en una de las celdas iniciales disponible del área de espera
         agregamos_peaton_en_senda = False
