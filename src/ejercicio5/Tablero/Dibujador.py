@@ -2,8 +2,6 @@ from .Celda import Celda
 from Entidades.Semaforo import Semaforo
 from .AreaEsperaPeaton import AreaEsperaPeaton
 
-from enums import TipoDeCelda, Direccion
-
 class Dibujador:
     def __init__(self):  
         pass

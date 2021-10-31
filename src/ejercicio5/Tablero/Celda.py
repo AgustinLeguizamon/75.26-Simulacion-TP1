@@ -1,29 +1,30 @@
+from numpy import void
+from Entidades.Movible import Movible
 from Excepciones.celda_ocupada_excepcion import CeldaOcupadaExcepcion
 from enums import TipoDeCelda
 
 class Celda:
-    def __init__(self, fila, columna, tipo, tablero, entidad = None):
+    def __init__(self, fila, columna, tipo, tablero, entidad: Movible = None):
         self.fila = fila
         self.columna = columna
         self.tipo = tipo
         self.entidad = entidad
         self.tablero = tablero
     
-    # para cuando se mueven las entidades en el paso peatonal
-    def colocar_entidad(self, entidad):
+    def esta_ocupada(self) -> bool:
+        return self.entidad != None
+
+    def agregar_entidad(self, entidad: Movible) -> void:
         if self.entidad != None:
             raise CeldaOcupadaExcepcion
-        entidad.set_celda(self)
-        self.entidad = entidad
-
         
-    # solo la puede llamar el AreaDeEspera
-    def set_entidad(self, entidad):
-        if self.entidad != None:
-            return False
-        self.colocar_entidad(entidad)
-        return True
+        self.entidad = entidad
+        entidad.set_celda(self)
     
+    def remover_entidad(self):
+        self.entidad.set_celda(None)
+        self.entidad = None
+
     def get_fila(self):
         return self.fila
     
@@ -52,8 +53,3 @@ class Celda:
             return "="
 
         return "X"
-    
-    def limpiar_entidad(self):
-        self.entidad.limpiar_celda()
-        self.entidad = None
-

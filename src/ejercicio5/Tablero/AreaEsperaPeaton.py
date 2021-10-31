@@ -1,5 +1,8 @@
+from random import random
+from numpy import array
 from Entidades.Peaton import Peaton
-from enums import Direccion
+from enums import Sentido
+from .Celda import Celda
 from Entidades.Poisson import Poisson
 from utils import velocidad_inicial_peaton
 
@@ -8,71 +11,51 @@ class AreaEsperaPeaton:
     # Cuenta cuantos peatones cruzaron
     MAX_CANTIDAD_PEATONES = 100
 
-    def __init__(self, celdas_matriz, posicion, origen_paso_peatonal_x, origen_paso_peatonal_y, paso_peatonal_ancho, calle_largo, peatones):
-        self.peatones_esperando = 0
-        self.peatones_cruzaron = 0
-        self.posicion = posicion
+    def __init__(self, celdas_iniciales: list[Celda], sentido_peatones: Sentido, peatones: list[Peaton]):
+        self.celdas_iniciales = celdas_iniciales
+        self.sentido_peatones = sentido_peatones
         self.peatones = peatones
-
-        self.celdas_generadoras = []
-        
-        self.preparar(celdas_matriz, origen_paso_peatonal_x, origen_paso_peatonal_y, paso_peatonal_ancho, calle_largo) 
-    
-    def preparar(self, celdas_matriz, origen_paso_peatonal_x, origen_paso_peatonal_y, paso_peatonal_ancho, calle_largo):
-        if self.posicion == Direccion.OESTE:
-            for i in range(paso_peatonal_ancho):
-                self.celdas_generadoras.append(celdas_matriz[origen_paso_peatonal_y + i][origen_paso_peatonal_x])
-
-        if self.posicion == Direccion.ESTE:
-            for i in range(paso_peatonal_ancho):
-                self.celdas_generadoras.append(celdas_matriz[origen_paso_peatonal_y + i][origen_paso_peatonal_x + calle_largo - 2])
+        self.peatones_esperando = 0
+        self.poisson = Poisson()
             
-    # Generamos un nuevo arribo de peaton según las condiciones establecidas
-    # Si se genera un nuevo arribo, sumamos un contador para luego crear un peaton
-    def arribo_de_peaton(self, tiempo):
-        ocurre_evento = self.calcular_ocurrencia_arribo_de_peaton(tiempo)
-        if (ocurre_evento and self.peatones_esperando < self.MAX_CANTIDAD_PEATONES):
-            self.peatones_esperando += 1
-                
-
-    # Calcula la ocurrencia del evento del arribo del peaton
-    # Retorna: true si arriba un peaton, false caso contrario
-    def calcular_ocurrencia_arribo_de_peaton(self, tiempo) -> bool:
-        poisson = Poisson()
-        tiempo_arribo = poisson.generar()
-        return tiempo_arribo < tiempo
-
-    def colocar_peaton_en_paso_peatonal(self, id, direccion, velocidad):
-        peaton = Peaton(id, direccion, velocidad)
-        fue_colocado = False
-        i = 0
-        while not fue_colocado and i < len(self.celdas_generadoras):
-            fue_colocado = self.celdas_generadoras[i].set_entidad(peaton)
-            i += 1
-        if fue_colocado:
-            self.peatones.append(peaton)
-            self.peatones_esperando -= 1
-        return fue_colocado
-        
-
-    def peaton_cruza_paso_peatonal(self):
-        self.peatones_cruzaron += 1
-    
-    # El área de espera chequea si tiene que colocar un peaton
+   # El área de espera chequea si tiene que colocar un peaton
     # en la senda peatonal
     def accionar(self, semaforos, tiempo):
-        self.arribo_de_peaton(tiempo)
+        
+        # Si llegamos al tope de peatones esperando, no hacemos nada
+        if (self.peatones_esperando >= self.MAX_CANTIDAD_PEATONES):
+            return
+
+        # Si los semaforos no permiten el paso, no hacemos nada
         primer_semaforo = semaforos[0]
         segundo_semaforo = semaforos[1]
-        if (primer_semaforo.permitir_paso() and segundo_semaforo.permitir_paso()):
-            # coloco peaton en la senda peatonal
-            # TODO: manejar ids
-            id = 1
-            direccion = Direccion.ESTE if self.posicion == Direccion.OESTE else Direccion.OESTE
-            velocidad = velocidad_inicial_peaton()
-            self.colocar_peaton_en_paso_peatonal(id, direccion, velocidad)
+        if (not primer_semaforo.permitir_paso() or not segundo_semaforo.permitir_paso()):
+            # No hacemos nada
+            return
 
-    def _debug_colocar_peaton(self, id, direccion, velocidad) -> bool:
-       return self.colocar_peaton_en_paso_peatonal(id, direccion, velocidad)
+        # Si no hay una ocurrencia de evento de Poisson, no hacemos nada
+        ocurre_evento = self.poisson.ocurrio_nuevo_evento(tiempo)
+        if (not ocurre_evento):
+            return
+        
+        # Sumamos un peaton a la senda peatonal, esperando para avanzar
+        # en una de las celdas iniciales disponible del área de espera
+        agregamos_peaton_en_senda = False
+        for celda in self.celdas_iniciales:
+            if celda.esta_ocupada():
+                continue
+
+            # La celda no está ocupada, sumamos al peaton a la senda peatonal
+            # y a la colección de peatones
+            peaton = Peaton(self.sentido_peatones, velocidad_inicial_peaton())
+            celda.agregar_entidad(peaton)
+            self.peatones.append(peaton)
+            agregamos_peaton_en_senda = True
+            break
+
+        # Si el peatón fue agregado a una celda, listo
+        # sino, sumamos 1 al contador de "peatones esperando" (ser agregados a la senda peatonal)
+        if (not agregamos_peaton_en_senda):
+            self.peatones_esperando += 1
 
 

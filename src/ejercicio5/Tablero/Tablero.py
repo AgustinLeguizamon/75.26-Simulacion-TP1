@@ -51,6 +51,8 @@ class Tablero:
         # Dibujamos las celdas
         self.dibujador.dibujar_tablero(self.celdas_matriz)
 
+        self.dibujar_estadisticas()
+
         # Borramos peatones que salieron del tablero
         peatones_a_remover = [peaton for peaton in self.peatones if peaton.celda is None]
         for peaton in peatones_a_remover:
@@ -63,3 +65,7 @@ class Tablero:
 
     def get_celda(self, fila, columna) -> Celda or None:
         return self.armador_tablero.get_celda(fila, columna)
+
+    def dibujar_estadisticas(self):
+        print("Peatones en área de espera izquierda: ", self.areas_de_espera[0].peatones_esperando)
+        print("Peatones en área de espera derecha: ", self.areas_de_espera[1].peatones_esperando)
