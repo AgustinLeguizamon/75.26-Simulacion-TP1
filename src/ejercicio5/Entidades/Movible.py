@@ -2,8 +2,8 @@ from .Entidad import Entidad
 from enums import Sentido
 
 class Movible(Entidad):
-    def __init__(self, sentido: Sentido, velocidad: float):
-        super().__init__()
+    def __init__(self, sentido: Sentido, velocidad: float, color = None):
+        super().__init__(color)
         self.sentido = sentido
         self.velocidad = velocidad
 

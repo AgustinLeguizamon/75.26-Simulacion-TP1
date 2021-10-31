@@ -1,14 +1,16 @@
 from numpy import array
-from Entidades.Vehiculo import Vehiculo
+from Entidades.VehiculoParte import VehiculoParte
 from Entidades.Poisson import Poisson
 from enums import Sentido
 from .Celda import Celda
-from utils import velocidad_inicial_vehiculo
+from utils import velocidad_inicial_vehiculo, generar_color_random
 
 class AreaEsperaVehiculo:
+    VEHICULO_LARGO_CELDAS = 6
 
-    def __init__(self, celda_inicial: Celda, sentido_vehiculos: Sentido, vehiculos: array):
+    def __init__(self, celda_inicial: Celda, celda_matriz: list[list[Celda]], sentido_vehiculos: Sentido, vehiculos: array):
         self.celda_inicial = celda_inicial
+        self.celda_matriz = celda_matriz
         self.sentido_vehiculos = sentido_vehiculos
         self.vehiculos = vehiculos
         self.poisson = Poisson()
@@ -27,9 +29,18 @@ class AreaEsperaVehiculo:
         if (not ocurre_evento):
             return
 
-        # Agrego un vehículo en la celda inicial
-        vehiculo = Vehiculo(self.sentido_vehiculos, velocidad_inicial_vehiculo())
-        self.celda_inicial.agregar_entidad(vehiculo)
-        self.vehiculos.append(vehiculo)
+        celda_inicial_fila = self.celda_inicial.get_fila()
+        celda_inicial_columna = self.celda_inicial.get_columna()
+
+        # Agrego partes de vehiculos en las celda inicial y las columnas restantes (6)
+        color_vehiculo = generar_color_random()
+        for i in range(self.VEHICULO_LARGO_CELDAS):
+            fila_relativa = 0
+            columna_relativa = i
+            vehiculo = VehiculoParte(self.sentido_vehiculos, velocidad_inicial_vehiculo(), fila_relativa, columna_relativa, color_vehiculo)
+            celda = self.celda_matriz[celda_inicial_fila + fila_relativa][celda_inicial_columna + columna_relativa]
+            celda.agregar_entidad(vehiculo)
+            self.vehiculos.append(vehiculo)
+
 
 

@@ -19,3 +19,8 @@ def velocidad_inicial_peaton():
 
 def velocidad_inicial_vehiculo():
     return 1
+
+def generar_color_random():
+    colores = ["grey", "red", "green", "yellow", "blue", "magenta", "cyan"]
+    color_elegido = rn.randint(0, len(colores) - 1)
+    return colores[color_elegido]

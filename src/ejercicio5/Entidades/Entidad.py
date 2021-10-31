@@ -1,9 +1,9 @@
-import random
+from utils import generar_color_random
 
 class Entidad:
-    def __init__(self):
+    def __init__(self, color = generar_color_random()):
         self.celda = None
-        self.color = self.generar_color_random()
+        self.color = color
 
     def set_celda(self, celda):
         self.celda = celda
@@ -19,10 +19,5 @@ class Entidad:
 
     def get_columna(self):
         return self.celda.get_columna()
-
-    def generar_color_random(self):
-        colores = ["grey", "red", "green", "yellow", "blue", "magenta", "cyan"]
-        color_elegido = random.randint(0, len(colores) - 1)
-        return colores[color_elegido]
 
 
