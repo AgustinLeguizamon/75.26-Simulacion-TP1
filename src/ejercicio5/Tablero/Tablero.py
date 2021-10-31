@@ -27,35 +27,38 @@ class Tablero:
         
         pass
 
-    def accionar(self, tiempo):
-        # Eventos
+    def ejecutar_paso(self, tiempo):
+        # Cambiamos estados de los semáforos
         for semaforo in self.semaforos:
             semaforo.cambiar_estado(tiempo)
 
+        # Chequeamos si tenemos que colocar peatones y/o vehículos
+        # en las áreas de espera
         for area_espera in self.areas_de_espera:
-            # El área de espera chequea si tiene que colocar un peaton
-            # en la senda peatonal
             area_espera.accionar(self.semaforos, tiempo)
 
-        # TODO: Dibujar
-        #dibujador.dibuja(dsadsadasda)
-
-        # TODO: Mover
+        # Movemos a los peatones
         for peaton in self.peatones:
             self.movedor.mover(peaton, self)
-        # movedor.move()
+
+        # Movemos a los vehiculos
+        for vehiculo in self.vehiculos:
+            self.movedor.mover(vehiculo, self)
 
         # TODO: Resolver colisiones
 
         # Dibujamos las celdas
         self.dibujador.dibujar_tablero(self.celdas_matriz)
 
-        # borramos peatones que salieron del tablero
+        # Borramos peatones que salieron del tablero
         peatones_a_remover = [peaton for peaton in self.peatones if peaton.celda is None]
         for peaton in peatones_a_remover:
             self.peatones.remove(peaton)
 
-
+        # Borramos vehiculos que salieron del tablero
+        vehiculos_a_remover = [vehiculo for vehiculo in self.vehiculos if vehiculo.celda is None]
+        for vehiculo in vehiculos_a_remover:
+            self.vehiculos.remove(vehiculo)
 
     def get_celda(self, fila, columna):
         if 0 <= fila < len(self.celdas_matriz) and 0 <= columna < len(self.celdas_matriz[0]):

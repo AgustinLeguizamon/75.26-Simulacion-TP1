@@ -17,11 +17,12 @@ def main():
     isRunning = True
     tablero = Tablero()
     tiempo_transcurrido = 1
+
     while isRunning:
         limpiarPantalla()
 
         # Dibujar
-        tablero.accionar(tiempo_transcurrido)
+        tablero.ejecutar_paso(tiempo_transcurrido)
         tiempo_transcurrido = tiempo_transcurrido + 1
 
         # Dormir por X segundos
