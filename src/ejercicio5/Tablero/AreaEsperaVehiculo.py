@@ -1,7 +1,7 @@
 from numpy import array
 from Entidades.VehiculoParte import VehiculoParte
 from Entidades.Poisson import Poisson
-from enums import Sentido
+from enums import Direccion
 from .Celda import Celda
 from utils import velocidad_inicial_vehiculo, generar_color_random
 
@@ -9,7 +9,7 @@ class AreaEsperaVehiculo:
     VEHICULO_LARGO_CELDAS = 6
     VEHICULO_ANCHO_CELDAS = 5
 
-    def __init__(self, celda_inicial: Celda, celda_matriz: list[list[Celda]], sentido_vehiculos: Sentido, vehiculos: list[VehiculoParte]):
+    def __init__(self, celda_inicial: Celda, celda_matriz: list[list[Celda]], sentido_vehiculos: Direccion, vehiculos: list[VehiculoParte]):
         self.celda_inicial = celda_inicial
         self.celda_matriz = celda_matriz
         self.sentido_vehiculos = sentido_vehiculos
@@ -48,7 +48,7 @@ class AreaEsperaVehiculo:
 
     def agregar_partes_faltantes_de_vehiculos_actuales(self):
         for vehiculo in self.vehiculos:
-            multiplicador = 1 if Sentido.SUR else -1
+            multiplicador = 1 if Direccion.SUR else -1
             
             # Chequeamos primero que no sea la última fila
             if (vehiculo.fila_relativa == (5 * multiplicador)):

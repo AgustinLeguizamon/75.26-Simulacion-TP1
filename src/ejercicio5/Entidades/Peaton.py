@@ -1,14 +1,14 @@
 from .Movible import Movible
-from enums import Sentido
+from enums import Direccion
 
 class Peaton(Movible):
-    def __init__(self, sentido: Sentido, velocidad: float):
-        super().__init__(sentido, velocidad)
+    def __init__(self, direccion: Direccion, velocidad: float):
+        super().__init__(direccion, velocidad)
 
     def get_dibujo(self):
-        if self.sentido == Sentido.ESTE:
+        if self.direccion == Direccion.ESTE:
             return '◐'
-        if self.sentido == Sentido.OESTE:
+        if self.direccion == Direccion.OESTE:
             return '◑'
 
         return super().get_dibujo()

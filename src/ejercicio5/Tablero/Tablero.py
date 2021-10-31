@@ -37,8 +37,8 @@ class Tablero:
             semaforo.cambiar_estado(tiempo)
 
         # Movemos a los peatones
-        # for peaton in self.peatones:
-        #    self.movedor.mover(peaton, self)
+        for peaton in self.peatones:
+            self.movedor.mover(peaton, self)
         
         # for peaton in self.peatones:
         #    self.movedor.ejecuta(self)

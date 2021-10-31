@@ -1,14 +1,14 @@
 from .Entidad import Entidad
-from enums import Sentido
+from enums import Direccion
 
 class Movible(Entidad):
-    def __init__(self, sentido: Sentido, velocidad: float, color = None):
+    def __init__(self, direccion: Direccion, velocidad: float, color = None):
         super().__init__(color)
-        self.sentido = sentido
+        self.direccion = direccion
         self.velocidad = velocidad
 
-    def get_sentido(self):
-        return self.sentido
+    def get_direccion(self):
+        return self.direccion
     
     def get_velocidad(self):
         return self.velocidad

@@ -1,4 +1,4 @@
-from enums import Sentido
+from enums import Direccion
 from Entidades.Movible import Movible
 from Entidades.VehiculoParte import VehiculoParte
 
@@ -9,12 +9,12 @@ class Movedor:
     def mover(self, movible: Movible, tablero):
         fila_inicial = movible.get_fila()
         columna_inicial = movible.get_columna()
-        sentido = movible.get_sentido()
+        direccion = movible.get_direccion()
         velocidad = movible.get_velocidad()
         
         # calculamos nueva posicion
-        fila_final = fila_inicial + (velocidad * (1 if sentido == Sentido.SUR else -1 if sentido == Sentido.NORTE else 0))
-        columna_final = columna_inicial + (velocidad * (1 if sentido == Sentido.ESTE else -1 if sentido == Sentido.OESTE else 0))
+        fila_final = fila_inicial + velocidad * direccion[Direccion.FILA]
+        columna_final = columna_inicial + velocidad * direccion[Direccion.COLUMNA]
 
         # obtenemos celdas iniciales y finales
         celda_inicial = tablero.get_celda(fila_inicial, columna_inicial)

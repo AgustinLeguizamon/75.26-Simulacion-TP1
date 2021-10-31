@@ -2,7 +2,7 @@ from .AreaEsperaVehiculo import AreaEsperaVehiculo
 from .Celda import Celda
 from Entidades.Semaforo import Semaforo
 from .AreaEsperaPeaton import AreaEsperaPeaton
-from enums import TipoDeCelda, Sentido
+from enums import TipoDeCelda, Direccion
 
 class ArmadorTablero:
     #                     |      ╎ calle_largo ║██████╎      ╎      |                        
@@ -91,7 +91,7 @@ class ArmadorTablero:
             celda = self.get_celda(area_espera_izquierda_fila + i, area_espera_izquierda_columna)
             celdas_iniciales_area_izquierda.append(celda)
 
-        area_espera_izquierda = AreaEsperaPeaton(celdas_iniciales_area_izquierda, Sentido.ESTE, self.peatones)
+        area_espera_izquierda = AreaEsperaPeaton(celdas_iniciales_area_izquierda, Direccion.ESTE, self.peatones)
         self.areas_de_espera.append(area_espera_izquierda)
 
         # Creamos el área de espera de los peatones a la derecha (lado este, sentido oeste)
@@ -103,7 +103,7 @@ class ArmadorTablero:
             celda = self.get_celda(area_espera_derecha_fila + i, area_espera_derecha_columna)
             celdas_iniciales_area_derecha.append(celda)
 
-        area_espera_derecha = AreaEsperaPeaton(celdas_iniciales_area_derecha, Sentido.OESTE, self.peatones)
+        area_espera_derecha = AreaEsperaPeaton(celdas_iniciales_area_derecha, Direccion.OESTE, self.peatones)
         self.areas_de_espera.append(area_espera_derecha)
 
         # Creamos las áreas de espera de autos
@@ -114,14 +114,14 @@ class ArmadorTablero:
         columna_inicial_norte = self.vereda_izquierda_largo + 1
         for numero_de_carril in range(cantidad_de_carriles_por_sentido):
             celda_inicial = self.get_celda(fila_inicial_norte, columna_inicial_norte + (numero_de_carril * carril_ancho_celdas))
-            area_de_espera = AreaEsperaVehiculo(celda_inicial, self.celdas_matriz, Sentido.SUR, self.vehiculos)
+            area_de_espera = AreaEsperaVehiculo(celda_inicial, self.celdas_matriz, Direccion.SUR, self.vehiculos)
             self.areas_de_espera.append(area_de_espera)
 
         fila_inicial_sur = len(self.celdas_matriz) - 1
         columna_inicial_sur = self.vereda_izquierda_largo + 1 + int(cantidad_de_carriles_por_sentido * carril_ancho_celdas)
         for numero_de_carril in range(cantidad_de_carriles_por_sentido):
             celda_inicial = self.get_celda(fila_inicial_sur, columna_inicial_sur + (numero_de_carril * carril_ancho_celdas))
-            area_de_espera = AreaEsperaVehiculo(celda_inicial, self.celdas_matriz, Sentido.NORTE, self.vehiculos)
+            area_de_espera = AreaEsperaVehiculo(celda_inicial, self.celdas_matriz, Direccion.NORTE, self.vehiculos)
             self.areas_de_espera.append(area_de_espera)
 
         # Agregamos los semáforos en las celdas de la verda donde arranca la senda peatonal

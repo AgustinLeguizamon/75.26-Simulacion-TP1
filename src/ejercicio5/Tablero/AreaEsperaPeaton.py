@@ -1,7 +1,7 @@
 from random import random
 from numpy import array
 from Entidades.Peaton import Peaton
-from enums import Sentido
+from enums import Direccion
 from .Celda import Celda
 from Entidades.Poisson import Poisson
 from utils import velocidad_inicial_peaton
@@ -11,9 +11,9 @@ class AreaEsperaPeaton:
     # Cuenta cuantos peatones cruzaron
     MAX_CANTIDAD_PEATONES = 100
 
-    def __init__(self, celdas_iniciales: list[Celda], sentido_peatones: Sentido, peatones: list[Peaton]):
+    def __init__(self, celdas_iniciales: list[Celda], direccion_peatones: Direccion, peatones: list[Peaton]):
         self.celdas_iniciales = celdas_iniciales
-        self.sentido_peatones = sentido_peatones
+        self.direccion_peatones = direccion_peatones
         self.peatones = peatones
         self.peatones_esperando = 0
         self.poisson = Poisson()
@@ -51,7 +51,7 @@ class AreaEsperaPeaton:
 
                 # La celda no está ocupada, sumamos al peaton a la senda peatonal
                 # y a la colección de peatones
-                peaton = Peaton(self.sentido_peatones, velocidad_inicial_peaton())
+                peaton = Peaton(self.direccion_peatones, velocidad_inicial_peaton())
                 celda.agregar_entidad(peaton)
                 self.peatones.append(peaton)
                 agregamos_peaton_en_senda = True
