@@ -2,10 +2,8 @@ import random as rn
 import numpy as np
 class Poisson:
     def __init__(self, arribos_por_segundo = 5, muestras_a_generar = 10000):
-        self.arribos_por_segundo = arribos_por_segundo
         self.muestras_a_generar = muestras_a_generar
-                
-        self.lambda_arribo = 1 / arribos_por_segundo
+        self.lambda_arribo = arribos_por_segundo
         self.ocurrencias_reportadas = 0
         self.tiempos_entre_arribos = []
 
@@ -16,24 +14,18 @@ class Poisson:
             muestra_exponencial = (-np.log(1-muestra_uniforme)) / self.lambda_arribo
             self.tiempos_entre_arribos.append(muestra_exponencial)
 
-    def eventos_en_rango_de_tiempo(self, tiempo_anterior, tiempo_actual) -> int:
-        ocurrencias = 0
-        tiempo_i = 0
-        i = 0
-
-        # TODO: remove
-        return 1
-
-        # Chequeamos cuantos eventos/ocurrencias hubo en el tiempo que nos envian
-        while(tiempo_i < tiempo_actual):
-            tiempo_i += self.tiempos_entre_arribos[i]
-            ocurrencias += 1
-            i += 1
-
-        # Si las ocurrencias reportadas son mayores o iguales a los eventos "ocurridos"
-        # en ese rango de tiempo, no hay nada que reportar
-        if (self.ocurrencias_reportadas >= ocurrencias):
-            return False
             
-        self.ocurrencias_reportadas += ocurrencias
-        return True
+    def cantidad_eventos_hasta(self, tiempo_maximo):
+        if (tiempo_maximo <= 0):
+            return 0
+        tiempo_acumulado = 0
+        cantidad_eventos = 0
+        while (tiempo_acumulado <= tiempo_maximo):
+            tiempo_acumulado = tiempo_acumulado + self.tiempos_entre_arribos[cantidad_eventos];
+            cantidad_eventos = cantidad_eventos + 1
+        return cantidad_eventos
+
+    def eventos_en_rango_de_tiempo(self, tiempo_anterior, tiempo_actual) -> int:
+        eventos_tiempo_anterior = self.cantidad_eventos_hasta(tiempo_anterior)
+        eventos_tiempo_actual = self.cantidad_eventos_hasta(tiempo_actual)
+        return abs(eventos_tiempo_actual-eventos_tiempo_anterior)

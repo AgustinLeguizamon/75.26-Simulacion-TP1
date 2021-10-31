@@ -17,7 +17,7 @@ def main():
     isRunning = True
     tablero = Tablero()
 
-    segundos_por_paso = 0.5
+    segundos_por_paso = 1
     tiempo_transcurrido = 0
 
     while isRunning:

@@ -1,10 +1,11 @@
 from enum import Enum
 
-class Sentido(Enum):
+class Sentido:
     NORTE = 0
     SUR = 1
     ESTE = 2
     OESTE = 3
+    
 
 class Regla(Enum):
     NINGUNA = 0

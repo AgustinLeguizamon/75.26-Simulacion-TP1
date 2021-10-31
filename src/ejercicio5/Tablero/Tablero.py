@@ -12,13 +12,16 @@ class Tablero:
         self.ancho_carril = ancho_carril
         self.ancho_celda = ancho_celda
         
-        self._COLUMNA_ORIGEN_PASO_PEATONAL = 0
-        self._FILA_ORIGEN_PASO_PEATONAL = 0
-        
         self.dibujador = Dibujador()
         self.movedor = Movedor()
         self.armador_tablero = ArmadorTablero(self)
         self.armador_tablero.armar_tablero()
+
+        # definimos extremos del paso peatonal
+        self._COLUMNA_ORIGEN_PASO_PEATONAL = self.armador_tablero.vereda_izquierda_largo + 1
+        self._FILA_ORIGEN_PASO_PEATONAL = self.armador_tablero.parte_superior_ancho + 1
+        self._COLUMNA_FIN_PASO_PEATONAL = self._COLUMNA_ORIGEN_PASO_PEATONAL + self.armador_tablero.calle_largo - 2
+        self._FILA_FIN_PASO_PEATONAL = self._FILA_ORIGEN_PASO_PEATONAL + self.armador_tablero.parte_peatonal_ancho - 3
 
         self.celdas_matriz = self.armador_tablero.celdas_matriz
         self.semaforos = self.armador_tablero.semaforos
@@ -34,12 +37,18 @@ class Tablero:
             semaforo.cambiar_estado(tiempo)
 
         # Movemos a los peatones
-        for peaton in self.peatones:
-            self.movedor.mover(peaton, self)
+        # for peaton in self.peatones:
+        #    self.movedor.mover(peaton, self)
+        
+        # for peaton in self.peatones:
+        #    self.movedor.ejecuta(self)
+    
+        self.celdas_matriz[self._FILA_ORIGEN_PASO_PEATONAL][self._COLUMNA_ORIGEN_PASO_PEATONAL].tipo = 99
+        self.celdas_matriz[self._FILA_FIN_PASO_PEATONAL][self._COLUMNA_FIN_PASO_PEATONAL].tipo = 99
 
         # Movemos a los vehiculos
-        for vehiculo in self.vehiculos:
-            self.movedor.mover(vehiculo, self)
+        # for vehiculo in self.vehiculos:
+        #    self.movedor.mover(vehiculo, self)
 
         # Chequeamos si tenemos que colocar peatones y/o vehículos
         # en las áreas de espera

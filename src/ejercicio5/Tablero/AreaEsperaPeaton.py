@@ -41,26 +41,25 @@ class AreaEsperaPeaton:
         if (eventos_ocurridos == 0):
             return
         
-        # TODO: crear 1 peaton por cada evento ocurrido
+        for i in range(eventos_ocurridos):
+            # Sumamos un peaton a la senda peatonal, esperando para avanzar
+            # en una de las celdas iniciales disponible del área de espera
+            agregamos_peaton_en_senda = False
+            for celda in self.celdas_iniciales:
+                if celda.esta_ocupada():
+                    continue
 
-        # Sumamos un peaton a la senda peatonal, esperando para avanzar
-        # en una de las celdas iniciales disponible del área de espera
-        agregamos_peaton_en_senda = False
-        for celda in self.celdas_iniciales:
-            if celda.esta_ocupada():
-                continue
+                # La celda no está ocupada, sumamos al peaton a la senda peatonal
+                # y a la colección de peatones
+                peaton = Peaton(self.sentido_peatones, velocidad_inicial_peaton())
+                celda.agregar_entidad(peaton)
+                self.peatones.append(peaton)
+                agregamos_peaton_en_senda = True
+                break
 
-            # La celda no está ocupada, sumamos al peaton a la senda peatonal
-            # y a la colección de peatones
-            peaton = Peaton(self.sentido_peatones, velocidad_inicial_peaton())
-            celda.agregar_entidad(peaton)
-            self.peatones.append(peaton)
-            agregamos_peaton_en_senda = True
-            break
-
-        # Si el peatón fue agregado a una celda, listo
-        # sino, sumamos 1 al contador de "peatones esperando" (ser agregados a la senda peatonal)
-        if (not agregamos_peaton_en_senda):
-            self.peatones_esperando += 1
+            # Si el peatón fue agregado a una celda, listo
+            # sino, sumamos 1 al contador de "peatones esperando" (ser agregados a la senda peatonal)
+            if (not agregamos_peaton_en_senda):
+                self.peatones_esperando += 1
 
 
