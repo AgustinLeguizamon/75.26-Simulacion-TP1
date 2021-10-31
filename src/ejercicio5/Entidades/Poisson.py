@@ -21,7 +21,7 @@ class Poisson:
         tiempo_acumulado = 0
         cantidad_eventos = 0
         while (tiempo_acumulado <= tiempo_maximo):
-            tiempo_acumulado = tiempo_acumulado + self.tiempos_entre_arribos[cantidad_eventos];
+            tiempo_acumulado = tiempo_acumulado + self.tiempos_entre_arribos[cantidad_eventos]
             cantidad_eventos = cantidad_eventos + 1
         return cantidad_eventos
 

@@ -30,8 +30,6 @@ class AreaEsperaVehiculo:
         if (eventos_ocurridos == 0):
             return
 
-        # TODO: agregar autos por cantidad de eventos ocurridos
-
         celda_inicial_fila = self.celda_inicial.get_fila()
         celda_inicial_columna = self.celda_inicial.get_columna()
 
