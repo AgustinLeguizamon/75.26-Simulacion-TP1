@@ -12,3 +12,6 @@ class Peaton(Movible):
             return '◑'
 
         return super().get_dibujo()
+
+    def __str__(self):
+        return "Peaton"

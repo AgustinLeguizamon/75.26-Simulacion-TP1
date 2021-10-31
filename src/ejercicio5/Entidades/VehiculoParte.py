@@ -8,6 +8,9 @@ class VehiculoParte(Movible):
         self.fila_relativa = fila_relativa
         self.columna_relativa = columna_relativa
 
+    def __str__(self):
+        return "VehiculoParte"
+
     def get_dibujo(self):
         # ◢☗☗☗☗◣
         # ██████

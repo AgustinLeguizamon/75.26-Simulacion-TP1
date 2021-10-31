@@ -33,11 +33,6 @@ class Tablero:
         for semaforo in self.semaforos:
             semaforo.cambiar_estado(tiempo)
 
-        # Chequeamos si tenemos que colocar peatones y/o vehículos
-        # en las áreas de espera
-        for area_espera in self.areas_de_espera:
-            area_espera.accionar(self.semaforos, tiempo)
-
         # Movemos a los peatones
         for peaton in self.peatones:
             self.movedor.mover(peaton, self)
@@ -46,6 +41,11 @@ class Tablero:
         for vehiculo in self.vehiculos:
             self.movedor.mover(vehiculo, self)
 
+        # Chequeamos si tenemos que colocar peatones y/o vehículos
+        # en las áreas de espera
+        for area_espera in self.areas_de_espera:
+            area_espera.accionar(self.semaforos, tiempo)
+        
         # TODO: Resolver colisiones
 
         # Dibujamos las celdas
