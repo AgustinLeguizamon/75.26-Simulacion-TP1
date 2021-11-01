@@ -1,3 +1,4 @@
+from Entidades.Peaton import Peaton
 from .Dibujador import Dibujador
 from .Movedor import Movedor
 from .ArmadorTablero import ArmadorTablero
@@ -44,16 +45,14 @@ class Tablero:
         # Resolvemos colisiones y movemos los peatones
         self.movedor.resolver_y_mover(self)
     
-          # Movemos a los vehiculos
-        for vehiculo in self.vehiculos:
-           self.movedor.mover(vehiculo, self)
+        # Movemos a los vehiculos
+        # for vehiculo in self.vehiculos:
+        #   self.movedor.mover(vehiculo, self)
 
         # Chequeamos si tenemos que colocar peatones y/o vehículos
         # en las áreas de espera
         for area_espera in self.areas_de_espera:
             area_espera.accionar(self.semaforos, tiempo_transcurrido, segundos_por_paso)
-        
-        # TODO: Resolver colisiones
 
         # Dibujamos las celdas
         self.dibujador.dibujar_tablero(self.celdas_matriz)
@@ -75,6 +74,17 @@ class Tablero:
         return self.armador_tablero.get_celda(fila, columna)
 
     def dibujar_estadisticas(self):
-        print()
-        print("Peatones en área de espera izquierda: ", self.areas_de_espera[0].peatones_esperando)
-        print("Peatones en área de espera derecha: ", self.areas_de_espera[1].peatones_esperando)
+        pass
+        # print()
+        # print("Peatones en área de espera izquierda: ", self.areas_de_espera[0].peatones_esperando)
+        # print("Peatones en área de espera derecha: ", self.areas_de_espera[1].peatones_esperando)
+
+    # debug only
+    def _debug_colocar_peaton(self, fila_peatonal, columna_peatonal, direccion, velocidad):
+        fila = fila_peatonal + self._FILA_ORIGEN_PASO_PEATONAL
+        columna = columna_peatonal + self._COLUMNA_ORIGEN_PASO_PEATONAL
+
+        celda = self.armador_tablero.get_celda(fila, columna)
+        peaton = Peaton(direccion, velocidad)
+        celda.agregar_entidad(peaton)
+        self.peatones.append(peaton)

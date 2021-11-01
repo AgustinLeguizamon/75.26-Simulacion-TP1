@@ -25,7 +25,6 @@ class Celda:
         entidad.set_celda(self)
     
     def remover_entidad(self):
-        self.entidad.set_celda(None)
         self.entidad = None
     
     # TODO: por ahora solo resuelve con peatones, pq capaz con vehiculos es distinto

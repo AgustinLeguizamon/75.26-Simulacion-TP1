@@ -5,7 +5,12 @@ class Entidad:
         self.celda = None
         self.color = color if color != None else generar_color_random()
 
+    def remover_celda(self):
+        self.celda = None
+
     def set_celda(self, celda):
+        if self.celda != None:
+            self.celda.remover_entidad()
         self.celda = celda
 
     def get_dibujo(self):
