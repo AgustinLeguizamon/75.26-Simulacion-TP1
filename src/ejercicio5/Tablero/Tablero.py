@@ -5,12 +5,13 @@ from .Celda import Celda
 
 class Tablero:
 
-    def __init__(self, calle_largo = 21, paso_peatonal_ancho = 3, cantidad_de_carriles = 6, ancho_carril = 3.5, ancho_celda = 0.5):  
+    def __init__(self, segundos_por_paso, calle_largo = 21, paso_peatonal_ancho = 3, cantidad_de_carriles = 6, ancho_carril = 3.5, ancho_celda = 0.5):  
         self.calle_largo = calle_largo
         self.paso_peatonal_ancho = paso_peatonal_ancho
         self.cantidad_de_carriles = cantidad_de_carriles
         self.ancho_carril = ancho_carril
         self.ancho_celda = ancho_celda
+        self.segundos_por_paso = segundos_por_paso
         
         self.dibujador = Dibujador()
         self.movedor = Movedor()
@@ -31,10 +32,10 @@ class Tablero:
         
         pass
 
-    def ejecutar_paso(self, tiempo):
+    def ejecutar_paso(self, tiempo_transcurrido, segundos_por_paso):
         # Cambiamos estados de los semáforos
         for semaforo in self.semaforos:
-            semaforo.cambiar_estado(tiempo)
+            semaforo.cambiar_estado(tiempo_transcurrido)
 
         # Cada peaton declara a que celda se quiere mover
         for peaton in self.peatones:
@@ -43,18 +44,14 @@ class Tablero:
         # Resolvemos colisiones y movemos los peatones
         self.movedor.resolver_y_mover(self)
     
-        # TODO: remove this
-        # self.celdas_matriz[self._FILA_ORIGEN_PASO_PEATONAL][self._COLUMNA_ORIGEN_PASO_PEATONAL].tipo = 99
-        # self.celdas_matriz[self._FILA_FIN_PASO_PEATONAL][self._COLUMNA_FIN_PASO_PEATONAL].tipo = 99
-
-        # Movemos a los vehiculos
-        # for vehiculo in self.vehiculos:
-        #    self.movedor.mover(vehiculo, self)
+          # Movemos a los vehiculos
+        for vehiculo in self.vehiculos:
+           self.movedor.mover(vehiculo, self)
 
         # Chequeamos si tenemos que colocar peatones y/o vehículos
         # en las áreas de espera
         for area_espera in self.areas_de_espera:
-            area_espera.accionar(self.semaforos, tiempo)
+            area_espera.accionar(self.semaforos, tiempo_transcurrido, segundos_por_paso)
         
         # TODO: Resolver colisiones
 

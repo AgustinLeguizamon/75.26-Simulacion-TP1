@@ -23,8 +23,8 @@ class Semaforo(Entidad):
     def permitir_paso(self):
         return self.estado == "verde"
 
-    def cambiar_estado(self, tiempo):
-        tiempo_final = tiempo % self.TIEMPO_MAXIMO
+    def cambiar_estado(self, tiempo_transcurrido):
+        tiempo_final = tiempo_transcurrido % self.TIEMPO_MAXIMO
         
         if (tiempo_final <= self.tiempo_paso_peaton):
             self.estado = "verde"

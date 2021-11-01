@@ -15,14 +15,13 @@ def limpiarPantalla():
 def main():
     # Init game variables
     isRunning = True
-    tablero = Tablero()
-
-    segundos_por_paso = 1
+    segundos_por_paso: int = 0.5
     tiempo_transcurrido = 0
+    tablero = Tablero(segundos_por_paso=segundos_por_paso)
 
     while isRunning:
         limpiarPantalla()
-        tablero.ejecutar_paso(tiempo_transcurrido)
+        tablero.ejecutar_paso(tiempo_transcurrido, segundos_por_paso)
         tiempo_transcurrido += segundos_por_paso
         time.sleep(segundos_por_paso)
 

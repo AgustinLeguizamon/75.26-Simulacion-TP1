@@ -15,7 +15,7 @@ class Movedor:
         p = random.random()
         return p < proba
     
-    def declarar_intencion(self, movible:Movible, tablero):
+    def declarar_intencion(self, movible: Movible, tablero):
         fila_inicial = movible.get_fila()
         columna_inicial = movible.get_columna()
         direccion = movible.get_direccion()
@@ -26,8 +26,6 @@ class Movedor:
         # por ahora siempre se mueve hacia adelante
         # calculamos nueva posicion
         fila_final, columna_final = self.calcular_pos_celda_final(fila_inicial, columna_inicial, velocidad, direccion, tablero, movible)
-        # 
-        
 
         # obtenemos celda final
         celda_final = tablero.get_celda(fila_final, columna_final)
@@ -42,7 +40,7 @@ class Movedor:
                 celda_paso_peatonal = tablero.get_celda(fila, columna)
                 celda_paso_peatonal.resolver()
         
-        # TODO: todos los peatones que hayan declarado intencioens sobre celdas
+        # TODO: todos los peatones que hayan declarado intenciones sobre celdas
         # que NO pertenecen al paso peatonal se marcan para ser eliminados
 
 

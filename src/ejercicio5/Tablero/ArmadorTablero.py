@@ -41,7 +41,8 @@ class ArmadorTablero:
         self.ancho_carril = tablero.ancho_carril
         self.ancho_celda = tablero.ancho_celda
 
-        self.ancho_vereda = 10
+        self.ancho_vereda = 10          # en metros (10 metros)
+        self.ancho_parte_superior = 8  # en metros
 
         # Definimos el largo del tablero (en cantidad de celdas) Largo == Width == lo horizontal
         self.vereda_izquierda_largo = int(self.ancho_vereda / self.ancho_celda)
@@ -50,10 +51,9 @@ class ArmadorTablero:
         tablero_largo = int(self.vereda_izquierda_largo + self.calle_largo + self.vereda_derecha_largo)
 
         # Definimos el ancho del tablero (en cantidad de celdas) Ancho == Height == lo vertical
-        self.parte_superior_ancho = int(4 / self.ancho_celda)
-        self.cantidad_separadores = 2
-        self.parte_peatonal_ancho = int(self.paso_peatonal_ancho / self.ancho_celda) + self.cantidad_separadores # 2 más porque incluye separadores
-        self.parte_inferior_ancho = int(4 / self.ancho_celda)
+        self.parte_superior_ancho = int(self.ancho_parte_superior / self.ancho_celda)
+        self.parte_peatonal_ancho = int(self.paso_peatonal_ancho / self.ancho_celda) + 2 # 2 más porque incluye separadores
+        self.parte_inferior_ancho = int(self.ancho_parte_superior / self.ancho_celda)
         self.tablero_ancho = int(self.parte_superior_ancho + self.parte_peatonal_ancho + self.parte_inferior_ancho)
 
         self.celdas_matriz = []

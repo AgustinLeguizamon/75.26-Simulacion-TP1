@@ -20,7 +20,7 @@ class AreaEsperaPeaton:
             
    # El área de espera chequea si tiene que colocar un peaton
     # en la senda peatonal
-    def accionar(self, semaforos, tiempo):
+    def accionar(self, semaforos, tiempo_transcurrido, segundos_por_paso):
         
         # Si llegamos al tope de peatones esperando, no hacemos nada
         if (self.peatones_esperando == self.MAX_CANTIDAD_PEATONES):
@@ -37,7 +37,7 @@ class AreaEsperaPeaton:
         
         # Luego chequeo si hay arribo de peaton según poisson 
         # Si no hay, no hago nada
-        eventos_ocurridos = self.poisson.eventos_en_rango_de_tiempo(tiempo-1, tiempo)
+        eventos_ocurridos = self.poisson.eventos_en_rango_de_tiempo(tiempo_transcurrido - segundos_por_paso, tiempo_transcurrido)
         if (eventos_ocurridos == 0):
             return
         
@@ -51,7 +51,7 @@ class AreaEsperaPeaton:
 
                 # La celda no está ocupada, sumamos al peaton a la senda peatonal
                 # y a la colección de peatones
-                peaton = Peaton(self.direccion_peatones, velocidad_inicial_peaton())
+                peaton = Peaton(self.direccion_peatones, velocidad_inicial_peaton(segundos_por_paso))
                 celda.agregar_entidad(peaton)
                 self.peatones.append(peaton)
                 agregamos_peaton_en_senda = True
