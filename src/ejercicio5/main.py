@@ -21,7 +21,12 @@ def main():
    tablero = Tablero(segundos_por_paso=segundos_por_paso)
 
    # TODO: para debug colisiones peatones
+   
    tablero._debug_colocar_peaton(0,0, Direccion.ESTE, 1)
+
+   tablero._debug_colocar_peaton(0,5, Direccion.ESTE, 0)
+   # tablero._debug_colocar_peaton(0,0, Direccion.ESTE, 1)
+   
    #
 
    while isRunning:

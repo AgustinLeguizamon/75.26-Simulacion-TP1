@@ -85,7 +85,7 @@ class Movedor:
             movimiento_lateral -= direccion[Direccion.COLUMNA]
         if regla_a_aplicar != Regla.NINGUNA:
             # Recalculo distancia despues de resolver conflicto
-            d = self.distancia_al_prox_peaton(fila_peaton, columna_peaton, direccion, tablero)
+            d = self.distancia_al_prox_peaton(fila_peaton + movimiento_lateral, columna_peaton, direccion, tablero)
         # el peaton en este turno no se mueve si no puedo resolver el conflicto, pero mantiene la velocidad
         velocidad = 0
         if regla_a_aplicar != Regla.NO_RESUELTO:
@@ -95,7 +95,7 @@ class Movedor:
         return fila_peaton + movimiento_lateral, columna_peaton + velocidad * direccion[Direccion.COLUMNA]
 
     
-    def distancia_al_prox_peaton(self, fila_peaton, columna_peaton, direccion, tablero: Tablero):
+    def distancia_al_prox_peaton(self, fila_peaton, columna_peaton, direccion: Direccion, tablero: Tablero):
         d = 0
 
         # el limite es el fin del paso peatonal, por defecto tomo sentido ESTE
@@ -140,8 +140,8 @@ class Movedor:
         # condicion2 = not Celda(x-1,y).ocupada and not Celda(x+1,y).ocupada
         tiene_carril_der = tablero._FILA_ORIGEN_PASO_PEATONAL <= (fila_peaton + derecha) < tablero._FILA_FIN_PASO_PEATONAL
         tiene_carril_izq = tablero._FILA_ORIGEN_PASO_PEATONAL <= (fila_peaton + izquierda) < tablero._FILA_FIN_PASO_PEATONAL
-        tiene_vecino_der = tiene_carril_der and tablero.get_celda(fila_peaton, columna_peaton + derecha).esta_ocupada()
-        tiene_vecino_izq = tiene_carril_izq and tablero.get_celda(fila_peaton, columna_peaton + izquierda).esta_ocupada()
+        tiene_vecino_der = tiene_carril_der and tablero.get_celda(fila_peaton + derecha, columna_peaton).esta_ocupada()
+        tiene_vecino_izq = tiene_carril_izq and tablero.get_celda(fila_peaton + izquierda, columna_peaton).esta_ocupada()
 
         if tiene_vecino_izq and tiene_vecino_der:
             # TODO: ver enums Regla
@@ -159,7 +159,7 @@ class Movedor:
         # distancia_al_prox_vecino_izq_atras() > mi_velocidad
         condicion5 = True
         condicion6 = True
-        sentido_contrario = -sentido[Direccion.COLUMNA]
+        sentido_contrario = Direccion.ESTE if sentido == Direccion.OESTE else Direccion.OESTE
 
         if tiene_carril_izq:
             condicion5 = self.__mi_velocidad_mayor_vecino_lateral_atras(izquierda, sentido_contrario, fila_peaton, columna_peaton, velocidad, tablero)
