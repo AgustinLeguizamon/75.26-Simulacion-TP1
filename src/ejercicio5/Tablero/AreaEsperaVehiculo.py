@@ -6,71 +6,75 @@ from .Celda import Celda
 from utils import velocidad_inicial_vehiculo, generar_color_random
 
 class AreaEsperaVehiculo:
-    VEHICULO_LARGO_CELDAS = 6
-    VEHICULO_ANCHO_CELDAS = 5
 
-    def __init__(self, celda_inicial: Celda, celda_matriz: list[list[Celda]], sentido_vehiculos: Direccion, vehiculos: list[VehiculoParte], poisson: Poisson):
+    def __init__(self, celda_inicial: Celda, celda_matriz: list[list[Celda]], direccion_vehiculos: Direccion, vehiculos: list[VehiculoParte], poisson: Poisson):
         self.celda_inicial = celda_inicial
         self.celda_matriz = celda_matriz
-        self.sentido_vehiculos = sentido_vehiculos
+        self.direccion_vehiculos = direccion_vehiculos
         self.vehiculos = vehiculos
         self.poisson = poisson
 
     # Chequeamos si hay que colocar un nuevo vehículo en el paso peatonal
     # Sino esperamos
     def accionar(self, semaforos: array, tiempo: float):
-        # Chequeo primero si la celda inicial está ocupada
-        # Si lo está, no hago nada
+        # Si la celda inicial está ocupada no hago nada
         if (self.celda_inicial.esta_ocupada()):
             return
 
-        # Luego chequeo si hay arribo de vehículo según poisson 
-        # Si no hay, no hago nada
+        # Chequeo si hay arribo de vehículo según poisson, si no hay, no hago nada
         eventos_ocurridos = self.poisson.eventos_en_rango_de_tiempo(0, tiempo)
         if (eventos_ocurridos == 0):
             return
 
-        celda_inicial_fila = self.celda_inicial.get_fila()
-        celda_inicial_columna = self.celda_inicial.get_columna()
-
-        # A cada vehículo ya agregado le agregamos las "partes faltantes"
-        # dado que en la línea de arriba sólo le agregamos el pedazo superior
-        # self.agregar_partes_faltantes_de_vehiculos_actuales()
-        
-        # Y si sobra espacio, agrego partes de vehiculos en las celda inicial y las columnas restantes
-        # La fila_inicial_relativa es 0 porque es la parte de "arriba"
-        if (self.celda_inicial.esta_ocupada()):
+        if (self.direccion_vehiculos == Direccion.SUR):
             return
-            
-        self.agregar_fila_con_partes_de_vehiculo(celda_inicial_fila, celda_inicial_columna, 0, generar_color_random())
+        
+        # Agregamos una fila con partes de vehiculo, 1 fila por iteración
+        if (not self.celda_inicial.esta_ocupada()):
+            vehiculo = Vehiculo(self.direccion_vehiculos, velocidad_inicial_vehiculo(), generar_color_random()) if len(self.vehiculos_incompletos) == 0 else self.vehiculos_incompletos[0]
+            vehiculo.agregar_siguiente_fila_al_tablero(self.celda_matriz, self.celda_inicial.get_fila(), self.celda_inicial.get_columna(), self.vehiculos)
 
-    def agregar_partes_faltantes_de_vehiculos_actuales(self):
-        for vehiculo in self.vehiculos:
-            multiplicador = 1 if Direccion.SUR else -1
-            
-            # Chequeamos primero que no sea la última fila
-            if (vehiculo.fila_relativa == (5 * multiplicador)):
-                continue
+            # Si not tiene filas para dibujar, lo removemos de la lista de "vehiculos incompletos"
+            if (not vehiculo.tiene_filas_para_dibujar()):
+                self.vehiculos_incompletos.remove(vehiculo)
+            else:
+                # Si todavia tiene, y no fue agregado a esa lista, lo agregamos
+                if (vehiculo not in self.vehiculos_incompletos):
+                    self.vehiculos_incompletos.append(vehiculo)
 
-            siguiente_fila_relativa = vehiculo.fila_relativa + (1 * multiplicador)
+           
+class Vehiculo:
+    VEHICULO_LARGO_CELDAS = 6
+    VEHICULO_ANCHO_CELDAS = 5
 
-            # Chequeamos si la siguiente fila puede entrar en el mapa
-            siguiente_fila = vehiculo.get_fila() + (1 * multiplicador)
-            siguiente_fila_puede_entrar_en_el_mapa  = 0 < siguiente_fila < len(self.celda_matriz) - 1
-            if (not siguiente_fila_puede_entrar_en_el_mapa):
-                continue
+    def __init__(self, direccion, velocidad, color):
+        self.direccion = direccion
+        self.velocidad = velocidad
+        self.color = color
 
-            # Chequeamos si no hay nada en las celdas donde van a ir las partes
-            celda_fila_inicial = self.celda_matriz[siguiente_fila][vehiculo.get_columna()]
-            if (celda_fila_inicial.esta_ocupada()):
-                continue
+        self.partes_de_vehiculo: list[list[VehiculoParte]] = []
 
-            self.agregar_fila_con_partes_de_vehiculo(siguiente_fila, vehiculo.get_columna(), siguiente_fila_relativa, vehiculo.get_dibujo_color())
+        self.crear_partes_vehiculo()
 
-    def agregar_fila_con_partes_de_vehiculo(self, fila_inicial_absoluta, columna_inicial_absoluta, fila_inicial_relativa, color_vehiculo):
-        for i in range(self.VEHICULO_LARGO_CELDAS):
-            columna_relativa = i
-            vehiculo = VehiculoParte(self.sentido_vehiculos, velocidad_inicial_vehiculo(), fila_inicial_relativa, columna_relativa, color_vehiculo)
-            celda = self.celda_matriz[fila_inicial_absoluta][columna_inicial_absoluta + columna_relativa]
-            celda.agregar_entidad(vehiculo)
-            self.vehiculos.append(vehiculo)
+    def crear_partes_vehiculo(self):
+        # Creamos todas las partes del vehiculo
+        for fila_relativa in range(self.VEHICULO_ANCHO_CELDAS):
+            partes_de_vehiculo_en_la_fila = []
+
+            for columna_relativa in range(self.VEHICULO_LARGO_CELDAS):
+                parte_de_vehiculo = VehiculoParte(self.direccion, self.velocidad, fila_relativa, columna_relativa, self.color)
+                partes_de_vehiculo_en_la_fila.append(parte_de_vehiculo)
+
+            self.partes_de_vehiculo.append(partes_de_vehiculo_en_la_fila)
+
+    def tiene_filas_para_dibujar(self):
+        return len(self.partes_de_vehiculo) > 0
+
+    def agregar_siguiente_fila_al_tablero(self, celda_matriz, celda_inicial_fila, celda_inicial_columna, vehiculos):
+        siguiente_fila_a_dibujar = self.partes_de_vehiculo.pop(0)
+        
+        for parte_de_vehiculo in siguiente_fila_a_dibujar:
+            celda = celda_matriz[celda_inicial_fila][celda_inicial_columna + parte_de_vehiculo.columna_relativa]
+            celda.agregar_entidad(parte_de_vehiculo)
+            vehiculos.append(parte_de_vehiculo)
+

@@ -1,9 +1,9 @@
 from utils import generar_color_random
 
 class Entidad:
-    def __init__(self, color = generar_color_random()):
+    def __init__(self, color = None):
         self.celda = None
-        self.color = color
+        self.color = color if color != None else generar_color_random()
 
     def set_celda(self, celda):
         self.celda = celda
