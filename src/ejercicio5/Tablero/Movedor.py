@@ -22,27 +22,29 @@ class Movedor:
         velocidad = movible.get_velocidad()
         
         
-        # TODO: el peaton tiene que resolver a que celda se va a mover usando las reglas del paper
-        # por ahora siempre se mueve hacia adelante
-        # calculamos nueva posicion
+        # el peaton tiene que resolver a que celda se va a mover usando las reglas del paper
+        # calculamos nueva posicion a la que se quiere mover
         fila_final, columna_final = self.calcular_pos_celda_final(fila_inicial, columna_inicial, velocidad, direccion, tablero, movible)
 
         # obtenemos celda final
         celda_final = tablero.get_celda(fila_final, columna_final)
 
+        # Todos los peatones que hayan declarado intenciones sobre celdas
+        # que NO pertenecen al paso peatonal se marcan para ser eliminados
+        celda_final.marcar_peaton_si_fuera_de_peatonal(movible, tablero)
+
         # indicamos a la celda final que un peaton tiene intenciones de moverse a ella
         celda_final.agregar_intencion(movible)
 
+        
     def resolver_y_mover(self, tablero: Tablero):
         # Recorro todas las celdas que pertenecen al paso peatonal
-        for fila in range(tablero._FILA_ORIGEN_PASO_PEATONAL, tablero._FILA_FIN_PASO_PEATONAL):
-            for columna in range(tablero._COLUMNA_ORIGEN_PASO_PEATONAL, tablero._COLUMNA_FIN_PASO_PEATONAL):
+        for fila in range(tablero._FILA_ORIGEN_PASO_PEATONAL, tablero._FILA_FIN_PASO_PEATONAL + 1):
+            for columna in range(tablero._COLUMNA_ORIGEN_PASO_PEATONAL, tablero._COLUMNA_FIN_PASO_PEATONAL + 1):
                 celda_paso_peatonal = tablero.get_celda(fila, columna)
                 celda_paso_peatonal.resolver()
         
-        # TODO: todos los peatones que hayan declarado intenciones sobre celdas
-        # que NO pertenecen al paso peatonal se marcan para ser eliminados
-
+       
 
     # TODO: deprecated
     def mover(self, movible: Movible, tablero):

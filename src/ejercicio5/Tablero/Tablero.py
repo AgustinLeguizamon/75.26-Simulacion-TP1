@@ -72,6 +72,10 @@ class Tablero:
 
     def get_celda(self, fila, columna) -> Celda or None:
         return self.armador_tablero.get_celda(fila, columna)
+    
+    def pos_esta_en_paso_peatonal(self, fila, columna):
+        return self._COLUMNA_ORIGEN_PASO_PEATONAL <= columna <= self._COLUMNA_FIN_PASO_PEATONAL and \
+        self._FILA_ORIGEN_PASO_PEATONAL <= fila <= self._FILA_FIN_PASO_PEATONAL
 
     def dibujar_estadisticas(self):
         pass

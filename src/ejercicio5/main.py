@@ -22,9 +22,9 @@ def main():
 
    # TODO: para debug colisiones peatones
    
-   tablero._debug_colocar_peaton(0,0, Direccion.ESTE, 1)
+   tablero._debug_colocar_peaton(4,38, Direccion.ESTE, 1)
 
-   tablero._debug_colocar_peaton(0,5, Direccion.ESTE, 0)
+   tablero._debug_colocar_peaton(5,5, Direccion.ESTE, 0)
    # tablero._debug_colocar_peaton(0,0, Direccion.ESTE, 1)
    
    #

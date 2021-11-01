@@ -28,19 +28,30 @@ class Celda:
         self.entidad = None
     
     # TODO: por ahora solo resuelve con peatones, pq capaz con vehiculos es distinto
-    # no deberia declarar intencion de moverse a una celda que esta ocupada
+    # TODO: podria hacer mas preguntas, mas que solo preguntar si esta ocupada
+    # ¿El peaton esta a punto de salir del paso_peatonal? -> entonces si podria agregar la intencion, pq la celda va a estar vacia
+    # ¿Paper: el peaton que esta en esta celda piensa moverse a la celda del de la intencion? Podrian intercambiar celdas
     def agregar_intencion(self, peaton: Peaton):
+        # no deberia declarar intencion de moverse a una celda que esta ocupada (por ahora)
         if self.entidad == None:
             self.intenciones.append(peaton)
     
     
     # elige algun peaton al azar y lo coloca en la celda
     def resolver(self):
+        # si el peaton que esta en la celda del paso peatonal tiene intenciones de salir, lo elimino de la celda
+        if self.entidad != None and self.entidad.afuera:
+            self.entidad.set_celda(None)
+
         if len(self.intenciones) > 0:
             ## TODO: Poner Estadisticas().guardar_conflicto([tiempo, 1])
             peaton = choice(self.intenciones)
             self.agregar_entidad(peaton)
             self.intenciones = []
+
+    def marcar_peaton_si_fuera_de_peatonal(self, movible, tablero):
+        if not tablero.pos_esta_en_paso_peatonal(self.fila, self.columna):
+            movible.estas_afuera_paso_peatonal()
 
     def get_fila(self):
         return self.fila

@@ -6,6 +6,7 @@ class Movible(Entidad):
         super().__init__(color)
         self.direccion = direccion
         self.velocidad = velocidad
+        self.afuera = False
 
     def get_direccion(self):
         return self.direccion
@@ -16,3 +17,6 @@ class Movible(Entidad):
     def actualizar_velocidad(self, distancia):
         self.velocidad = min(distancia, self.velocidad)
         return self.velocidad
+    
+    def estas_afuera_paso_peatonal(self):
+        self.afuera = True
