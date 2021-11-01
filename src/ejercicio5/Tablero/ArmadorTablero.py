@@ -93,7 +93,7 @@ class ArmadorTablero:
             celdas_iniciales_area_izquierda.append(celda)
 
         area_espera_izquierda = AreaEsperaPeaton(celdas_iniciales_area_izquierda, Direccion.ESTE, self.peatones)
-        # self.areas_de_espera.append(area_espera_izquierda)
+        self.areas_de_espera.append(area_espera_izquierda)
 
         # Creamos el área de espera de los peatones a la derecha (lado este, sentido oeste)
         area_espera_derecha_fila = self.parte_superior_ancho + 1
@@ -105,7 +105,7 @@ class ArmadorTablero:
             celdas_iniciales_area_derecha.append(celda)
 
         area_espera_derecha = AreaEsperaPeaton(celdas_iniciales_area_derecha, Direccion.OESTE, self.peatones)
-        # self.areas_de_espera.append(area_espera_derecha)
+        self.areas_de_espera.append(area_espera_derecha)
 
         # Creamos las áreas de espera de autos
         carril_ancho_celdas = int(self.ancho_carril / self.ancho_celda)

@@ -20,13 +20,32 @@ def main():
    tiempo_transcurrido = 0
    tablero = Tablero(segundos_por_paso=segundos_por_paso)
 
-   # TODO: para debug colisiones peatones
+   # TODO: para debug colisiones peatones, acordarse de comentar areas de espera de autos
    
-   tablero._debug_colocar_peaton(3,2, Direccion.ESTE, 1)
+   fin_paso_peatonal = 40
+   tablero._debug_colocar_peaton(0,0, Direccion.ESTE, 1)
+   tablero._debug_colocar_peaton(1,0, Direccion.ESTE, 2)
+   tablero._debug_colocar_peaton(2,0, Direccion.ESTE, 3)
+   tablero._debug_colocar_peaton(3,0, Direccion.ESTE, 4)
+   tablero._debug_colocar_peaton(4,0, Direccion.ESTE, 5)
 
-   tablero._debug_colocar_peaton(3,5, Direccion.ESTE, 0)
-   # tablero._debug_colocar_peaton(0,0, Direccion.ESTE, 1)
-   
+   tablero._debug_colocar_peaton(0,2, Direccion.ESTE, 1)
+   tablero._debug_colocar_peaton(1,3, Direccion.ESTE, 2)
+   tablero._debug_colocar_peaton(2,4, Direccion.ESTE, 3)
+   tablero._debug_colocar_peaton(3,5, Direccion.ESTE, 2)
+   tablero._debug_colocar_peaton(4,6, Direccion.ESTE, 2)
+
+   tablero._debug_colocar_peaton(1,fin_paso_peatonal, Direccion.OESTE, 5)
+   tablero._debug_colocar_peaton(2,fin_paso_peatonal, Direccion.OESTE, 4)
+   tablero._debug_colocar_peaton(3,fin_paso_peatonal, Direccion.OESTE, 3)
+   tablero._debug_colocar_peaton(4,fin_paso_peatonal, Direccion.OESTE, 2)
+   tablero._debug_colocar_peaton(5,fin_paso_peatonal, Direccion.OESTE, 1)
+
+   tablero._debug_colocar_peaton(1,fin_paso_peatonal-2, Direccion.OESTE, 2)
+   tablero._debug_colocar_peaton(2,fin_paso_peatonal-2, Direccion.OESTE, 4)
+   tablero._debug_colocar_peaton(3,fin_paso_peatonal-2, Direccion.OESTE, 1)
+   tablero._debug_colocar_peaton(4,fin_paso_peatonal-2, Direccion.OESTE, 2)
+   tablero._debug_colocar_peaton(5,fin_paso_peatonal-2, Direccion.OESTE, 1)
    #
 
    while isRunning:
