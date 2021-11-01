@@ -110,21 +110,21 @@ class ArmadorTablero:
         # Creamos las áreas de espera de autos
         carril_ancho_celdas = int(self.ancho_carril / self.ancho_celda)
         cantidad_de_carriles_por_sentido = int(self.cantidad_de_carriles / 2)
+        largo_auto = 5
 
-        fila_inicial_norte = 0
+        fila_inicial_norte = largo_auto - 1
         columna_inicial_norte = self.vereda_izquierda_largo + 1
 
-        poisson_vehiculos = Poisson(0.2)
         for numero_de_carril in range(cantidad_de_carriles_por_sentido):
             celda_inicial = self.get_celda(fila_inicial_norte, columna_inicial_norte + (numero_de_carril * carril_ancho_celdas))
-            area_de_espera = AreaEsperaVehiculo(celda_inicial, self.celdas_matriz, Direccion.SUR, self.vehiculos, poisson_vehiculos)
+            area_de_espera = AreaEsperaVehiculo(celda_inicial, self.celdas_matriz, Direccion.SUR, self.vehiculos)
             self.areas_de_espera.append(area_de_espera)
 
-        fila_inicial_sur = len(self.celdas_matriz) - 1
+        fila_inicial_sur = len(self.celdas_matriz) - largo_auto
         columna_inicial_sur = self.vereda_izquierda_largo + 1 + int(cantidad_de_carriles_por_sentido * carril_ancho_celdas)
         for numero_de_carril in range(cantidad_de_carriles_por_sentido):
             celda_inicial = self.get_celda(fila_inicial_sur, columna_inicial_sur + (numero_de_carril * carril_ancho_celdas))
-            area_de_espera = AreaEsperaVehiculo(celda_inicial, self.celdas_matriz, Direccion.NORTE, self.vehiculos,poisson_vehiculos)
+            area_de_espera = AreaEsperaVehiculo(celda_inicial, self.celdas_matriz, Direccion.NORTE, self.vehiculos)
             self.areas_de_espera.append(area_de_espera)
 
         # Agregamos los semáforos en las celdas de la verda donde arranca la senda peatonal
