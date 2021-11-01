@@ -46,8 +46,8 @@ class Tablero:
         self.movedor.resolver_y_mover(self)
     
         # Movemos a los vehiculos
-        # for vehiculo in self.vehiculos:
-        #   self.movedor.mover(vehiculo, self)
+        for vehiculo in self.vehiculos:
+            self.movedor.mover(vehiculo, self)
 
         # Chequeamos si tenemos que colocar peatones y/o vehículos
         # en las áreas de espera
