@@ -1,7 +1,7 @@
 import random as rn
 import numpy as np
 class Poisson:
-    def __init__(self, arribos_por_segundo = 5, muestras_a_generar = 10000):
+    def __init__(self, arribos_por_segundo = 0.1, muestras_a_generar = 10000):
         self.muestras_a_generar = muestras_a_generar
         self.lambda_arribo = arribos_por_segundo
         self.ocurrencias_reportadas = 0

@@ -36,15 +36,16 @@ class Tablero:
         for semaforo in self.semaforos:
             semaforo.cambiar_estado(tiempo)
 
-        # Movemos a los peatones
+        # Cada peaton declara a que celda se quiere mover
         for peaton in self.peatones:
-            self.movedor.mover(peaton, self)
+            self.movedor.declarar_intencion(peaton, self)
         
-        # for peaton in self.peatones:
-        #    self.movedor.ejecuta(self)
+        # Resolvemos colisiones y movemos los peatones
+        self.movedor.resolver_y_mover(self)
     
-        self.celdas_matriz[self._FILA_ORIGEN_PASO_PEATONAL][self._COLUMNA_ORIGEN_PASO_PEATONAL].tipo = 99
-        self.celdas_matriz[self._FILA_FIN_PASO_PEATONAL][self._COLUMNA_FIN_PASO_PEATONAL].tipo = 99
+        # TODO: remove this
+        # self.celdas_matriz[self._FILA_ORIGEN_PASO_PEATONAL][self._COLUMNA_ORIGEN_PASO_PEATONAL].tipo = 99
+        # self.celdas_matriz[self._FILA_FIN_PASO_PEATONAL][self._COLUMNA_FIN_PASO_PEATONAL].tipo = 99
 
         # Movemos a los vehiculos
         # for vehiculo in self.vehiculos:

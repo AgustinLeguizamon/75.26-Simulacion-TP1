@@ -9,12 +9,12 @@ class AreaEsperaVehiculo:
     VEHICULO_LARGO_CELDAS = 6
     VEHICULO_ANCHO_CELDAS = 5
 
-    def __init__(self, celda_inicial: Celda, celda_matriz: list[list[Celda]], sentido_vehiculos: Direccion, vehiculos: list[VehiculoParte]):
+    def __init__(self, celda_inicial: Celda, celda_matriz: list[list[Celda]], sentido_vehiculos: Direccion, vehiculos: list[VehiculoParte], poisson: Poisson):
         self.celda_inicial = celda_inicial
         self.celda_matriz = celda_matriz
         self.sentido_vehiculos = sentido_vehiculos
         self.vehiculos = vehiculos
-        self.poisson = Poisson()
+        self.poisson = poisson
 
     # Chequeamos si hay que colocar un nuevo vehículo en el paso peatonal
     # Sino esperamos

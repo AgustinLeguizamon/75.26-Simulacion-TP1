@@ -23,7 +23,7 @@ class AreaEsperaPeaton:
     def accionar(self, semaforos, tiempo):
         
         # Si llegamos al tope de peatones esperando, no hacemos nada
-        if (self.peatones_esperando >= self.MAX_CANTIDAD_PEATONES):
+        if (self.peatones_esperando == self.MAX_CANTIDAD_PEATONES):
             return
 
         # Si los semaforos no permiten el paso, no hacemos nada
@@ -59,7 +59,7 @@ class AreaEsperaPeaton:
 
             # Si el peatón fue agregado a una celda, listo
             # sino, sumamos 1 al contador de "peatones esperando" (ser agregados a la senda peatonal)
-            if (not agregamos_peaton_en_senda):
+            if (not agregamos_peaton_en_senda and self.peatones_esperando < self.MAX_CANTIDAD_PEATONES):
                 self.peatones_esperando += 1
 
 
