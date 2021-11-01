@@ -15,7 +15,7 @@ class Celda:
         self.intenciones = []
     
     def esta_ocupada(self) -> bool:
-        return self.entidad != None
+        return (self.entidad != None)
 
     def agregar_entidad(self, entidad: Movible) -> void:
         if self.entidad != None:
@@ -38,6 +38,7 @@ class Celda:
     # elige algun peaton al azar y lo coloca en la celda
     def resolver(self):
         if len(self.intenciones) > 0:
+            ## TODO: Poner Estadisticas().guardar_conflicto([tiempo, 1])
             peaton = choice(self.intenciones)
             self.agregar_entidad(peaton)
             self.intenciones = []

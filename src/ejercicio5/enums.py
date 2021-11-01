@@ -3,6 +3,7 @@ from enum import Enum
 class Direccion:
     FILA = 0
     COLUMNA = 1
+    NINGUNA = [0,0]
     NORTE = [-1,0]
     ESTE = [0,1]
     SUR = [1,0]

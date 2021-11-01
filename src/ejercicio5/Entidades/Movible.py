@@ -12,3 +12,7 @@ class Movible(Entidad):
     
     def get_velocidad(self):
         return self.velocidad
+    
+    def actualizar_velocidad(self, distancia):
+        self.velocidad = min(distancia, self.velocidad)
+        return self.velocidad

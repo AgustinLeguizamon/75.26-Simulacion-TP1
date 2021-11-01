@@ -37,7 +37,7 @@ class AreaEsperaPeaton:
         
         # Luego chequeo si hay arribo de peaton según poisson 
         # Si no hay, no hago nada
-        eventos_ocurridos = self.poisson.eventos_en_rango_de_tiempo(0, tiempo)
+        eventos_ocurridos = self.poisson.eventos_en_rango_de_tiempo(tiempo-1, tiempo)
         if (eventos_ocurridos == 0):
             return
         

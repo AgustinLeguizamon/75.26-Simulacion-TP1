@@ -38,7 +38,7 @@ class Tablero:
 
         # Cada peaton declara a que celda se quiere mover
         for peaton in self.peatones:
-            self.movedor.declarar_intencion(peaton, self)
+            self.movedor.declarar_intencion(peaton,self)
         
         # Resolvemos colisiones y movemos los peatones
         self.movedor.resolver_y_mover(self)
@@ -66,6 +66,7 @@ class Tablero:
         # Borramos peatones que salieron del tablero
         peatones_a_remover = [peaton for peaton in self.peatones if peaton.celda is None]
         for peaton in peatones_a_remover:
+            ## TODO: Poner Estadisticas().guardar_cruce_completos([tiempo,1])
             self.peatones.remove(peaton)
 
         # Borramos vehiculos que salieron del tablero
