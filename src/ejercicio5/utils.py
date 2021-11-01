@@ -20,13 +20,13 @@ def velocidad_inicial_peaton(segundos_por_paso: float) -> int:
     if 0.93 < p < 0.978:
         velocidad_metros_sobre_segundo = 2.5
     
-    return int(velocidad_metros_sobre_segundo / ANCHO_CELDA_EN_METROS)
+    return int(velocidad_metros_sobre_segundo * segundos_por_paso / ANCHO_CELDA_EN_METROS)
 
 # Retorna la velocidad inicial del vehiculo
 # en cantidad de celdas por segundo
 def velocidad_inicial_vehiculo(segundos_por_paso: float) -> int:
     velocidad_metros_sobre_segundo = 5
-    return int(velocidad_metros_sobre_segundo * segundos_por_paso * ANCHO_CELDA_EN_METROS)
+    return int(velocidad_metros_sobre_segundo * segundos_por_paso / ANCHO_CELDA_EN_METROS)
 
 def generar_color_random():
     colores = ["white", "red", "green", "yellow", "blue", "magenta", "cyan"]

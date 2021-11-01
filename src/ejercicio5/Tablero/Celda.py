@@ -65,7 +65,7 @@ class Celda:
             return self.entidad.get_dibujo()
 
         if (self.tipo == TipoDeCelda.NORMAL):
-            return "-"
+            return " "
         
         if (self.tipo == TipoDeCelda.VEREDA_CORDON):
             return "╎"
