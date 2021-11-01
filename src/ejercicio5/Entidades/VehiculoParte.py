@@ -12,17 +12,22 @@ class VehiculoParte(Movible):
         return "VehiculoParte"
 
     def get_dibujo(self):
-        # ◢☗☗☗☗◣
+        # ◢____◣
         # ██████
         # ██████
         # ██████
         # ◥▆▆▆▆◤
+        # ◢▆▆▆▆◣
+        # ██████
+        # ██████
+        # ██████
+        # ◥‾‾‾‾◤
 
         if (self.fila_relativa == 0 and self.columna_relativa == 0):
             return '◢' if self.direccion == Direccion.NORTE else '◥'
 
         if (self.fila_relativa == 0 and 0 < self.columna_relativa < 5):
-            return '☗' if self.direccion == Direccion.NORTE else '▆'
+            return '_' if self.direccion == Direccion.NORTE else '█'
 
         if (self.fila_relativa == 0 and self.columna_relativa == 5):
             return '◣' if self.direccion == Direccion.NORTE else '◤'
@@ -31,13 +36,13 @@ class VehiculoParte(Movible):
             return '█'
 
         if (self.fila_relativa == 4 and self.columna_relativa == 0):
-            return '◥' if self.direccion == Direccion.NORTE else '◢'
+            return '◥' if self.direccion == Direccion.NORTE else '◥'
 
         if (self.fila_relativa == 4 and 0 < self.columna_relativa < 5):
-            return '▆' if self.direccion == Direccion.NORTE else '☗'
+            return '█' if self.direccion == Direccion.NORTE else '‾'
 
         if (self.fila_relativa == 4 and self.columna_relativa == 5):
-            return '◤' if self.direccion == Direccion.NORTE else '◣'
+            return '◤' if self.direccion == Direccion.NORTE else '◤'
 
         return "?"
 

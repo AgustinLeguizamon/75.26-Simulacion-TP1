@@ -25,9 +25,6 @@ class AreaEsperaVehiculo:
         eventos_ocurridos = self.poisson.eventos_en_rango_de_tiempo(0, tiempo)
         if (eventos_ocurridos == 0):
             return
-
-        if (self.direccion_vehiculos == Direccion.SUR):
-            return
         
         # Agregamos una fila con partes de vehiculo, 1 fila por iteración
         if (not self.celda_inicial.esta_ocupada()):
@@ -71,7 +68,8 @@ class Vehiculo:
         return len(self.partes_de_vehiculo) > 0
 
     def agregar_siguiente_fila_al_tablero(self, celda_matriz, celda_inicial_fila, celda_inicial_columna, vehiculos):
-        siguiente_fila_a_dibujar = self.partes_de_vehiculo.pop(0)
+        fila_a_dibujar = 0 if self.direccion == Direccion.NORTE else len(self.partes_de_vehiculo) - 1
+        siguiente_fila_a_dibujar = self.partes_de_vehiculo.pop(fila_a_dibujar)
         
         for parte_de_vehiculo in siguiente_fila_a_dibujar:
             celda = celda_matriz[celda_inicial_fila][celda_inicial_columna + parte_de_vehiculo.columna_relativa]
