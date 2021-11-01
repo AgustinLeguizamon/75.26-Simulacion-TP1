@@ -11,8 +11,8 @@ class Movedor:
     def __init__(self):
         pass
 
-    def probabilidad(proba):
-        p = random.random()
+    def probabilidad(self, proba):
+        p = random()
         return p < proba
     
     def declarar_intencion(self, movible: Movible, tablero):
@@ -75,7 +75,7 @@ class Movedor:
         celda_final.agregar_entidad(movible)
 
 
-    def calcular_pos_celda_final(self, fila_peaton, columna_peaton, velocidad, direccion, tablero, peaton: Peaton):
+    def calcular_pos_celda_final(self, fila_peaton, columna_peaton, velocidad, direccion: Direccion, tablero, peaton: Peaton):
         d = self.distancia_al_prox_peaton(fila_peaton, columna_peaton, direccion, tablero)
         movimiento_lateral = 0
         regla_a_aplicar = self.resolver_cambio_de_linea_de_peaton_en(fila_peaton, columna_peaton, velocidad, direccion, tablero)
