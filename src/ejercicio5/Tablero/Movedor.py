@@ -1,9 +1,11 @@
+from typing import Dict
 from enums import Direccion, Regla
 from Entidades.Movible import Movible
 from Entidades.Peaton import Peaton
 from Entidades.VehiculoParte import VehiculoParte
 from Tablero import Tablero
 from random import random
+from .vehiculo_utils import detectar_estado_vehiculo, mover_vehiculo
 
 class Movedor:
     INF = 99
@@ -15,12 +17,11 @@ class Movedor:
         p = random()
         return p < proba
     
-    def declarar_intencion(self, movible: Movible, tablero):
+    def declarar_intencion_peaton(self, movible: Movible, tablero):
         fila_inicial = movible.get_fila()
         columna_inicial = movible.get_columna()
         direccion = movible.get_direccion()
         velocidad = movible.get_velocidad()
-        
         
         # el peaton tiene que resolver a que celda se va a mover usando las reglas del paper
         # calculamos nueva posicion a la que se quiere mover
@@ -36,44 +37,31 @@ class Movedor:
         # indicamos a la celda final que un peaton tiene intenciones de moverse a ella
         celda_final.agregar_intencion(movible)
 
-        
-    def resolver_y_mover(self, tablero: Tablero, tiempo_transcurrido):
+    def declarar_intenciones_vehiculos(self, tablero):
+        vehiculos_id_a_borrar = []
+
+        for id, vehiculo_partes in tablero.vehiculos.items():
+            # Chequeamos el estado del vehiculo
+            # - Si alguna parte se va de la matriz, remuevo el vehiculo
+            # - Si no puede moverse, no se mueve
+            # - Si no debe removerse y puede moverse, se mueve
+            puede_moverse, debe_borrarse = detectar_estado_vehiculo(vehiculo_partes, tablero)
+            
+            if debe_borrarse:
+                vehiculos_id_a_borrar.append(id)
+                continue
+            
+            if puede_moverse:
+                mover_vehiculo(vehiculo_partes, tablero)
+
+        return vehiculos_id_a_borrar
+
+    def resolver_y_mover_peatones(self, tablero: Tablero):
         # Recorro todas las celdas que pertenecen al paso peatonal
         for fila in range(tablero._FILA_ORIGEN_PASO_PEATONAL, tablero._FILA_FIN_PASO_PEATONAL + 1):
             for columna in range(tablero._COLUMNA_ORIGEN_PASO_PEATONAL, tablero._COLUMNA_FIN_PASO_PEATONAL + 1):
                 celda_paso_peatonal = tablero.get_celda(fila, columna)
-                celda_paso_peatonal.resolver(tiempo_transcurrido)
-        
-       
-
-    # TODO: deprecated
-    def mover(self, movible: Movible, tablero):
-        fila_inicial = movible.get_fila()
-        columna_inicial = movible.get_columna()
-        direccion = movible.get_direccion()
-        velocidad = movible.get_velocidad()
-        
-        # calculamos nueva posicion
-        fila_final = fila_inicial + velocidad * direccion[Direccion.FILA]
-        columna_final = columna_inicial + velocidad * direccion[Direccion.COLUMNA]
-
-        # obtenemos celdas iniciales y finales
-        celda_inicial = tablero.get_celda(fila_inicial, columna_inicial)
-        celda_final = tablero.get_celda(fila_final, columna_final)
-        
-        # si se va de la matriz o no tiene celda final, lo removemos
-        if celda_final == None:
-            celda_inicial.remover_entidad()
-            return
-
-        # si la celda final está ocupada, no me muevo
-        if celda_final.esta_ocupada():
-            return
-
-        # si no esta ocupada, me muevo
-        celda_inicial.remover_entidad() 
-        celda_final.agregar_entidad(movible)
-
+                celda_paso_peatonal.resolver()
 
     def calcular_pos_celda_final(self, fila_peaton, columna_peaton, velocidad, direccion: Direccion, tablero, peaton: Peaton):
         d = self.distancia_al_prox_peaton(fila_peaton, columna_peaton, direccion, tablero)
@@ -95,7 +83,6 @@ class Movedor:
             velocidad = peaton.actualizar_velocidad(d)
     
         return fila_peaton + movimiento_lateral, columna_peaton + velocidad * direccion[Direccion.COLUMNA]
-
     
     def distancia_al_prox_peaton(self, fila_peaton, columna_peaton, direccion: Direccion, tablero: Tablero):
         d = 0

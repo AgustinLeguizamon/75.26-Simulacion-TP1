@@ -58,7 +58,7 @@ class ArmadorTablero:
 
         self.celdas_matriz = []
         self.semaforos = []
-        self.vehiculos = []
+        self.vehiculos = {}
         self.peatones = []
         self.areas_de_espera = []
 

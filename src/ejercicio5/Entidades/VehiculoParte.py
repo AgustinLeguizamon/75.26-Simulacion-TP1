@@ -3,8 +3,9 @@ from enums import Direccion
 
 class VehiculoParte(Movible):
     
-    def __init__(self, direccion: Direccion, velocidad: float, fila_relativa, columna_relativa, color):
+    def __init__(self, id: int, direccion: Direccion, velocidad: float, fila_relativa, columna_relativa, color):
         super().__init__(direccion, velocidad, color)
+        self.id = id
         self.fila_relativa = fila_relativa
         self.columna_relativa = columna_relativa
 

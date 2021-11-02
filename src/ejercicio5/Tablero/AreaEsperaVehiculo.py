@@ -10,13 +10,12 @@ class AreaEsperaVehiculo:
     VEHICULO_LARGO_CELDAS = 6
     VEHICULO_ANCHO_CELDAS = 5
 
-    def __init__(self, celda_inicial: Celda, celda_matriz: 'list[list[Celda]]', direccion_vehiculos: Direccion, vehiculos: 'list[VehiculoParte]'):
+    def __init__(self, celda_inicial: Celda, celda_matriz: list[list[Celda]], direccion_vehiculos: Direccion, vehiculos: dict[int,list[VehiculoParte]]):
         self.celda_inicial = celda_inicial
         self.celda_matriz = celda_matriz
         self.direccion_vehiculos = direccion_vehiculos
         self.vehiculos = vehiculos
-        self.vehiculos_incompletos = []
-        self.poisson = Poisson(rn.random())
+        self.poisson = Poisson(0.05)
 
     # Chequeamos si hay que colocar un nuevo vehículo en el paso peatonal
     # Sino esperamos
@@ -30,9 +29,6 @@ class AreaEsperaVehiculo:
         eventos_ocurridos = self.poisson.eventos_en_rango_de_tiempo(tiempo_transcurrido - segundos_por_paso, tiempo_transcurrido)
         if (eventos_ocurridos == 0):
             return
-
-        #if (self.direccion_vehiculos == Direccion.SUR):
-        #    return
 
         # Creamos un auto completo en la celda de inicio
         self.crear_vehiculo_y_agregarlo_al_tablero(segundos_por_paso)
@@ -56,11 +52,13 @@ class AreaEsperaVehiculo:
         direccion = self.direccion_vehiculos
         color = generar_color_random()
         multiplicador = 1 if self.direccion_vehiculos == Direccion.NORTE else -1
+        vehiculo_id = rn.randint(100, 999)
+        self.vehiculos[vehiculo_id] = []
 
         for fila in range(self.VEHICULO_ANCHO_CELDAS):
             for columna in range(self.VEHICULO_LARGO_CELDAS):
-                parte_de_vehiculo = VehiculoParte(direccion, velocidad, fila, columna, color)
+                parte_de_vehiculo = VehiculoParte(vehiculo_id, direccion, velocidad, fila, columna, color)
                 celda = self.celda_matriz[celda_inicial_fila + (fila * multiplicador)][celda_inicial_columna + columna]
                 celda.agregar_entidad(parte_de_vehiculo)
-                self.vehiculos.append(parte_de_vehiculo)
-          
+                self.vehiculos[vehiculo_id].append(parte_de_vehiculo)
+
