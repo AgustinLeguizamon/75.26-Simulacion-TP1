@@ -8,7 +8,7 @@ from .vehiculo_utils import borrar_vehiculos
 
 class Tablero:
 
-    def __init__(self, segundos_por_paso, calle_largo = 21, paso_peatonal_ancho = 3, cantidad_de_carriles = 6, ancho_carril = 3.5, ancho_celda = 0.5):  
+    def __init__(self, segundos_por_paso, calle_largo = 21, paso_peatonal_ancho = 3, cantidad_de_carriles = 6, ancho_carril = 3.5, ancho_celda = 0.5, area_izq=True, area_der=True):  
         self.calle_largo = calle_largo
         self.paso_peatonal_ancho = paso_peatonal_ancho
         self.cantidad_de_carriles = cantidad_de_carriles
@@ -19,7 +19,7 @@ class Tablero:
         self.dibujador = Dibujador()
         self.movedor = Movedor()
         self.armador_tablero = ArmadorTablero(self)
-        self.armador_tablero.armar_tablero()
+        self.armador_tablero.armar_tablero(area_izq, area_der)
 
         self.celdas_matriz = self.armador_tablero.celdas_matriz
         self.semaforos = self.armador_tablero.semaforos

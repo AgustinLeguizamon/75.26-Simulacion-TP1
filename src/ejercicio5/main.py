@@ -16,7 +16,7 @@ def limpiarPantalla():
 
 def main():
    # Init game variables
-   isRunning = True
+   esta_corriendo = True
    segundos_por_paso: int = 0.5
    tiempo_transcurrido = 0
    ##Estadisticas()
@@ -50,7 +50,7 @@ def main():
    tablero._debug_colocar_peaton(5,fin_paso_peatonal-2, Direccion.OESTE, 1)
    #
 
-   while isRunning:
+   while esta_corriendo:
       limpiarPantalla()
       tablero.ejecutar_paso(tiempo_transcurrido, segundos_por_paso)
       tiempo_transcurrido += segundos_por_paso

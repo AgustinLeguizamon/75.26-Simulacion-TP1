@@ -62,9 +62,8 @@ class ArmadorTablero:
         self.peatones = []
         self.areas_de_espera = []
 
-    def armar_tablero(self):
+    def armar_tablero(self, generar_area_peaton_izquierda, generar_area_peaton_derecha):
         
-
         # Creamos las celdas columna objetos del tablero
         for fila in range(self.tablero_ancho):
             celdas_fila = []
@@ -83,29 +82,11 @@ class ArmadorTablero:
             fila, columna, celdas_fila = self.generar_parte_inferior(fila, columna, celdas_fila, self.vereda_izquierda_largo, self.vereda_derecha_largo)
             self.celdas_matriz.append(celdas_fila)
         
-        # Creamos el área de espera de los peatones a la izquierda (lado oeste, sentido este)
-        area_espera_izquierda_fila = self.parte_superior_ancho + 1
-        area_espera_izquierda_columna = self.vereda_izquierda_largo - 1
-        celdas_iniciales_area_izquierda = []
+        if generar_area_peaton_izquierda:
+            self.generar_area_de_espera_izquierda()
 
-        for i in range(self.parte_peatonal_ancho - 2):
-            celda = self.get_celda(area_espera_izquierda_fila + i, area_espera_izquierda_columna)
-            celdas_iniciales_area_izquierda.append(celda)
-
-        area_espera_izquierda = AreaEsperaPeaton(celdas_iniciales_area_izquierda, Direccion.ESTE, self.peatones)
-        self.areas_de_espera.append(area_espera_izquierda)
-
-        # Creamos el área de espera de los peatones a la derecha (lado este, sentido oeste)
-        area_espera_derecha_fila = self.parte_superior_ancho + 1
-        area_espera_derecha_columna = self.vereda_izquierda_largo + self.calle_largo + 1
-        celdas_iniciales_area_derecha = []
-
-        for i in range(self.parte_peatonal_ancho - 2):
-            celda = self.get_celda(area_espera_derecha_fila + i, area_espera_derecha_columna)
-            celdas_iniciales_area_derecha.append(celda)
-
-        area_espera_derecha = AreaEsperaPeaton(celdas_iniciales_area_derecha, Direccion.OESTE, self.peatones)
-        self.areas_de_espera.append(area_espera_derecha)
+        if generar_area_peaton_derecha:
+            self.generar_area_de_espera_derecha()
 
         # Creamos las áreas de espera de autos
         carril_ancho_celdas = int(self.ancho_carril / self.ancho_celda)
@@ -234,6 +215,32 @@ class ArmadorTablero:
             columna += 1
 
         return fila, columna, celdas_fila
+    
+    def generar_area_de_espera_izquierda(self):
+    # Creamos el área de espera de los peatones a la izquierda (lado oeste, sentido este)
+        area_espera_izquierda_fila = self.parte_superior_ancho + 1
+        area_espera_izquierda_columna = self.vereda_izquierda_largo - 1
+        celdas_iniciales_area_izquierda = []
+
+        for i in range(self.parte_peatonal_ancho - 2):
+            celda = self.get_celda(area_espera_izquierda_fila + i, area_espera_izquierda_columna)
+            celdas_iniciales_area_izquierda.append(celda)
+
+        area_espera_izquierda = AreaEsperaPeaton(celdas_iniciales_area_izquierda, Direccion.ESTE, self.peatones)
+        self.areas_de_espera.append(area_espera_izquierda)
+
+    def generar_area_de_espera_derecha(self):
+        area_espera_derecha_fila = self.parte_superior_ancho + 1
+        area_espera_derecha_columna = self.vereda_izquierda_largo + self.calle_largo + 1
+        celdas_iniciales_area_derecha = []
+
+        for i in range(self.parte_peatonal_ancho - 2):
+            celda = self.get_celda(area_espera_derecha_fila + i, area_espera_derecha_columna)
+            celdas_iniciales_area_derecha.append(celda)
+
+        area_espera_derecha = AreaEsperaPeaton(celdas_iniciales_area_derecha, Direccion.OESTE, self.peatones)
+        self.areas_de_espera.append(area_espera_derecha)
+
 
     def get_celda(self, fila, columna) -> Celda:
         if (fila < 0 or fila >= len(self.celdas_matriz)) or (columna < 0 or columna >= len(self.celdas_matriz[0])):

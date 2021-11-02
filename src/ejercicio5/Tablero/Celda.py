@@ -61,6 +61,7 @@ class Celda:
         self.agregar_entidad(entidad_seleccionada)
         self.intenciones = []
 
+    # TODO: no se usa, borrar?
     def encontrar_vehiculo(elementos: list[Movible], vehiculos_id: list[int]):
         for item in elementos:
             vehiculo = [item for item in elementos if x["id"] == 1 ][0]
