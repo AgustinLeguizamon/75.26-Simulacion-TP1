@@ -2,7 +2,8 @@ from .Entidad import Entidad
 
 class Semaforo(Entidad):
     TIEMPO_MAXIMO = 90
-
+    VERDE = 0
+    ROJO = 1
     def __init__(self, tiempo_paso_peaton = 25):
         super().__init__()
         self.estado = "verde"
@@ -23,11 +24,13 @@ class Semaforo(Entidad):
     def permitir_paso(self):
         return self.estado == "verde"
 
-    def cambiar_estado(self, tiempo_transcurrido):
+    def cambiar_estado(self, tiempo_transcurrido, tablero):
         tiempo_final = tiempo_transcurrido % self.TIEMPO_MAXIMO
         
         if (tiempo_final <= self.tiempo_paso_peaton):
             self.estado = "verde"
+            tablero.estado_peatones(self.VERDE)
         else:
             self.estado = "rojo"
+            tablero.estado_peatones(self.ROJO)
 

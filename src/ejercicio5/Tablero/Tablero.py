@@ -1,4 +1,5 @@
 from Entidades.Peaton import Peaton
+from Entidades.Semaforo import Semaforo
 from .Dibujador import Dibujador
 from .Movedor import Movedor
 from .ArmadorTablero import ArmadorTablero
@@ -45,7 +46,7 @@ class Tablero:
         
         # Cambiamos estados de los semáforos
         for semaforo in self.semaforos:
-            semaforo.cambiar_estado(tiempo_transcurrido)
+            semaforo.cambiar_estado(tiempo_transcurrido, self)
 
         # Cada peaton declara a que celda se quiere mover
         self.movedor.declarar_intenciones_peatones(self)
@@ -74,6 +75,10 @@ class Tablero:
         for peaton in peatones_a_remover:
             ##Estadisticas().guardar_cruce_completos([tiempo_transcurrido,1])
             self.peatones.remove(peaton)
+    
+    def estado_peatones(self, estado):
+        for peaton in self.peatones:
+            peaton.cambiar_estado(estado)
 
     def get_celda(self, fila, columna) -> Celda or None:
         return self.armador_tablero.get_celda(fila, columna)

@@ -22,6 +22,9 @@ def velocidad_inicial_peaton(segundos_por_paso: float) -> int:
     
     return int(velocidad_metros_sobre_segundo * segundos_por_paso / ANCHO_CELDA_EN_METROS)
 
+def velocidad_maxima_peaton() -> int:
+    return int(3 * 0.5 / ANCHO_CELDA_EN_METROS)
+
 # Retorna la velocidad inicial del vehiculo
 # en cantidad de celdas por segundo
 def velocidad_inicial_vehiculo(segundos_por_paso: float) -> int:
