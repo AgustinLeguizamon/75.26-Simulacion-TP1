@@ -17,7 +17,7 @@ class AreaEsperaPeaton:
         self.direccion_peatones = direccion_peatones
         self.peatones = peatones
         self.peatones_esperando = 0
-        self.poisson = Poisson()
+        self.poisson = Poisson(arribos_por_segundo=5)
             
    # El área de espera chequea si tiene que colocar un peaton
     # en la senda peatonal
@@ -58,7 +58,7 @@ class AreaEsperaPeaton:
 
             # Si el peatón fue agregado a una celda, listo
             # sino, sumamos 1 al contador de "peatones esperando" (ser agregados a la senda peatonal)
-            if (not agregamos_peaton_en_senda and self.peatones_esperando < self.MAX_CANTIDAD_PEATONES):
+            if (not agregamos_peaton_en_senda):
                 self.peatones_esperando += 1
 
 

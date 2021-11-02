@@ -15,7 +15,7 @@ class AreaEsperaVehiculo:
         self.celda_matriz = celda_matriz
         self.direccion_vehiculos = direccion_vehiculos
         self.vehiculos = vehiculos
-        self.poisson = Poisson(0.05)
+        self.poisson = Poisson(arribos_por_segundo=2/6)
 
     # Chequeamos si hay que colocar un nuevo vehículo en el paso peatonal
     # Sino esperamos
