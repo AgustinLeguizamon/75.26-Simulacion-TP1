@@ -5,6 +5,7 @@ from enums import Direccion
 from .Celda import Celda
 from Entidades.Poisson import Poisson
 from utils import velocidad_inicial_peaton
+from Estadisticas import Estadisticas
 
 class AreaEsperaPeaton:
     # Cuenta cuantos peatones tiene
@@ -31,9 +32,6 @@ class AreaEsperaPeaton:
         for semaforo in semaforos:
             se_permite_el_paso = se_permite_el_paso and semaforo.permitir_paso()
        
-        if (not se_permite_el_paso):
-            # No hacemos nada
-            return
         
         # Luego chequeo si hay arribo de peaton según poisson 
         # Si no hay, no hago nada
@@ -55,6 +53,7 @@ class AreaEsperaPeaton:
                 celda.agregar_entidad(peaton)
                 self.peatones.append(peaton)
                 agregamos_peaton_en_senda = True
+                ##Estadisticas().guardar_caminando([])
                 break
 
             # Si el peatón fue agregado a una celda, listo

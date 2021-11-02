@@ -55,7 +55,7 @@ class Tablero:
         vehiculos_id_a_borrar = self.movedor.declarar_intenciones_vehiculos(self)
 
         # Resolvemos colisiones y movemos los peatones
-        self.movedor.resolver_intenciones_y_mover_movibles(self)
+        self.movedor.resolver_intenciones_y_mover_movibles(self,tiempo_transcurrido)
 
         # Borramos vehiculos que ya se van
         borrar_vehiculos(vehiculos_id_a_borrar, self)
@@ -73,7 +73,8 @@ class Tablero:
         # Borramos peatones que salieron del tablero
         peatones_a_remover = [peaton for peaton in self.peatones if peaton.celda is None]
         for peaton in peatones_a_remover:
-            ##Estadisticas().guardar_cruce_completos([tiempo_transcurrido,1])
+            ## agregar si esta en verde 1, rojo 0
+            Estadisticas().guardar_cruce_completos([tiempo_transcurrido,1])
             self.peatones.remove(peaton)
     
     def estado_peatones(self, estado):
@@ -88,10 +89,9 @@ class Tablero:
         self._FILA_ORIGEN_PASO_PEATONAL <= fila <= self._FILA_FIN_PASO_PEATONAL
 
     def dibujar_estadisticas(self):
-        pass
-        # print()
-        # print("Peatones en área de espera izquierda: ", self.areas_de_espera[0].peatones_esperando)
-        # print("Peatones en área de espera derecha: ", self.areas_de_espera[1].peatones_esperando)
+        print()
+        print("Peatones en área de espera izquierda: ", self.areas_de_espera[0].peatones_esperando)
+        print("Peatones en área de espera derecha: ", self.areas_de_espera[1].peatones_esperando)
 
     # debug only
     def _debug_colocar_peaton(self, fila_peatonal, columna_peatonal, direccion, velocidad):

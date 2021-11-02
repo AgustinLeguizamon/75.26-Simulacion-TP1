@@ -65,7 +65,7 @@ class Movedor:
 
         return vehiculos_id_a_borrar
 
-    def resolver_intenciones_y_mover_movibles(self, tablero: Tablero):
+    def resolver_intenciones_y_mover_movibles(self, tablero: Tablero,tiempo_transcurrido):
          # Recorro todas las celdas que pertenecen a la calle
         #fila_inicio_calle = 0
         #fila_fin_calle = len(tablero.celdas_matriz) - 1
@@ -77,7 +77,7 @@ class Movedor:
         for fila in range(tablero._FILA_ORIGEN_PASO_PEATONAL, tablero._FILA_FIN_PASO_PEATONAL + 1):
             for columna in range(tablero._COLUMNA_ORIGEN_PASO_PEATONAL, tablero._COLUMNA_FIN_PASO_PEATONAL + 1):
                 celda = tablero.get_celda(fila, columna)
-                celda.resolver()
+                celda.resolver(tiempo_transcurrido)
 
     def calcular_pos_celda_final(self, fila_peaton, columna_peaton, velocidad, direccion: Direccion, tablero, peaton: Peaton):
         d = self.distancia_al_prox_peaton(fila_peaton, columna_peaton, direccion, tablero)

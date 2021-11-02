@@ -41,7 +41,7 @@ class Celda:
             self.intenciones.append(entidad)
     
     # Elige entidades al azar y lo coloca en la celda
-    def resolver(self):
+    def resolver(self,tiempo_transcurrido):
         # Si el peaton que esta en la celda del paso peatonal tiene intenciones de salir, lo elimino de la celda
         if self.entidad != None and self.entidad.afuera:
             self.entidad.set_celda(None)
@@ -59,13 +59,13 @@ class Celda:
             return
 
         # Elegimos una entidad al azar
-        ##Estadisticas().guardar_conflicto([tiempo_transcurrido, 1])
+        Estadisticas().guardar_conflicto([tiempo_transcurrido, 1])
         entidad_seleccionada = choice(self.intenciones)
         self.agregar_entidad(entidad_seleccionada)
         self.intenciones = []
 
     # TODO: no se usa, borrar?
-    def encontrar_vehiculo(elementos: list[Movible], vehiculos_id: list[int]):
+    def encontrar_vehiculo(elementos: 'list[Movible]', vehiculos_id: 'list[int]'):
         for item in elementos:
             vehiculo = [item for item in elementos if x["id"] == 1 ][0]
 

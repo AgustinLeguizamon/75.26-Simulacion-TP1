@@ -44,9 +44,9 @@ def limpiar_pantalla():
 def main():
    # Init game variables
    esta_corriendo = True
-   segundos_por_paso: int = 0.5
+   segundos_por_paso: int = 1
    tiempo_transcurrido = 0
-   ##Estadisticas()
+   Estadisticas()
    tablero = Tablero(segundos_por_paso=segundos_por_paso, area_izq=True, area_der=True)
 
    # TODO: para debug colisiones peatones, acordarse de comentar areas de espera de autos

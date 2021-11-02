@@ -14,11 +14,15 @@ class Estadisticas:
         self.encabezados_arrivos = ['tiempo','tiempo_arribo']
         self.encabezados_cruce_completos = ['tiempo', 'completado']
         self.encabezados_conflictos = ['tiempo','conflicto']
+        self.encabezados_caminando = ['tiempo','camina']
         self.guardar_arrivos(self.encabezados_arrivos)
         self.guardar_cruce_completos(self.encabezados_cruce_completos)
         self.guardar_conflicto(self.encabezados_conflictos)
+        self.guardar_caminando(self.encabezados_caminando)
 
     
+    def guardar_caminando(self, datos):
+        self.guarda_datos('_caminando.csv',datos)
     def guardar_arrivos(self, datos):
         self.guarda_datos('_arribos.csv',datos)
     def guardar_cruce_completos(self, datos):
