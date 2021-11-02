@@ -4,6 +4,7 @@ from Excepciones.celda_ocupada_excepcion import CeldaOcupadaExcepcion
 from enums import TipoDeCelda
 from Entidades.Peaton import Peaton
 from random import choice
+from Estadisticas import Estadisticas
 
 class Celda:
     def __init__(self, fila, columna, tipo, tablero, entidad: Movible = None):
@@ -38,13 +39,13 @@ class Celda:
     
     
     # elige algun peaton al azar y lo coloca en la celda
-    def resolver(self):
+    def resolver(self, tiempo_transcurrido):
         # si el peaton que esta en la celda del paso peatonal tiene intenciones de salir, lo elimino de la celda
         if self.entidad != None and self.entidad.afuera:
             self.entidad.set_celda(None)
 
         if len(self.intenciones) > 0:
-            ## TODO: Poner Estadisticas().guardar_conflicto([tiempo, 1])
+            ##Estadisticas().guardar_conflicto([tiempo_transcurrido, 1])
             peaton = choice(self.intenciones)
             self.agregar_entidad(peaton)
             self.intenciones = []

@@ -11,7 +11,7 @@ class AreaEsperaPeaton:
     # Cuenta cuantos peatones cruzaron
     MAX_CANTIDAD_PEATONES = 100
 
-    def __init__(self, celdas_iniciales: list[Celda], direccion_peatones: Direccion, peatones: list[Peaton]):
+    def __init__(self, celdas_iniciales: 'list[Celda]', direccion_peatones: Direccion, peatones: 'list[Peaton]'):
         self.celdas_iniciales = celdas_iniciales
         self.direccion_peatones = direccion_peatones
         self.peatones = peatones

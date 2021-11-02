@@ -10,7 +10,7 @@ class AreaEsperaVehiculo:
     VEHICULO_LARGO_CELDAS = 6
     VEHICULO_ANCHO_CELDAS = 5
 
-    def __init__(self, celda_inicial: Celda, celda_matriz: list[list[Celda]], direccion_vehiculos: Direccion, vehiculos: list[VehiculoParte]):
+    def __init__(self, celda_inicial: Celda, celda_matriz: 'list[list[Celda]]', direccion_vehiculos: Direccion, vehiculos: 'list[VehiculoParte]'):
         self.celda_inicial = celda_inicial
         self.celda_matriz = celda_matriz
         self.direccion_vehiculos = direccion_vehiculos

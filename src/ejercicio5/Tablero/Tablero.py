@@ -3,6 +3,7 @@ from .Dibujador import Dibujador
 from .Movedor import Movedor
 from .ArmadorTablero import ArmadorTablero
 from .Celda import Celda
+from Estadisticas import Estadisticas
 
 class Tablero:
 
@@ -43,7 +44,7 @@ class Tablero:
             self.movedor.declarar_intencion(peaton,self)
         
         # Resolvemos colisiones y movemos los peatones
-        self.movedor.resolver_y_mover(self)
+        self.movedor.resolver_y_mover(self,tiempo_transcurrido)
     
         # Movemos a los vehiculos
         for vehiculo in self.vehiculos:
@@ -62,7 +63,7 @@ class Tablero:
         # Borramos peatones que salieron del tablero
         peatones_a_remover = [peaton for peaton in self.peatones if peaton.celda is None]
         for peaton in peatones_a_remover:
-            ## TODO: Poner Estadisticas().guardar_cruce_completos([tiempo,1])
+            ##Estadisticas().guardar_cruce_completos([tiempo_transcurrido,1])
             self.peatones.remove(peaton)
 
         # Borramos vehiculos que salieron del tablero

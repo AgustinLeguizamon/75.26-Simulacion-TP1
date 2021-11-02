@@ -37,12 +37,12 @@ class Movedor:
         celda_final.agregar_intencion(movible)
 
         
-    def resolver_y_mover(self, tablero: Tablero):
+    def resolver_y_mover(self, tablero: Tablero, tiempo_transcurrido):
         # Recorro todas las celdas que pertenecen al paso peatonal
         for fila in range(tablero._FILA_ORIGEN_PASO_PEATONAL, tablero._FILA_FIN_PASO_PEATONAL + 1):
             for columna in range(tablero._COLUMNA_ORIGEN_PASO_PEATONAL, tablero._COLUMNA_FIN_PASO_PEATONAL + 1):
                 celda_paso_peatonal = tablero.get_celda(fila, columna)
-                celda_paso_peatonal.resolver()
+                celda_paso_peatonal.resolver(tiempo_transcurrido)
         
        
 

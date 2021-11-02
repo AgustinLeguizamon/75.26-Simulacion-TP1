@@ -4,6 +4,7 @@ import time
 
 from Tablero.Tablero import Tablero
 from enums import Direccion
+from Estadisticas import Estadisticas
 
 def limpiarPantalla():
    # Para Mac y Linux
@@ -18,6 +19,7 @@ def main():
    isRunning = True
    segundos_por_paso: int = 0.5
    tiempo_transcurrido = 0
+   ##Estadisticas()
    tablero = Tablero(segundos_por_paso=segundos_por_paso)
 
    # TODO: para debug colisiones peatones, acordarse de comentar areas de espera de autos

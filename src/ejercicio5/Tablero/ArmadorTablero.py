@@ -118,14 +118,14 @@ class ArmadorTablero:
         for numero_de_carril in range(cantidad_de_carriles_por_sentido):
             celda_inicial = self.get_celda(fila_inicial_norte, columna_inicial_norte + (numero_de_carril * carril_ancho_celdas))
             area_de_espera = AreaEsperaVehiculo(celda_inicial, self.celdas_matriz, Direccion.SUR, self.vehiculos)
-            self.areas_de_espera.append(area_de_espera)
+            ##self.areas_de_espera.append(area_de_espera)
 
         fila_inicial_sur = len(self.celdas_matriz) - largo_auto
         columna_inicial_sur = self.vereda_izquierda_largo + 1 + int(cantidad_de_carriles_por_sentido * carril_ancho_celdas)
         for numero_de_carril in range(cantidad_de_carriles_por_sentido):
             celda_inicial = self.get_celda(fila_inicial_sur, columna_inicial_sur + (numero_de_carril * carril_ancho_celdas))
             area_de_espera = AreaEsperaVehiculo(celda_inicial, self.celdas_matriz, Direccion.NORTE, self.vehiculos)
-            self.areas_de_espera.append(area_de_espera)
+            ##self.areas_de_espera.append(area_de_espera)
 
         # Agregamos los semáforos en las celdas de la verda donde arranca la senda peatonal
         semaforo_izquierdo_fila = self.parte_superior_ancho
