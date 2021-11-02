@@ -28,9 +28,9 @@ class Tablero:
         self.areas_de_espera = self.armador_tablero.areas_de_espera
 
         # definimos extremos del paso peatonal
-        self._COLUMNA_ORIGEN_PASO_PEATONAL = self.armador_tablero.vereda_izquierda_largo + 1
+        self._COLUMNA_ORIGEN_PASO_PEATONAL = self.armador_tablero.vereda_izquierda_largo
         self._FILA_ORIGEN_PASO_PEATONAL = self.armador_tablero.parte_superior_ancho + 1
-        self._COLUMNA_FIN_PASO_PEATONAL = self._COLUMNA_ORIGEN_PASO_PEATONAL + self.armador_tablero.calle_largo - 2
+        self._COLUMNA_FIN_PASO_PEATONAL = self._COLUMNA_ORIGEN_PASO_PEATONAL + self.armador_tablero.calle_largo
         self._FILA_FIN_PASO_PEATONAL = self._FILA_ORIGEN_PASO_PEATONAL + self.armador_tablero.parte_peatonal_ancho - 3
 
         pass
@@ -41,7 +41,7 @@ class Tablero:
         # columna_inicio_calle = self.armador_tablero.vereda_izquierda_largo
         # columna_fin_calle = columna_inicio_calle + self.armador_tablero.calle_largo
         # self.celdas_matriz[fila_inicio_calle][columna_inicio_calle].tipo = 99
-        # self.celdas_matriz[fila_fin_calle][columna_fin_calle].tipo = 99
+        # self.celdas_matriz[self._FILA_FIN_PASO_PEATONAL][self._COLUMNA_FIN_PASO_PEATONAL].tipo = 99
         
         # Cambiamos estados de los semáforos
         for semaforo in self.semaforos:
