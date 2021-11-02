@@ -13,6 +13,9 @@ class Entidad:
             self.celda.remover_entidad()
         self.celda = celda
 
+    def es_peaton(self):
+        return False
+
     def get_dibujo(self):
         return "?"
     

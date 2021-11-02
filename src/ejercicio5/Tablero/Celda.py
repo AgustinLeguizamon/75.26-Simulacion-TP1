@@ -17,6 +17,9 @@ class Celda:
     
     def esta_ocupada(self) -> bool:
         return (self.entidad != None)
+    
+    def tiene_peaton(self) -> bool:
+        return (self.entidad and self.entidad.es_peaton())
 
     def agregar_entidad(self, entidad: Movible) -> np.void:
         if self.entidad != None:

@@ -52,7 +52,6 @@ def main():
    # TODO: para debug colisiones peatones, acordarse de comentar areas de espera de autos
    debug_agregar_peatones(tablero)
 
-
    while esta_corriendo:
       limpiar_pantalla()
       tablero.ejecutar_paso(tiempo_transcurrido, segundos_por_paso)

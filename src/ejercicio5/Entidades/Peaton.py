@@ -5,6 +5,9 @@ class Peaton(Movible):
     def __init__(self, direccion: Direccion, velocidad: float):
         super().__init__(direccion, velocidad)
 
+    def es_peaton(self):
+        return True
+
     def get_dibujo(self):
         if self.direccion == Direccion.ESTE:
             return '◐'

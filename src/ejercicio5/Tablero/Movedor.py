@@ -113,7 +113,7 @@ class Movedor:
 
         col_celda_de_adelante = columna_peaton + direccion[Direccion.COLUMNA]
         for columna in range(col_celda_de_adelante, limite, direccion[Direccion.COLUMNA]):
-            if tablero.get_celda(fila_peaton, columna).esta_ocupada():
+            if tablero.get_celda(fila_peaton, columna).tiene_peaton():
                 hay_peaton_adelante = True
                 break
             d += 1
