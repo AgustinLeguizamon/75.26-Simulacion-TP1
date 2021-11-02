@@ -21,35 +21,43 @@ class Tablero:
         self.armador_tablero = ArmadorTablero(self)
         self.armador_tablero.armar_tablero()
 
+        self.celdas_matriz = self.armador_tablero.celdas_matriz
+        self.semaforos = self.armador_tablero.semaforos
+        self.vehiculos = self.armador_tablero.vehiculos
+        self.peatones = self.armador_tablero.peatones
+        self.areas_de_espera = self.armador_tablero.areas_de_espera
+
         # definimos extremos del paso peatonal
         self._COLUMNA_ORIGEN_PASO_PEATONAL = self.armador_tablero.vereda_izquierda_largo + 1
         self._FILA_ORIGEN_PASO_PEATONAL = self.armador_tablero.parte_superior_ancho + 1
         self._COLUMNA_FIN_PASO_PEATONAL = self._COLUMNA_ORIGEN_PASO_PEATONAL + self.armador_tablero.calle_largo - 2
         self._FILA_FIN_PASO_PEATONAL = self._FILA_ORIGEN_PASO_PEATONAL + self.armador_tablero.parte_peatonal_ancho - 3
 
-        self.celdas_matriz = self.armador_tablero.celdas_matriz
-        self.semaforos = self.armador_tablero.semaforos
-        self.vehiculos = self.armador_tablero.vehiculos
-        self.peatones = self.armador_tablero.peatones
-        self.areas_de_espera = self.armador_tablero.areas_de_espera
-        
         pass
 
     def ejecutar_paso(self, tiempo_transcurrido, segundos_por_paso):
+        # fila_inicio_calle = 0
+        # fila_fin_calle = len(self.celdas_matriz) - 1
+        # columna_inicio_calle = self.armador_tablero.vereda_izquierda_largo
+        # columna_fin_calle = columna_inicio_calle + self.armador_tablero.calle_largo
+        # self.celdas_matriz[fila_inicio_calle][columna_inicio_calle].tipo = 99
+        # self.celdas_matriz[fila_fin_calle][columna_fin_calle].tipo = 99
+        
         # Cambiamos estados de los semáforos
         for semaforo in self.semaforos:
             semaforo.cambiar_estado(tiempo_transcurrido)
 
         # Cada peaton declara a que celda se quiere mover
-        for peaton in self.peatones:
-            self.movedor.declarar_intencion_peaton(peaton,self)
+        self.movedor.declarar_intenciones_peatones(self)
+
+        # Cada vehiculo declara a que celda se quiere mover
+        vehiculos_id_a_borrar = self.movedor.declarar_intenciones_vehiculos(self)
 
         # Resolvemos colisiones y movemos los peatones
-        self.movedor.resolver_y_mover(self,tiempo_transcurrido)
-    
-        # Movemos a los vehiculos
-        for vehiculo in self.vehiculos:
-            self.movedor.mover(vehiculo, self)
+        self.movedor.resolver_intenciones_y_mover_movibles(self)
+
+        # Borramos vehiculos que ya se van
+        borrar_vehiculos(vehiculos_id_a_borrar, self)
 
         # Chequeamos si tenemos que colocar peatones y/o vehículos
         # en las áreas de espera

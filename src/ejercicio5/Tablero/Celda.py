@@ -1,4 +1,4 @@
-from numpy import void
+import numpy as np
 from Entidades.Movible import Movible
 from Excepciones.celda_ocupada_excepcion import CeldaOcupadaExcepcion
 from enums import TipoDeCelda
@@ -18,7 +18,7 @@ class Celda:
     def esta_ocupada(self) -> bool:
         return (self.entidad != None)
 
-    def agregar_entidad(self, entidad: Movible) -> void:
+    def agregar_entidad(self, entidad: Movible) -> np.void:
         if self.entidad != None:
            raise CeldaOcupadaExcepcion
         
@@ -32,23 +32,38 @@ class Celda:
     # TODO: podria hacer mas preguntas, mas que solo preguntar si esta ocupada
     # ¿El peaton esta a punto de salir del paso_peatonal? -> entonces si podria agregar la intencion, pq la celda va a estar vacia
     # ¿Paper: el peaton que esta en esta celda piensa moverse a la celda del de la intencion? Podrian intercambiar celdas
-    def agregar_intencion(self, peaton: Peaton):
+    def agregar_intencion(self, entidad, celdas_asociadas = []):
         # no deberia declarar intencion de moverse a una celda que esta ocupada (por ahora)
         if self.entidad == None:
-            self.intenciones.append(peaton)
+            self.intenciones.append(entidad)
     
-    
-    # elige algun peaton al azar y lo coloca en la celda
-    def resolver(self, tiempo_transcurrido):
-        # si el peaton que esta en la celda del paso peatonal tiene intenciones de salir, lo elimino de la celda
+    # Elige entidades al azar y lo coloca en la celda
+    def resolver(self):
+        # Si el peaton que esta en la celda del paso peatonal tiene intenciones de salir, lo elimino de la celda
         if self.entidad != None and self.entidad.afuera:
             self.entidad.set_celda(None)
 
-        if len(self.intenciones) > 0:
-            ##Estadisticas().guardar_conflicto([tiempo_transcurrido, 1])
-            peaton = choice(self.intenciones)
-            self.agregar_entidad(peaton)
+        # Si la celda está ocupada, no hacemos nada
+        if self.entidad != None:
+            return
+
+        if len(self.intenciones) == 0:
+            return
+
+        if len(self.intenciones) == 1:
+            self.agregar_entidad(self.intenciones[0])
             self.intenciones = []
+            return
+
+        # Elegimos una entidad al azar
+        ##Estadisticas().guardar_conflicto([tiempo_transcurrido, 1])
+        entidad_seleccionada = choice(self.intenciones)
+        self.agregar_entidad(entidad_seleccionada)
+        self.intenciones = []
+
+    def encontrar_vehiculo(elementos: list[Movible], vehiculos_id: list[int]):
+        for item in elementos:
+            vehiculo = [item for item in elementos if x["id"] == 1 ][0]
 
     def marcar_peaton_si_fuera_de_peatonal(self, movible, tablero):
         if not tablero.pos_esta_en_paso_peatonal(self.fila, self.columna):

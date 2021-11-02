@@ -35,7 +35,7 @@ class ArmadorTablero:
    
 
     def __init__(self, tablero):  
-        self.calle_largo = tablero.calle_largo
+        self.calle_largo_metros = tablero.calle_largo
         self.paso_peatonal_ancho = tablero.paso_peatonal_ancho
         self.cantidad_de_carriles = tablero.cantidad_de_carriles
         self.ancho_carril = tablero.ancho_carril
@@ -46,7 +46,7 @@ class ArmadorTablero:
 
         # Definimos el largo del tablero (en cantidad de celdas) Largo == Width == lo horizontal
         self.vereda_izquierda_largo = int(self.ancho_vereda / self.ancho_celda)
-        self.calle_largo = int(self.calle_largo / self.ancho_celda)
+        self.calle_largo = int(self.calle_largo_metros / self.ancho_celda)
         self.vereda_derecha_largo = int(self.ancho_vereda / self.ancho_celda)
         tablero_largo = int(self.vereda_izquierda_largo + self.calle_largo + self.vereda_derecha_largo)
 
@@ -118,14 +118,14 @@ class ArmadorTablero:
         for numero_de_carril in range(cantidad_de_carriles_por_sentido):
             celda_inicial = self.get_celda(fila_inicial_norte, columna_inicial_norte + (numero_de_carril * carril_ancho_celdas))
             area_de_espera = AreaEsperaVehiculo(celda_inicial, self.celdas_matriz, Direccion.SUR, self.vehiculos)
-            ##self.areas_de_espera.append(area_de_espera)
+            self.areas_de_espera.append(area_de_espera)
 
         fila_inicial_sur = len(self.celdas_matriz) - largo_auto
         columna_inicial_sur = self.vereda_izquierda_largo + 1 + int(cantidad_de_carriles_por_sentido * carril_ancho_celdas)
         for numero_de_carril in range(cantidad_de_carriles_por_sentido):
             celda_inicial = self.get_celda(fila_inicial_sur, columna_inicial_sur + (numero_de_carril * carril_ancho_celdas))
             area_de_espera = AreaEsperaVehiculo(celda_inicial, self.celdas_matriz, Direccion.NORTE, self.vehiculos)
-            ##self.areas_de_espera.append(area_de_espera)
+            self.areas_de_espera.append(area_de_espera)
 
         # Agregamos los semáforos en las celdas de la verda donde arranca la senda peatonal
         semaforo_izquierdo_fila = self.parte_superior_ancho

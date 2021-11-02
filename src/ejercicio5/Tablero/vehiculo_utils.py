@@ -22,17 +22,6 @@ def detectar_estado_vehiculo(vehiculo_partes, tablero):
             break
 
     return puede_moverse, debe_borrarse
-    
-
-# Movemos todas las partes de un vehiculo
-def mover_vehiculo(vehiculo_partes, tablero):
-
-    for parte in vehiculo_partes:
-        celda_inicial, celda_final = get_celda_inicial_y_final(parte, tablero)
-        
-        # Muevo a la parte
-        celda_inicial.remover_entidad() 
-        celda_final.agregar_entidad(parte)
 
 def borrar_vehiculos(vehiculos_id_a_borrar, tablero):
     for vehiculo_id in vehiculos_id_a_borrar:

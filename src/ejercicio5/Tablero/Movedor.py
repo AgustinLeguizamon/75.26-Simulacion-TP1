@@ -5,7 +5,7 @@ from Entidades.Peaton import Peaton
 from Entidades.VehiculoParte import VehiculoParte
 from Tablero import Tablero
 from random import random
-from .vehiculo_utils import detectar_estado_vehiculo, mover_vehiculo
+from .vehiculo_utils import detectar_estado_vehiculo, get_celda_inicial_y_final
 
 class Movedor:
     INF = 99
@@ -17,25 +17,30 @@ class Movedor:
         p = random()
         return p < proba
     
-    def declarar_intencion_peaton(self, movible: Movible, tablero):
-        fila_inicial = movible.get_fila()
-        columna_inicial = movible.get_columna()
-        direccion = movible.get_direccion()
-        velocidad = movible.get_velocidad()
-        
-        # el peaton tiene que resolver a que celda se va a mover usando las reglas del paper
-        # calculamos nueva posicion a la que se quiere mover
-        fila_final, columna_final = self.calcular_pos_celda_final(fila_inicial, columna_inicial, velocidad, direccion, tablero, movible)
+    def declarar_intenciones_peatones(self, tablero):
+        for peaton in tablero.peatones:
+            fila_inicial = peaton.get_fila()
+            columna_inicial = peaton.get_columna()
+            direccion = peaton.get_direccion()
+            velocidad = peaton.get_velocidad()
+            
+            # el peaton tiene que resolver a que celda se va a mover usando las reglas del paper
+            # calculamos nueva posicion a la que se quiere mover
+            fila_final, columna_final = self.calcular_pos_celda_final(fila_inicial, columna_inicial, velocidad, direccion, tablero, peaton)
 
-        # obtenemos celda final
-        celda_final = tablero.get_celda(fila_final, columna_final)
+            # obtenemos celda final
+            celda_final = tablero.get_celda(fila_final, columna_final)
 
-        # Todos los peatones que hayan declarado intenciones sobre celdas
-        # que NO pertenecen al paso peatonal se marcan para ser eliminados
-        celda_final.marcar_peaton_si_fuera_de_peatonal(movible, tablero)
+            # Si la celda final está ocupada, no debe moverse
+            if celda_final.esta_ocupada():
+                continue
 
-        # indicamos a la celda final que un peaton tiene intenciones de moverse a ella
-        celda_final.agregar_intencion(movible)
+            # Todos los peatones que hayan declarado intenciones sobre celdas
+            # que NO pertenecen al paso peatonal se marcan para ser eliminados
+            celda_final.marcar_peaton_si_fuera_de_peatonal(peaton, tablero)
+
+            # indicamos a la celda final que un peaton tiene intenciones de moverse a ella
+            celda_final.agregar_intencion(peaton)
 
     def declarar_intenciones_vehiculos(self, tablero):
         vehiculos_id_a_borrar = []
@@ -52,16 +57,27 @@ class Movedor:
                 continue
             
             if puede_moverse:
-                mover_vehiculo(vehiculo_partes, tablero)
+                for parte in vehiculo_partes:
+                    celda_inicial, celda_final = get_celda_inicial_y_final(parte, tablero)
+                    #celda_final.agregar_intencion(parte)
+                    celda_inicial.remover_entidad() 
+                    celda_final.agregar_entidad(parte)
 
         return vehiculos_id_a_borrar
 
-    def resolver_y_mover_peatones(self, tablero: Tablero):
-        # Recorro todas las celdas que pertenecen al paso peatonal
+    def resolver_intenciones_y_mover_movibles(self, tablero: Tablero):
+         # Recorro todas las celdas que pertenecen a la calle
+        #fila_inicio_calle = 0
+        #fila_fin_calle = len(tablero.celdas_matriz) - 1
+        #columna_inicio_calle = tablero.armador_tablero.vereda_izquierda_largo
+        #columna_fin_calle = columna_inicio_calle + tablero.armador_tablero.calle_largo
+       
+        #for fila in range(fila_inicio_calle, fila_fin_calle):
+            #for columna in range(columna_inicio_calle, columna_fin_calle):
         for fila in range(tablero._FILA_ORIGEN_PASO_PEATONAL, tablero._FILA_FIN_PASO_PEATONAL + 1):
             for columna in range(tablero._COLUMNA_ORIGEN_PASO_PEATONAL, tablero._COLUMNA_FIN_PASO_PEATONAL + 1):
-                celda_paso_peatonal = tablero.get_celda(fila, columna)
-                celda_paso_peatonal.resolver()
+                celda = tablero.get_celda(fila, columna)
+                celda.resolver()
 
     def calcular_pos_celda_final(self, fila_peaton, columna_peaton, velocidad, direccion: Direccion, tablero, peaton: Peaton):
         d = self.distancia_al_prox_peaton(fila_peaton, columna_peaton, direccion, tablero)
