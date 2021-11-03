@@ -15,7 +15,8 @@ class AreaEsperaPeaton:
         self.peatones = peatones
         self.peatones_esperando = 0
         self.poisson = Poisson(Constantes.ARRIBO_POR_SEGUNDO_PEATON)
-
+        
+    
     # El área de espera chequea si tiene que colocar un peaton
     # en la senda peatonal
     def accionar(self, semaforos, tiempo_transcurrido, segundos_por_paso):
@@ -34,31 +35,29 @@ class AreaEsperaPeaton:
         eventos_ocurridos = self.poisson.eventos_en_rango_de_tiempo(tiempo_transcurrido - segundos_por_paso, tiempo_transcurrido)
         if (eventos_ocurridos == 0):
             return
-
-        if not se_permite_el_paso:
-            return
         
         for i in range(eventos_ocurridos):
             
             if (self.peatones_esperando < Constantes.MAX_CANTIDAD_PEATONES):
                 self.peatones_esperando += 1
+        
+        if se_permite_el_paso:
+            self.meter_peatones(segundos_por_paso)
 
-            # Sumamos un peaton a la senda peatonal, esperando para avanzar
-            # en una de las celdas iniciales disponible del área de espera
-            agregamos_peaton_en_senda = False
-            for celda in self.celdas_iniciales:
-                if celda.esta_ocupada():
-                    continue
 
-                # La celda no está ocupada, sumamos al peaton a la senda peatonal
-                # y a la colección de peatones
-                peaton = Peaton(self.direccion_peatones, velocidad_inicial_peaton(segundos_por_paso))
-                celda.agregar_entidad(peaton)
-                self.peatones.append(peaton)
-                agregamos_peaton_en_senda = True
-                ##Estadisticas().guardar_caminando([])
-                break
+    def meter_peatones(self, segundos_por_paso):
+        # Sumamos un peaton a la senda peatonal, esperando para avanzar
+        # en una de las celdas iniciales disponible del área de espera
+        for celda in self.celdas_iniciales:
+            if celda.esta_ocupada():
+                continue     
+            peaton = Peaton(self.direccion_peatones, velocidad_inicial_peaton(segundos_por_paso))
+            celda.agregar_entidad(peaton)
+            self.peatones.append(peaton)
+            self.peatones_esperando -= 1
+            if self.peatones_esperando <= 0:
+                return
 
-            # Si el peatón fue agregado a una celda, restamos de peatones esperando
-            if (agregamos_peaton_en_senda and self.peatones_esperando > 0):
-                self.peatones_esperando -= 1
+        
+
+         
