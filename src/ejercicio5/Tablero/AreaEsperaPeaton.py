@@ -6,25 +6,22 @@ from .Celda import Celda
 from Entidades.Poisson import Poisson
 from utils import velocidad_inicial_peaton
 from Estadisticas import Estadisticas
+from .Constantes import Constantes
 
 class AreaEsperaPeaton:
-    # Cuenta cuantos peatones tiene
-    # Cuenta cuantos peatones cruzaron
-    MAX_CANTIDAD_PEATONES = 100
-
     def __init__(self, celdas_iniciales: 'list[Celda]', direccion_peatones: Direccion, peatones: 'list[Peaton]'):
         self.celdas_iniciales = celdas_iniciales
         self.direccion_peatones = direccion_peatones
         self.peatones = peatones
         self.peatones_esperando = 0
-        self.poisson = Poisson(arribos_por_segundo=5)
-            
-   # El área de espera chequea si tiene que colocar un peaton
+        self.poisson = Poisson(Constantes.ARRIBO_POR_SEGUNDO_PEATON)
+
+    # El área de espera chequea si tiene que colocar un peaton
     # en la senda peatonal
     def accionar(self, semaforos, tiempo_transcurrido, segundos_por_paso):
         
         # Si llegamos al tope de peatones esperando, no hacemos nada
-        if (self.peatones_esperando == self.MAX_CANTIDAD_PEATONES):
+        if (self.peatones_esperando == Constantes.MAX_CANTIDAD_PEATONES):
             return
 
         # Si los semaforos no permiten el paso, no hacemos nada
@@ -58,7 +55,7 @@ class AreaEsperaPeaton:
 
             # Si el peatón fue agregado a una celda, listo
             # sino, sumamos 1 al contador de "peatones esperando" (ser agregados a la senda peatonal)
-            if (not agregamos_peaton_en_senda and self.peatones_esperando < self.MAX_CANTIDAD_PEATONES):
+            if (not agregamos_peaton_en_senda and self.peatones_esperando < Constantes.MAX_CANTIDAD_PEATONES):
                 self.peatones_esperando += 1
 
 

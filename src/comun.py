@@ -1,1 +1,0 @@
-# TODO: agregar las funciones que se usen tanto en el ejercicio 5 como los demas

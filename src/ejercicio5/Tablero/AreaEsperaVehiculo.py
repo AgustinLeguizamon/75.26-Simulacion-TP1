@@ -5,17 +5,17 @@ from enums import Direccion
 from .Celda import Celda
 from utils import velocidad_inicial_vehiculo, generar_color_random
 import random as rn
+from .Constantes import Constantes
 
 class AreaEsperaVehiculo:
-    VEHICULO_LARGO_CELDAS = 6
-    VEHICULO_ANCHO_CELDAS = 5
+
 
     def __init__(self, celda_inicial: Celda, celda_matriz: 'list[list[Celda]]', direccion_vehiculos: Direccion, vehiculos: 'dict[int,list[VehiculoParte]]'):
         self.celda_inicial = celda_inicial
         self.celda_matriz = celda_matriz
         self.direccion_vehiculos = direccion_vehiculos
         self.vehiculos = vehiculos
-        self.poisson = Poisson(arribos_por_segundo=2/6)
+        self.poisson = Poisson(arribos_por_segundo=Constantes.ARRIBOS_POR_SEGUNDO_AUTO)
 
     # Chequeamos si hay que colocar un nuevo vehículo en el paso peatonal
     # Sino esperamos
@@ -38,8 +38,8 @@ class AreaEsperaVehiculo:
         celda_inicial_columna = self.celda_inicial.columna
         hay_alguna_celda_ocupada = False
        
-        for fila in range(self.VEHICULO_ANCHO_CELDAS):
-            for columna in range(self.VEHICULO_LARGO_CELDAS):
+        for fila in range(Constantes.VEHICULO_ANCHO_CELDAS):
+            for columna in range(Constantes.VEHICULO_LARGO_CELDAS):
                 celda = self.celda_matriz[celda_inicial_fila + fila][celda_inicial_columna + columna]
                 hay_alguna_celda_ocupada = hay_alguna_celda_ocupada or celda.esta_ocupada()
 
@@ -55,8 +55,8 @@ class AreaEsperaVehiculo:
         vehiculo_id = rn.randint(100, 999)
         self.vehiculos[vehiculo_id] = []
 
-        for fila in range(self.VEHICULO_ANCHO_CELDAS):
-            for columna in range(self.VEHICULO_LARGO_CELDAS):
+        for fila in range(Constantes.VEHICULO_ANCHO_CELDAS):
+            for columna in range(Constantes.VEHICULO_LARGO_CELDAS):
                 parte_de_vehiculo = VehiculoParte(vehiculo_id, direccion, velocidad, fila, columna, color)
                 celda = self.celda_matriz[celda_inicial_fila + (fila * multiplicador)][celda_inicial_columna + columna]
                 celda.agregar_entidad(parte_de_vehiculo)

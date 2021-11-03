@@ -4,6 +4,7 @@ from Entidades.Semaforo import Semaforo
 from .AreaEsperaPeaton import AreaEsperaPeaton
 from enums import TipoDeCelda, Direccion
 from Entidades.Poisson import Poisson
+from .Constantes import Constantes
 
 class ArmadorTablero:
     #                     |      ╎ calle_largo ║██████╎      ╎      |                        
@@ -35,25 +36,16 @@ class ArmadorTablero:
    
 
     def __init__(self, tablero):  
-        self.calle_largo_metros = tablero.calle_largo
-        self.paso_peatonal_ancho = tablero.paso_peatonal_ancho
-        self.cantidad_de_carriles = tablero.cantidad_de_carriles
-        self.ancho_carril = tablero.ancho_carril
-        self.ancho_celda = tablero.ancho_celda
-
-        self.ancho_vereda = 10          # en metros (10 metros)
-        self.ancho_parte_superior = 8  # en metros
-
         # Definimos el largo del tablero (en cantidad de celdas) Largo == Width == lo horizontal
-        self.vereda_izquierda_largo = int(self.ancho_vereda / self.ancho_celda)
-        self.calle_largo = int(self.calle_largo_metros / self.ancho_celda)
-        self.vereda_derecha_largo = int(self.ancho_vereda / self.ancho_celda)
+        self.vereda_izquierda_largo = int(Constantes.ANCHO_VEREDA_METROS / Constantes.ANCHO_CELDA_METROS)
+        self.calle_largo = int(Constantes.CALLE_LARGO_METROS / Constantes.ANCHO_CELDA_METROS)
+        self.vereda_derecha_largo = int(Constantes.ANCHO_VEREDA_METROS / Constantes.ANCHO_CELDA_METROS)
         tablero_largo = int(self.vereda_izquierda_largo + self.calle_largo + self.vereda_derecha_largo)
 
         # Definimos el ancho del tablero (en cantidad de celdas) Ancho == Height == lo vertical
-        self.parte_superior_ancho = int(self.ancho_parte_superior / self.ancho_celda)
-        self.parte_peatonal_ancho = int(self.paso_peatonal_ancho / self.ancho_celda) + 2 # 2 más porque incluye separadores
-        self.parte_inferior_ancho = int(self.ancho_parte_superior / self.ancho_celda)
+        self.parte_superior_ancho = int(Constantes.ANCHO_PARTE_SUPERIOR_METROS / Constantes.ANCHO_CELDA_METROS)
+        self.parte_peatonal_ancho = int(Constantes.PASO_PEATONAL_ANCHO_METROS / Constantes.ANCHO_CELDA_METROS) + 2 # 2 más porque incluye separadores
+        self.parte_inferior_ancho = int(Constantes.ANCHO_PARTE_INFERIOR_METROS / Constantes.ANCHO_CELDA_METROS)
         self.tablero_ancho = int(self.parte_superior_ancho + self.parte_peatonal_ancho + self.parte_inferior_ancho)
 
         self.celdas_matriz = []
@@ -89,8 +81,8 @@ class ArmadorTablero:
             self.generar_area_de_espera_derecha()
 
         # Creamos las áreas de espera de autos
-        carril_ancho_celdas = int(self.ancho_carril / self.ancho_celda)
-        cantidad_de_carriles_por_sentido = int(self.cantidad_de_carriles / 2)
+        carril_ancho_celdas = int(Constantes.ANCHO_CARRIL_METROS / Constantes.ANCHO_CELDA_METROS)
+        cantidad_de_carriles_por_sentido = int(Constantes.CANTIDAD_DE_CARRILES / 2)
         largo_auto = 5
 
         fila_inicial_norte = largo_auto - 1
@@ -177,15 +169,15 @@ class ArmadorTablero:
 
     def generar_carriles(self, fila, columna, celdas_fila):
         # Carriles: conformados por celdas normales (espacios vacíos) columna un separador al final
-        carril_ancho_celdas = int(self.ancho_carril / self.ancho_celda)
+        carril_ancho_celdas = int(Constantes.ANCHO_CARRIL_METROS / Constantes.ANCHO_CELDA_METROS)
 
-        for i in range(self.cantidad_de_carriles):
+        for i in range(Constantes.CANTIDAD_DE_CARRILES):
             for j in range(carril_ancho_celdas - 1):
                 celdas_fila.append(Celda(fila=fila, columna=columna, tipo=TipoDeCelda.NORMAL, tablero=self))
                 columna += 1
             
-            if (i != self.cantidad_de_carriles - 1):
-                carril_del_medio = int((self.cantidad_de_carriles - 1) / 2)
+            if (i != Constantes.CANTIDAD_DE_CARRILES - 1):
+                carril_del_medio = int((Constantes.CANTIDAD_DE_CARRILES - 1) / 2)
                 tipo_de_carril = TipoDeCelda.CARRIL_SEPARADOR_DEL_MEDIO if carril_del_medio == i else TipoDeCelda.CARRIL_SEPARADOR 
                 celdas_fila.append(Celda(fila=fila, columna=columna, tipo=tipo_de_carril, tablero=self))
                 columna += 1

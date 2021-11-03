@@ -3,6 +3,7 @@ import random
 import time
 
 from Tablero.Tablero import Tablero
+from Tablero.Constantes import Constantes
 from enums import Direccion
 from Estadisticas import Estadisticas
 
@@ -44,7 +45,7 @@ def limpiar_pantalla():
 def main():
    # Init game variables
    esta_corriendo = True
-   segundos_por_paso: int = 1
+   segundos_por_paso: int = Constantes.SEGUNDOS_POR_PASO
    tiempo_transcurrido = 0
    Estadisticas()
    tablero = Tablero(segundos_por_paso=segundos_por_paso, area_izq=True, area_der=True)
