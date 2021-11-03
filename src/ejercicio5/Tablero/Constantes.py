@@ -1,5 +1,5 @@
 class Constantes:
-    SEGUNDOS_POR_PASO = 1
+    SEGUNDOS_POR_PASO = 0.5
     
     MAX_CANTIDAD_PEATONES = 100
 
