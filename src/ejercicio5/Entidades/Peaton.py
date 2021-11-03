@@ -12,7 +12,7 @@ class Peaton(Movible):
 
     # si la luz se pone en rojo y el peaton sigue en la calle, acelera a maxima velocidad
     def cambiar_estado(self, estado):
-        if estado == Semaforo.ROJO:
+        if estado == Semaforo.ROJO or Semaforo.AMARILLO:
             self.velocidad = velocidad_maxima_peaton()
 
     def get_dibujo(self):
