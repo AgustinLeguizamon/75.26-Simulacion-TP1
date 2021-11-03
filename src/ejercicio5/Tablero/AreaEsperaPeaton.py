@@ -58,7 +58,7 @@ class AreaEsperaPeaton:
 
             # Si el peatón fue agregado a una celda, listo
             # sino, sumamos 1 al contador de "peatones esperando" (ser agregados a la senda peatonal)
-            if (not agregamos_peaton_en_senda):
+            if (not agregamos_peaton_en_senda and self.peatones_esperando < self.MAX_CANTIDAD_PEATONES):
                 self.peatones_esperando += 1
 
 
