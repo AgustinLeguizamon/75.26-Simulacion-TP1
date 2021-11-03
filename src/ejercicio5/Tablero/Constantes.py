@@ -23,3 +23,26 @@ class Constantes:
     TIEMPO_DE_LUZ_VERDE = 10
     TIEMPO_DE_LUZ_AMARILLO = 30
     PERMITIR_AMARILLO = False
+
+    HABILITAR_AREA_IZQUIERDA_PEATONES = True
+    HABILITAR_AREA_DERECHA_PEATONES = True
+
+# Simulaciones
+# --------------
+# 1. Valores iniciales (todo asi como está)
+# 2. Cambiamos el arribo de peatones y el arribo de autos
+#   ARRIBOS_POR_SEGUNDO_AUTO = 2 / 6
+#   ARRIBO_POR_SEGUNDO_PEATON = 1
+
+# Modificaciones
+# --------------
+# 1. Cambiar autos por motos
+#   VEHICULO_LARGO_CELDAS = 1
+#   VEHICULO_ANCHO_CELDAS = 5
+
+# 2. Los peatones viajan por una sola dirección
+#   HABILITAR_AREA_IZQUIERDA_PEATONES = False
+#   HABILITAR_AREA_DERECHA_PEATONES = True
+
+# 3. Habilitamos luces amarillas
+#   Constantes.PERMITIR_AMARILLO = True

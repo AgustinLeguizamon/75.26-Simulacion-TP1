@@ -48,7 +48,7 @@ def main():
    segundos_por_paso: int = Constantes.SEGUNDOS_POR_PASO
    tiempo_transcurrido = 0
    Estadisticas()
-   tablero = Tablero(segundos_por_paso=segundos_por_paso, area_izquierda_peatones=False, area_derecha_peatones=True)
+   tablero = Tablero(segundos_por_paso, Constantes.HABILITAR_AREA_IZQUIERDA_PEATONES, Constantes.HABILITAR_AREA_DERECHA_PEATONES)
 
    # TODO: para debug colisiones peatones, acordarse de comentar areas de espera de autos
    #debug_agregar_peatones(tablero)
