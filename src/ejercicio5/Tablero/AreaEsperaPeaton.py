@@ -28,7 +28,6 @@ class AreaEsperaPeaton:
         se_permite_el_paso = True
         for semaforo in semaforos:
             se_permite_el_paso = se_permite_el_paso and semaforo.permitir_paso()
-       
         
         # Luego chequeo si hay arribo de peaton según poisson 
         # Si no hay, no hago nada

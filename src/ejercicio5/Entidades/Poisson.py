@@ -16,8 +16,6 @@ class Poisson:
 
             
     def cantidad_eventos_hasta(self, tiempo_maximo):
-        if (tiempo_maximo <= 0):
-            return 0
         tiempo_acumulado = 0
         cantidad_eventos = 0
         while (tiempo_acumulado <= tiempo_maximo):
@@ -26,6 +24,10 @@ class Poisson:
         return cantidad_eventos
 
     def eventos_en_rango_de_tiempo(self, tiempo_anterior, tiempo_actual) -> int:
+        if (tiempo_anterior < 0 or tiempo_actual < 0):
+            return 0
+       
+
         eventos_tiempo_anterior = self.cantidad_eventos_hasta(tiempo_anterior)
         eventos_tiempo_actual = self.cantidad_eventos_hasta(tiempo_actual)
         return abs(eventos_tiempo_actual-eventos_tiempo_anterior)
