@@ -34,8 +34,15 @@ class AreaEsperaPeaton:
         eventos_ocurridos = self.poisson.eventos_en_rango_de_tiempo(tiempo_transcurrido - segundos_por_paso, tiempo_transcurrido)
         if (eventos_ocurridos == 0):
             return
+
+        if not se_permite_el_paso:
+            return
         
         for i in range(eventos_ocurridos):
+            
+            if (self.peatones_esperando < Constantes.MAX_CANTIDAD_PEATONES):
+                self.peatones_esperando += 1
+
             # Sumamos un peaton a la senda peatonal, esperando para avanzar
             # en una de las celdas iniciales disponible del área de espera
             agregamos_peaton_en_senda = False
@@ -52,9 +59,6 @@ class AreaEsperaPeaton:
                 ##Estadisticas().guardar_caminando([])
                 break
 
-            # Si el peatón fue agregado a una celda, listo
-            # sino, sumamos 1 al contador de "peatones esperando" (ser agregados a la senda peatonal)
-            if (not agregamos_peaton_en_senda and self.peatones_esperando < Constantes.MAX_CANTIDAD_PEATONES):
-                self.peatones_esperando += 1
-
-
+            # Si el peatón fue agregado a una celda, restamos de peatones esperando
+            if (agregamos_peaton_en_senda and self.peatones_esperando > 0):
+                self.peatones_esperando -= 1
