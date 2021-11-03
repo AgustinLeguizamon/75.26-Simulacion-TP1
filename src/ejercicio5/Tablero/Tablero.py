@@ -9,13 +9,13 @@ from .vehiculo_utils import borrar_vehiculos
 
 class Tablero:
 
-    def __init__(self, segundos_por_paso, area_izq=True, area_der=True):  
+    def __init__(self, segundos_por_paso, area_izquierda_peatones=True, area_derecha_peatones=True):  
         self.segundos_por_paso = segundos_por_paso
         
         self.dibujador = Dibujador()
         self.movedor = Movedor()
         self.armador_tablero = ArmadorTablero(self)
-        self.armador_tablero.armar_tablero(area_izq, area_der)
+        self.armador_tablero.armar_tablero(area_izquierda_peatones, area_derecha_peatones)
 
         self.celdas_matriz = self.armador_tablero.celdas_matriz
         self.semaforos = self.armador_tablero.semaforos
@@ -85,8 +85,9 @@ class Tablero:
 
     def dibujar_estadisticas(self):
         print()
-        print("Peatones en área de espera izquierda: ", self.areas_de_espera[0].peatones_esperando)
-        print("Peatones en área de espera derecha: ", self.areas_de_espera[1].peatones_esperando)
+        if (len(self.areas_de_espera) == 2): 
+            print("Peatones en área de espera izquierda: ", self.areas_de_espera[0].peatones_esperando)
+            print("Peatones en área de espera derecha: ", self.areas_de_espera[1].peatones_esperando)
 
     # debug only
     def _debug_colocar_peaton(self, fila_peatonal, columna_peatonal, direccion, velocidad):
