@@ -1,5 +1,5 @@
 class Constantes:
-    SEGUNDOS_POR_PASO = 0.5
+    SEGUNDOS_POR_PASO = 1
     
     MAX_CANTIDAD_PEATONES = 100
 
@@ -20,4 +20,4 @@ class Constantes:
     ANCHO_CELDA_METROS = 0.5
 
     TIEMPO_MAXIMO_SEMAFORO = 90
-    TIEMPO_DE_PASO_PEATON = 25
+    TIEMPO_DE_LUZ_VERDE = 25
