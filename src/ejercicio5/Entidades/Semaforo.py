@@ -1,13 +1,13 @@
+from Tablero.Constantes import Constantes
 from .Entidad import Entidad
 
 class Semaforo(Entidad):
-    TIEMPO_MAXIMO = 90
     VERDE = 0
     ROJO = 1
-    def __init__(self, tiempo_paso_peaton = 25):
+
+    def __init__(self):
         super().__init__()
         self.estado = "verde"
-        self.tiempo_paso_peaton = tiempo_paso_peaton
 
     def get_dibujo(self):
         return "⬤"
@@ -25,9 +25,9 @@ class Semaforo(Entidad):
         return self.estado == "verde"
 
     def cambiar_estado(self, tiempo_transcurrido, tablero):
-        tiempo_final = tiempo_transcurrido % self.TIEMPO_MAXIMO
+        tiempo_final = tiempo_transcurrido % Constantes.TIEMPO_MAXIMO
         
-        if (tiempo_final <= self.tiempo_paso_peaton):
+        if (tiempo_final <= Constantes.TIEMPO_DE_PASO_PEATON):
             self.estado = "verde"
             tablero.estado_peatones(self.VERDE)
         else:
